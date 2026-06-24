@@ -772,7 +772,7 @@
         <div class="nav-section-label">ניהול מידע</div>
         <div class="nav-item" id="nav-credentials" onclick="showPage('credentials',this)">
           <span class="nav-icon">🔑</span> פרטי התחברות ויוזרים
-          <span class="nav-badge">4</span>
+          <span class="nav-badge">13</span>
         </div>
         <div class="nav-item" onclick="showPage('agent-numbers',this)">
           <span class="nav-icon">🔢</span> מספרי סוכן
@@ -865,22 +865,22 @@
         <div class="stats-strip">
           <div class="stat-card">
             <div class="stat-label">סה"כ חברות</div>
-            <div class="stat-value" id="stat-total">4</div>
+            <div class="stat-value" id="stat-total">13</div>
             <div class="stat-sub">במאגר</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">מוצגות כעת</div>
-            <div class="stat-value" id="stat-filtered">4</div>
+            <div class="stat-value" id="stat-filtered">13</div>
             <div class="stat-sub">תוצאות</div>
           </div>
         </div>
         <div class="search-bar-wrap">
           <span class="search-icon">🔍</span>
-          <input type="text" id="creds-search" placeholder="חיפוש לפי שם חברה, שם משתמש או מספר סוכן..." oninput="filterCredentials()" />
+          <input type="text" id="creds-search" placeholder="חיפוש לפי שם חברה, שם משתמש או הערות..." oninput="filterCredentials()" />
         </div>
         <div class="table-card">
           <table class="data-table">
-            <thead><tr><th>חברת ביטוח</th><th>מספר סוכן</th><th>שם משתמש</th><th>סיסמה</th></tr></thead>
+            <thead><tr><th>חברת ביטוח</th><th>שם משתמש</th><th>סיסמה</th><th>הערות</th></tr></thead>
             <tbody id="creds-tbody"></tbody>
           </table>
           <div class="no-results" id="creds-no-results" style="display:none;">
@@ -1297,10 +1297,19 @@ const STAFF = [
 ];
 
 const CREDENTIALS = [
-  { company:'הראל',   agentNum:'12345', username:'harel_user',   password:'harel_password'   },
-  { company:'מגדל',   agentNum:'67890', username:'migdal_user',  password:'migdal_password'  },
-  { company:'הפניקס', agentNum:'55443', username:'phoenix_user', password:'phoenix_password' },
-  { company:'כלל',    agentNum:'99887', username:'clal_user',    password:'clal_password'    },
+  { company:'מסלקה סוכנות',   username:'056157712AABR',                              password:'',               notes:'' },
+  { company:'מסלקה פרטי',     username:'056157712Broc',                              password:'',               notes:'' },
+  { company:'שחם ביט',        username:'asherb',                                     password:'Zx1234!!',       notes:'' },
+  { company:'מור',             username:'כניסה מותאמת (כל אחד לפי תעודת הזהות שלו)', password:'',               notes:'' },
+  { company:'מגדל',            username:'002jmj2s',                                   password:'570efr',         notes:'' },
+  { company:'אלטשולר',        username:'00127650L',                                  password:'ת.ז אשר',        notes:'הודעה לטלפון של אשר' },
+  { company:'הפניקס',         username:'300641206',                                  password:'21asherb',       notes:'קוד אימות נשלח לטלפון של אושי' },
+  { company:'הראל',            username:'d005962sxv',                                 password:'3030Asherb!',    notes:'קוד אימות נשלח לטלפון של המשרד' },
+  { company:'כלל',             username:'056157712',                                  password:'26Asherb',       notes:'קוד אימות נשלח לטלפון של אשר' },
+  { company:'מנורה',           username:'dlakhe6e',                                   password:'30Asherb',       notes:'קוד אימות נשלח לטלפון של המשרד' },
+  { company:'אנליסט',         username:'212223093',                                  password:'',               notes:'טלפון להזדהות ואימות: 054-9111656 (וואטסאפ משרד)' },
+  { company:'הר הביטוח',      username:'316392166',                                  password:'1234Yehonatan!', notes:'כניסה עם פרטי יהונתן' },
+  { company:'ילין לפידות',    username:'כניסה עם תעודת זהות וטלפון של יהונתן',      password:'',               notes:'קוד נשלח לנייד של יהונתן' },
 ];
 
 const INTERNAL_CONTACTS = [
@@ -1658,14 +1667,18 @@ function renderCredentials(data) {
   document.getElementById('creds-tbody').innerHTML = data.map(row => {
     const i = CREDENTIALS.indexOf(row);
     const shown = !!revealed[i];
+    const hasPass = !!row.password;
+    const passDisplay = !hasPass
+      ? `<span style="color:var(--text-muted);font-size:15px">—</span>`
+      : `<div class="password-cell">
+          <span class="password-display" id="pass-${i}">${shown ? esc(row.password) : '••••••••••'}</span>
+          <button class="btn-eye" onclick="togglePwd(${i})">${shown ? '🙈' : '👁️'}</button>
+         </div>`;
     return `<tr>
       <td><div class="company-cell"><div class="company-badge">${row.company.charAt(0)}</div><span class="company-name">${esc(row.company)}</span></div></td>
-      <td style="font-family:'Courier New',monospace;font-size:13px;color:var(--text-secondary)">${esc(row.agentNum)}</td>
       <td style="font-family:'Courier New',monospace;font-size:13px">${esc(row.username)}</td>
-      <td><div class="password-cell">
-        <span class="password-display" id="pass-${i}">${shown ? esc(row.password) : '••••••••••••'}</span>
-        <button class="btn-eye" onclick="togglePwd(${i})">${shown ? '🙈' : '👁️'}</button>
-      </div></td>
+      <td>${passDisplay}</td>
+      <td style="font-size:13px;color:var(--text-muted)">${row.notes ? esc(row.notes) : '<span style="color:var(--text-muted)">—</span>'}</td>
     </tr>`;
   }).join('');
 }
@@ -1680,7 +1693,7 @@ function togglePwd(i) {
 
 function filterCredentials() {
   const q = document.getElementById('creds-search').value.trim().toLowerCase();
-  renderCredentials(q ? CREDENTIALS.filter(r => [r.company,r.username,r.agentNum].some(v => v.toLowerCase().includes(q))) : CREDENTIALS);
+  renderCredentials(q ? CREDENTIALS.filter(r => [r.company, r.username, r.notes].some(v => v.toLowerCase().includes(q))) : CREDENTIALS);
 }
 
 /* ══════════════════════════
