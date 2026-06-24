@@ -353,6 +353,39 @@
     .featured-label strong { display: block; font-size: 15px; font-weight: 800; color: var(--text-primary); margin-bottom: 2px; }
     .featured-label span { font-size: 12px; color: var(--text-muted); }
 
+    /* ══ AGENT ID CARDS ══ */
+    .agent-id-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .agent-id-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .agent-id-icon {
+      width: 46px; height: 46px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
+    }
+    .agent-id-label {
+      font-size: 12px; font-weight: 600;
+      color: var(--text-muted); margin-bottom: 5px;
+    }
+    .agent-id-value {
+      font-family: 'Courier New', monospace;
+      font-size: 20px; font-weight: 800;
+      color: var(--text-primary); letter-spacing: 1px;
+    }
+
     /* ── Contacts table group header ── */
     .contact-group-header td {
       background: #f8fafc;
@@ -545,12 +578,56 @@
         <div class="page-header">
           <div class="breadcrumb">ברוכי HQ ← <span>מספרי סוכן</span></div>
           <h1>🔢 מספרי סוכן</h1>
-          <p>מספרי הסוכן של הסוכנות אצל כל חברת ביטוח</p>
+          <p>פרטי זיהוי הסוכנות ומספרי הסוכן אצל כל חברת ביטוח</p>
         </div>
-        <div class="placeholder-card">
-          <div class="ph-icon">🚧</div>
-          <h3>עמוד זה בפיתוח</h3>
-          <p>תוכן העמוד יתווסף בשלב הבא</p>
+
+        <!-- Identity cards -->
+        <div class="agent-id-grid">
+          <div class="agent-id-card">
+            <div class="agent-id-icon" style="background:#eff6ff;color:#2563eb">🪪</div>
+            <div class="agent-id-body">
+              <div class="agent-id-label">ת.ז אשר ברוכי</div>
+              <div class="agent-id-value">056157712</div>
+            </div>
+          </div>
+          <div class="agent-id-card">
+            <div class="agent-id-icon" style="background:#eff6ff;color:#2563eb">🪪</div>
+            <div class="agent-id-body">
+              <div class="agent-id-label">ת.ז יהונתן ברוכי</div>
+              <div class="agent-id-value">316392166</div>
+            </div>
+          </div>
+          <div class="agent-id-card">
+            <div class="agent-id-icon" style="background:#fdf6e3;color:#92650a">🏢</div>
+            <div class="agent-id-body">
+              <div class="agent-id-label">ח.פ ברוכי סוכנות לביטוח</div>
+              <div class="agent-id-value">516322021</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Search -->
+        <div class="search-bar-wrap" style="margin-bottom:20px">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="agents-search" placeholder="חיפוש לפי שם חברה או מספר סוכן..." oninput="filterAgents()" />
+        </div>
+
+        <!-- Agent numbers table -->
+        <div class="table-card">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>חברה / מוצר</th>
+                <th>מספר סוכן</th>
+                <th>הערות</th>
+              </tr>
+            </thead>
+            <tbody id="agents-tbody"></tbody>
+          </table>
+          <div class="no-results" id="agents-no-results" style="display:none">
+            <div class="no-results-icon">🔎</div>
+            <div>לא נמצאו תוצאות</div>
+          </div>
         </div>
       </div>
 
@@ -828,6 +905,25 @@ const EXTERNAL_CONTACTS_GROUPS = [
 // Flat list for search
 const EXTERNAL_CONTACTS = EXTERNAL_CONTACTS_GROUPS.flatMap(g => g.rows.map(r => ({ ...r, company: g.company })));
 
+const AGENT_NUMBERS = [
+  { company:'אלטשולר',               number:'4582',     notes:'' },
+  { company:'אנליסט',                number:'3279',     notes:'' },
+  { company:'הפניקס',                number:'51351',    notes:'' },
+  { company:'הראל — חדש',            number:'24807',    notes:'' },
+  { company:'הראל — ישן',            number:'1850',     notes:'' },
+  { company:'הכשרה בסט',             number:'38387',    notes:'' },
+  { company:'הכשרה חיים',            number:'8287',     notes:'L-00127650' },
+  { company:'ילין לפידות',           number:'10640',    notes:'' },
+  { company:'כלל',                   number:'7015',     notes:'' },
+  { company:'כלל השתלמות',           number:'33065',    notes:'' },
+  { company:'מגדל ביטוח ופנסיה',    number:'41381580', notes:'' },
+  { company:'מגדל גמל והשתלמות',    number:'48096798', notes:'' },
+  { company:'מגדל — ישן',            number:'41371878', notes:'' },
+  { company:'מור',                   number:'23100',    notes:'' },
+  { company:'מנורה',                 number:'427994',   notes:'' },
+  { company:'מקפת חברה 7',          number:'48559014', notes:'' },
+];
+
 const PRICING = [
   { company:'הראל',    product:'קרן פנסיה מקיפה', fromDeposit:'1.49%', fromBalance:'0.00%', notes:'מחיר מקסימלי'   },
   { company:'הראל',    product:'ביטוח מנהלים',   fromDeposit:'4.00%', fromBalance:'1.05%', notes:''               },
@@ -968,6 +1064,7 @@ function launchApp(username) {
   document.getElementById('user-name-display').textContent = username;
   document.getElementById('user-avatar').textContent = username.charAt(0).toUpperCase();
   renderCredentials(CREDENTIALS);
+  renderAgents(AGENT_NUMBERS);
   renderInternalContacts('');
   renderExternalContacts('');
   renderPricing(PRICING);
@@ -1039,6 +1136,29 @@ function togglePwd(i) {
 function filterCredentials() {
   const q = document.getElementById('creds-search').value.trim().toLowerCase();
   renderCredentials(q ? CREDENTIALS.filter(r => [r.company,r.username,r.agentNum].some(v => v.toLowerCase().includes(q))) : CREDENTIALS);
+}
+
+/* ══════════════════════════
+   AGENT NUMBERS
+══════════════════════════ */
+function renderAgents(data) {
+  const noRes = document.getElementById('agents-no-results');
+  if (!data.length) {
+    document.getElementById('agents-tbody').innerHTML = '';
+    noRes.style.display = 'block'; return;
+  }
+  noRes.style.display = 'none';
+  document.getElementById('agents-tbody').innerHTML = data.map(r => `
+    <tr>
+      <td style="font-weight:600">${esc(r.company)}</td>
+      <td><span style="font-family:'Courier New',monospace;font-size:15px;font-weight:800;color:var(--text-primary);letter-spacing:1px">${esc(r.number)}</span></td>
+      <td>${r.notes ? `<span class="tag tag-gold">${esc(r.notes)}</span>` : '<span style="color:var(--text-muted)">—</span>'}</td>
+    </tr>`).join('');
+}
+
+function filterAgents() {
+  const q = document.getElementById('agents-search').value.trim().toLowerCase();
+  renderAgents(q ? AGENT_NUMBERS.filter(r => r.company.toLowerCase().includes(q) || r.number.includes(q)) : AGENT_NUMBERS);
 }
 
 /* ══════════════════════════
