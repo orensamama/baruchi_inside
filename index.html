@@ -294,6 +294,73 @@
       width: 100%; justify-content: center;
     }
     .btn-portal:hover { background: #1a3a6e; transform: translateY(-1px); }
+
+    /* ══ WORK TOOL SHORTCUTS ══ */
+    .sidebar-shortcuts {
+      padding: 10px 10px 4px;
+      border-bottom: 1px solid var(--sidebar-border);
+    }
+    .shortcut-btn {
+      display: flex; align-items: center; gap: 9px;
+      width: 100%; padding: 10px 12px; border-radius: 8px;
+      border: none; cursor: pointer; text-decoration: none;
+      font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
+      font-size: 13px; font-weight: 700;
+      transition: transform .15s, box-shadow .15s;
+      margin-bottom: 6px;
+    }
+    .shortcut-btn.primary {
+      background: linear-gradient(135deg, var(--gold), #a07828);
+      color: #0f1c33;
+      box-shadow: 0 2px 10px rgba(201,168,76,.4);
+    }
+    .shortcut-btn.primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(201,168,76,.5); }
+    .shortcut-btn.secondary {
+      background: rgba(255,255,255,.08);
+      color: var(--sidebar-text);
+      border: 1px solid var(--sidebar-border);
+    }
+    .shortcut-btn.secondary:hover { background: rgba(255,255,255,.14); color: #fff; transform: translateY(-1px); }
+    .shortcut-btn .sc-icon { font-size: 16px; flex-shrink: 0; }
+    .shortcut-btn .sc-text { flex: 1; text-align: right; line-height: 1.2; }
+    .shortcut-btn .sc-arrow { font-size: 10px; opacity: .7; }
+
+    /* Featured work-tool cards on quicklinks page */
+    .featured-tools {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .featured-card {
+      display: flex; align-items: center; gap: 14px;
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg); padding: 18px 20px;
+      box-shadow: var(--card-shadow);
+      text-decoration: none;
+      transition: box-shadow .2s, transform .2s, border-color .2s;
+    }
+    .featured-card:hover { box-shadow: var(--card-shadow-lg); transform: translateY(-2px); border-color: var(--gold-border); }
+    .featured-card.gold { border-right: 4px solid var(--gold); }
+    .featured-card.blue { border-right: 4px solid var(--blue); }
+    .featured-icon {
+      width: 46px; height: 46px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
+    }
+    .featured-icon.gold-bg { background: var(--gold-light); }
+    .featured-icon.blue-bg { background: var(--blue-light); }
+    .featured-label strong { display: block; font-size: 15px; font-weight: 800; color: var(--text-primary); margin-bottom: 2px; }
+    .featured-label span { font-size: 12px; color: var(--text-muted); }
+
+    /* Category label in portals page */
+    .portals-section-label {
+      font-size: 12px; font-weight: 700; color: var(--text-muted);
+      letter-spacing: .8px; text-transform: uppercase;
+      margin: 24px 0 12px; padding-bottom: 8px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .portals-section-label:first-of-type { margin-top: 0; }
   </style>
 </head>
 <body>
@@ -358,6 +425,21 @@
             <p>לוח בקרה פנימי</p>
           </div>
         </div>
+      </div>
+
+      <div class="sidebar-shortcuts">
+        <a href="https://docs.google.com/spreadsheets/d/1a2B8AfUBjCMo7jhHuvZoxqzYEMjPwjE81j8-_41JQ1U/edit?gid=0#gid=0"
+           target="_blank" rel="noopener noreferrer" class="shortcut-btn primary">
+          <span class="sc-icon">🎯</span>
+          <span class="sc-text">תוכנית עבודה 2026</span>
+          <span class="sc-arrow">↗</span>
+        </a>
+        <a href="https://docs.google.com/spreadsheets/d/1IDqxT9RTPOk2z0n7niJ7CSjSxHMR8rRd02NqABigZu8/edit?gid=316826309#gid=316826309"
+           target="_blank" rel="noopener noreferrer" class="shortcut-btn secondary">
+          <span class="sc-icon">📊</span>
+          <span class="sc-text">טבלת גביה</span>
+          <span class="sc-arrow">↗</span>
+        </a>
       </div>
 
       <nav class="sidebar-nav">
@@ -568,9 +650,34 @@
         <div class="page-header">
           <div class="breadcrumb">ברוכי HQ ← <span>קישורים מהירים</span></div>
           <h1>🔗 קישורים מהירים לאתרים</h1>
-          <p>כניסה ישירה לפורטלי הסוכנים של חברות הביטוח</p>
+          <p>כניסה ישירה לפורטלי הסוכנים וכלי העבודה</p>
         </div>
+
+        <!-- Featured work tools -->
+        <div class="featured-tools">
+          <a href="https://docs.google.com/spreadsheets/d/1a2B8AfUBjCMo7jhHuvZoxqzYEMjPwjE81j8-_41JQ1U/edit?gid=0#gid=0"
+             target="_blank" rel="noopener noreferrer" class="featured-card gold">
+            <div class="featured-icon gold-bg">🎯</div>
+            <div class="featured-label">
+              <strong>תוכנית עבודה 2026</strong>
+              <span>לוח הבקרה הראשי היומי</span>
+            </div>
+          </a>
+          <a href="https://docs.google.com/spreadsheets/d/1IDqxT9RTPOk2z0n7niJ7CSjSxHMR8rRd02NqABigZu8/edit?gid=316826309#gid=316826309"
+             target="_blank" rel="noopener noreferrer" class="featured-card blue">
+            <div class="featured-icon blue-bg">📊</div>
+            <div class="featured-label">
+              <strong>טבלת גביה</strong>
+              <span>מעקב גביה ותשלומים</span>
+            </div>
+          </a>
+        </div>
+
+        <div class="portals-section-label">פורטלי ביטוח וסוכנות</div>
         <div class="portals-grid" id="portals-grid"></div>
+
+        <div class="portals-section-label">כלים לאומיים וניתוח</div>
+        <div class="portals-grid" id="tools-grid"></div>
       </div>
 
       <!-- ══ 7. FORMS ══ -->
@@ -689,12 +796,29 @@ const FUNDS = [
 ];
 
 const PORTALS = [
-  { name:'הראל',   short:'HR', color:'#d32f2f', desc:'פורטל סוכנים — חיים, בריאות, רכב',   url:'https://www.harel-group.co.il' },
-  { name:'מגדל',   short:'MG', color:'#1565c0', desc:'פורטל סוכנים — ביטוח ופיננסים',      url:'https://www.migdal.co.il'      },
-  { name:'הפניקס', short:'PH', color:'#e65100', desc:'פורטל סוכנים — ביטוח כללי וחיים',    url:'https://www.fnx.co.il'         },
-  { name:'כלל',    short:'CL', color:'#2e7d32', desc:'פורטל סוכנים — ביטוח וחיסכון',       url:'https://www.clal.co.il'        },
-  { name:'מנורה',  short:'MN', color:'#6a1b9a', desc:'פורטל סוכנים — ביטוח חיים ובריאות',  url:'https://www.menora.co.il'      },
-  { name:'איילון', short:'AY', color:'#00695c', desc:'פורטל סוכנים — ביטוח כללי',           url:'https://www.ayalon.co.il'      },
+  { name:'פורמלי',          short:'PF', color:'#1a237e', desc:'מערכת טפסים — שחם',              url:'https://tfasim.shaham.co.il/Login.aspx'                                                        },
+  { name:'פולוייז',         short:'PW', color:'#0277bd', desc:'השוואת פוליסות',                 url:'https://www.polywizz.co.il/'                                                                    },
+  { name:'מגדל',            short:'MG', color:'#1565c0', desc:'פורטל סוכנים',                   url:'https://apmaccess.migdal.co.il/my.policy'                                                       },
+  { name:'הראל',            short:'HR', color:'#b71c1c', desc:'פורטל סוכנים',                   url:'https://agents-int.harel-group.co.il/Pages/default.aspx'                                        },
+  { name:'מור',             short:'MR', color:'#00695c', desc:'פורטל סוכנים',                   url:'https://join.more.co.il/agentsportal/agents/login'                                              },
+  { name:'מנורה נט',        short:'MN', color:'#6a1b9a', desc:'פורטל סוכנים',                   url:'https://menoranet.menora.co.il/'                                                                },
+  { name:'הפניקס',          short:'PH', color:'#e65100', desc:'פורטל סוכנים',                   url:'https://agentportal.fnx.co.il/digital-services/'                                               },
+  { name:'כלל נט',          short:'CL', color:'#2e7d32', desc:'פורטל סוכנים',                   url:'https://agents.as-invest.co.il/Login'                                                          },
+  { name:'אנליסט',          short:'AN', color:'#37474f', desc:'פורטל סוכנים',                   url:'https://agent.analyst.co.il/auth/login'                                                        },
+  { name:'איילון',          short:'AY', color:'#00838f', desc:'פורטל סוכנים',                   url:'https://portal.ayalon-ins.co.il/'                                                              },
+  { name:'הכשרה',           short:'HK', color:'#558b2f', desc:'פורטל סוכנים',                   url:'https://agents-login.hcsra.co.il/'                                                             },
+  { name:'ילין לפידות',     short:'YL', color:'#4527a0', desc:'פורטל סוכנים',                   url:'https://online.yl-invest.co.il/agents/login'                                                   },
+  { name:'שלמה ביטוח',      short:'SH', color:'#c62828', desc:'פורטל סוכנים',                   url:'https://agents.shlomo-bit.co.il/AgentPortal/'                                                  },
+  { name:'מיטב דש',         short:'MT', color:'#283593', desc:'פורטל סוכנים',                   url:'https://customers.meitav.co.il/v2/login/loginAmit'                                             },
+  { name:'שומרה',           short:'SM', color:'#4e342e', desc:'פורטל סוכנים',                   url:'https://shomershertnt.shomera.co.il/AgentPortal/#/login'                                        },
+];
+
+const TOOLS = [
+  { name:'מסלקה פנסיונית',        short:'MS', color:'#1565c0', desc:'בירור זכויות פנסיוניות',    url:'https://distributor.swiftness.co.il/he-IL/Account/Login#/'                                     },
+  { name:'באפי',                  short:'BF', color:'#2e7d32', desc:'ניתוח ביטוחי',               url:'https://www.bafi.co.il/?retpage=?mainmenu=1&activate=bafi_login'                               },
+  { name:'הר הביטוח',             short:'HB', color:'#e65100', desc:'מיפוי פוליסות',              url:'https://harb.cma.gov.il/'                                                                      },
+  { name:'מחשבון דמי ניהול',      short:'DM', color:'#6a1b9a', desc:'רשות שוק ההון',             url:'https://nihul.cma.gov.il/'                                                                     },
+  { name:'גמלנט',                 short:'GM', color:'#00695c', desc:'השוואה בין קופות גמל',       url:'https://www.mygemel.net/'                                                                      },
 ];
 
 const FORMS_DATA = [
@@ -947,18 +1071,23 @@ function filterFees() {
 /* ══════════════════════════
    PORTALS & FORMS
 ══════════════════════════ */
-function renderPortals() {
-  document.getElementById('portals-grid').innerHTML = PORTALS.map(p => `
+function renderGrid(items, containerId, btnLabel) {
+  document.getElementById(containerId).innerHTML = items.map(p => `
     <div class="portal-card">
-      <div class="portal-logo" style="background:${p.color}">${p.short}</div>
+      <div class="portal-logo" style="background:${p.color}">${esc(p.short)}</div>
       <div class="portal-info">
         <div class="portal-name">${esc(p.name)}</div>
         <div class="portal-desc">${esc(p.desc)}</div>
       </div>
       <a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer" class="btn-portal">
-        כניסה לאתר סוכן ↗
+        ${btnLabel} ↗
       </a>
     </div>`).join('');
+}
+
+function renderPortals() {
+  renderGrid(PORTALS, 'portals-grid', 'כניסה לפורטל');
+  renderGrid(TOOLS,   'tools-grid',   'פתיחה');
 }
 
 function renderForms() {
