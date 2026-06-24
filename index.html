@@ -432,7 +432,7 @@
 
     <aside class="sidebar">
       <div class="sidebar-header">
-        <div class="sidebar-brand">
+        <div class="sidebar-brand" onclick="showPage('credentials',document.querySelector('.nav-item'))" style="cursor:pointer" title="חזרה לדף הבית">
           <svg width="36" height="36" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
             <rect width="400" height="400" rx="88" fill="#1a2d4f"/>
             <path d="M148 88 Q200 42 252 88" stroke="#c9a84c" stroke-width="10" fill="none" stroke-linecap="round"/>
@@ -746,10 +746,10 @@ const CREDENTIALS = [
 const INTERNAL_CONTACTS = [
   // אנשי צוות
   { name:'אשר ברוכי — מנהל המשרד', phone:'054-4289164', email:'', notes:'' },
-  { name:'יהונתן',                  phone:'054-391-3343', email:'', notes:'' },
+  { name:'יהונתן ברוכי',            phone:'054-391-3343', email:'', notes:'' },
   { name:'וואצאפ משרד',             phone:'054-911-1656', email:'', notes:'' },
-  { name:'היידי',                   phone:'054-4289162',  email:'', notes:'' },
-  { name:'אורן',                    phone:'054-2008230',  email:'', notes:'' },
+  { name:'היידי ברוכי',             phone:'054-4289162',  email:'', notes:'' },
+  { name:'אורן טל סממה',           phone:'054-2008230',  email:'', notes:'' },
   { name:'משה — מחשוב שחם',        phone:'054-6667625',  email:'', notes:'' },
   { name:'תמיכה טכנית — שחם אורלן', phone:'03-9206777',  email:'', notes:'' },
   // שלוחות
@@ -1051,12 +1051,14 @@ function contactRow(r) {
   const email = r.email
     ? `<a href="mailto:${esc(r.email)}" style="color:var(--text-secondary);text-decoration:none">${esc(r.email)}</a>`
     : `<span style="color:var(--text-muted)">—</span>`;
-  const notes = r.notes || `<span style="color:var(--text-muted)">—</span>`;
+  const notes = r.notes
+    ? `<span style="font-size:13px;color:var(--text-muted)">${esc(r.notes)}</span>`
+    : `<span style="color:var(--text-muted)">—</span>`;
   return `<tr>
     <td style="font-weight:600">${esc(r.name)}</td>
     <td>${phone}</td>
     <td>${email}</td>
-    <td style="font-size:13px;color:var(--text-muted)">${esc(notes)}</td>
+    <td>${notes}</td>
   </tr>`;
 }
 
