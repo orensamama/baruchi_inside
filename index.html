@@ -707,7 +707,12 @@
 
         <div class="nav-item" onclick="showPage('agent-numbers', this)">
           <span class="nav-icon">🔢</span>
-          מספרי סוכן ומספרים חשובים
+          מספרי סוכן
+        </div>
+
+        <div class="nav-item" onclick="showPage('company-contacts', this)">
+          <span class="nav-icon">📞</span>
+          מספרים חשובים של החברות
         </div>
 
         <div class="nav-item" onclick="showPage('fees', this)">
@@ -793,12 +798,26 @@
         </div>
       </div>
 
-      <!-- ══ Agent Numbers Placeholder ══ -->
+      <!-- ══ Agent Numbers ══ -->
       <div class="page" id="page-agent-numbers">
         <div class="page-header">
           <div class="breadcrumb">ברוכי HQ ← <span>מספרי סוכן</span></div>
-          <h1>🔢 מספרי סוכן ומספרים חשובים</h1>
-          <p>מספרי הסוכן ומספרי קשר חשובים לכל חברה</p>
+          <h1>🔢 מספרי סוכן</h1>
+          <p>מספרי הסוכן של הסוכנות אצל כל חברת ביטוח</p>
+        </div>
+        <div class="placeholder-card">
+          <div class="ph-icon">🚧</div>
+          <h3>עמוד זה בפיתוח</h3>
+          <p>תוכן העמוד יתווסף בשלב הבא של הפיתוח</p>
+        </div>
+      </div>
+
+      <!-- ══ Company Contacts ══ -->
+      <div class="page" id="page-company-contacts">
+        <div class="page-header">
+          <div class="breadcrumb">ברוכי HQ ← <span>מספרים חשובים</span></div>
+          <h1>📞 מספרים חשובים של החברות</h1>
+          <p>מספרי טלפון ואנשי קשר חשובים בחברות הביטוח</p>
         </div>
         <div class="placeholder-card">
           <div class="ph-icon">🚧</div>
@@ -1017,12 +1036,13 @@ function launchApp(username) {
    NAVIGATION
 ══════════════════════════════════════════════ */
 const PAGE_MAP = {
-  'credentials':  'page-credentials',
-  'agent-numbers':'page-agent-numbers',
-  'fees':         'page-fees',
-  'workflows':    'page-workflows',
-  'quicklinks':   'page-quicklinks',
-  'forms':        'page-forms',
+  'credentials':     'page-credentials',
+  'agent-numbers':   'page-agent-numbers',
+  'company-contacts':'page-company-contacts',
+  'fees':            'page-fees',
+  'workflows':       'page-workflows',
+  'quicklinks':      'page-quicklinks',
+  'forms':           'page-forms',
 };
 
 function showPage(key, el) {
