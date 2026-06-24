@@ -9,97 +9,111 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg-darkest:   #0b1222;
-      --bg-dark:      #111827;
-      --bg-card:      #1a2438;
-      --bg-hover:     #1f2d47;
-      --sidebar-w:    260px;
-      --accent:       #3b82f6;
-      --accent-hover: #2563eb;
-      --accent-light: #1e40af22;
-      --slate:        #64748b;
-      --slate-light:  #94a3b8;
-      --text:         #e2e8f0;
-      --text-muted:   #94a3b8;
-      --border:       #1e3a5f;
-      --success:      #10b981;
-      --danger:       #ef4444;
-      --radius:       10px;
-      --shadow:       0 4px 24px rgba(0,0,0,.45);
+      /* Sidebar — stays deep navy */
+      --sidebar-bg:     #0f1c33;
+      --sidebar-hover:  #1a2d4f;
+      --sidebar-active: rgba(201,168,76,.13);
+      --sidebar-border: rgba(255,255,255,.07);
+      --sidebar-text:   #b8c9e1;
+      --sidebar-muted:  #5a7a9a;
+      --sidebar-w:      268px;
+
+      /* Light content area */
+      --page-bg:        #f0f4f9;
+      --card-bg:        #ffffff;
+      --card-border:    #e2e8f0;
+      --card-shadow:    0 1px 4px rgba(15,28,51,.08), 0 4px 16px rgba(15,28,51,.05);
+      --card-shadow-lg: 0 2px 8px rgba(15,28,51,.10), 0 8px 32px rgba(15,28,51,.08);
+
+      /* Typography */
+      --text-primary:   #0f1c33;
+      --text-secondary: #4a6080;
+      --text-muted:     #8aa0b8;
+
+      /* Accent — Baruchi gold */
+      --gold:           #c9a84c;
+      --gold-light:     #fdf6e3;
+      --gold-border:    #e8d49a;
+
+      /* Blue accent */
+      --blue:           #2563eb;
+      --blue-light:     #eff6ff;
+      --blue-border:    #bfdbfe;
+
+      /* Status */
+      --success:        #059669;
+      --danger:         #dc2626;
+
+      --radius:         10px;
+      --radius-lg:      14px;
     }
 
     body {
       font-family: 'Segoe UI', 'Arial', sans-serif;
-      background: var(--bg-darkest);
-      color: var(--text);
+      background: var(--page-bg);
+      color: var(--text-primary);
       min-height: 100vh;
     }
 
-    /* ─────────────────────────────────────────────
+    /* ═══════════════════════════════════════════
        LOGIN SCREEN
-    ───────────────────────────────────────────── */
+    ═══════════════════════════════════════════ */
     #login-screen {
       display: flex;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      background: linear-gradient(135deg, #0b1222 0%, #0f1f3d 50%, #0b1222 100%);
+      background: linear-gradient(150deg, #0f1c33 0%, #1a2d4f 55%, #0d2244 100%);
       padding: 20px;
     }
 
     .login-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 48px 40px;
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 48px 44px 44px;
       width: 100%;
-      max-width: 420px;
-      box-shadow: var(--shadow);
+      max-width: 430px;
+      box-shadow: 0 24px 80px rgba(0,0,0,.35);
     }
 
     .login-logo {
       text-align: center;
-      margin-bottom: 32px;
+      margin-bottom: 36px;
     }
-
-    .login-logo svg { display: block; margin: 0 auto 10px; }
-
+    .login-logo svg { display: block; margin: 0 auto 12px; }
     .login-logo p {
       font-size: 13px;
       color: var(--text-muted);
-      margin-top: 4px;
+      letter-spacing: .3px;
     }
 
-    .form-group {
-      margin-bottom: 18px;
-    }
+    .form-group { margin-bottom: 18px; }
 
     .form-group label {
       display: block;
       font-size: 13px;
       font-weight: 600;
-      color: var(--slate-light);
+      color: var(--text-secondary);
       margin-bottom: 7px;
-      letter-spacing: .3px;
     }
 
     .form-group input[type="text"],
     .form-group input[type="password"] {
       width: 100%;
-      background: var(--bg-dark);
-      border: 1.5px solid var(--border);
+      background: #f8fafc;
+      border: 1.5px solid var(--card-border);
       border-radius: var(--radius);
       padding: 11px 14px;
       font-size: 15px;
-      color: var(--text);
+      color: var(--text-primary);
       outline: none;
       transition: border-color .2s, box-shadow .2s;
       font-family: inherit;
     }
-
     .form-group input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(59,130,246,.18);
+      border-color: var(--blue);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(37,99,235,.12);
     }
 
     .remember-row {
@@ -108,24 +122,21 @@
       gap: 8px;
       margin-bottom: 24px;
     }
-
     .remember-row input[type="checkbox"] {
-      width: 16px;
-      height: 16px;
-      accent-color: var(--accent);
+      width: 16px; height: 16px;
+      accent-color: var(--blue);
       cursor: pointer;
     }
-
     .remember-row label {
       font-size: 13px;
-      color: var(--text-muted);
+      color: var(--text-secondary);
       cursor: pointer;
       user-select: none;
     }
 
     .btn-login {
       width: 100%;
-      background: linear-gradient(135deg, var(--accent), #1d4ed8);
+      background: linear-gradient(135deg, #0f1c33, #1a3a6e);
       color: #fff;
       border: none;
       border-radius: var(--radius);
@@ -134,55 +145,48 @@
       font-weight: 700;
       cursor: pointer;
       letter-spacing: .4px;
-      transition: opacity .2s, transform .1s;
+      transition: opacity .2s, transform .1s, box-shadow .2s;
       font-family: inherit;
+      box-shadow: 0 4px 16px rgba(15,28,51,.3);
     }
-
-    .btn-login:hover { opacity: .92; transform: translateY(-1px); }
+    .btn-login:hover { opacity: .92; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(15,28,51,.4); }
     .btn-login:active { transform: translateY(0); }
 
     .login-error {
-      background: rgba(239,68,68,.12);
-      border: 1px solid rgba(239,68,68,.35);
+      background: #fef2f2;
+      border: 1px solid #fecaca;
       border-radius: 8px;
-      color: #fca5a5;
+      color: #b91c1c;
       font-size: 13px;
       padding: 10px 14px;
       margin-bottom: 16px;
       display: none;
     }
 
-    /* ─────────────────────────────────────────────
-       APP SHELL (post-login)
-    ───────────────────────────────────────────── */
-    #app {
-      display: none;
-      min-height: 100vh;
-    }
+    /* ═══════════════════════════════════════════
+       APP SHELL
+    ═══════════════════════════════════════════ */
+    #app { display: none; min-height: 100vh; }
 
-    .layout {
-      display: flex;
-      min-height: 100vh;
-    }
+    .layout { display: flex; min-height: 100vh; }
 
     /* ── Sidebar ── */
     .sidebar {
       width: var(--sidebar-w);
-      background: var(--bg-dark);
-      border-left: 1px solid var(--border);
+      background: var(--sidebar-bg);
+      border-left: 1px solid var(--sidebar-border);
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
       position: fixed;
-      top: 0;
-      right: 0;
+      top: 0; right: 0;
       height: 100vh;
       overflow-y: auto;
     }
 
     .sidebar-header {
-      padding: 24px 20px 20px;
-      border-bottom: 1px solid var(--border);
+      padding: 22px 18px 18px;
+      border-bottom: 1px solid var(--sidebar-border);
     }
 
     .sidebar-brand {
@@ -191,92 +195,71 @@
       gap: 12px;
     }
 
-    .sidebar-brand .brand-icon {
-      width: 38px;
-      height: 38px;
-      background: linear-gradient(135deg, var(--accent), #1d4ed8);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      flex-shrink: 0;
-    }
-
     .sidebar-brand .brand-text h2 {
       font-size: 15px;
       font-weight: 700;
-      color: var(--text);
+      color: #ffffff;
       line-height: 1.2;
     }
-
     .sidebar-brand .brand-text p {
       font-size: 11px;
-      color: var(--text-muted);
+      color: var(--sidebar-muted);
+      margin-top: 2px;
     }
 
-    .sidebar-nav {
-      padding: 16px 12px;
-      flex: 1;
-    }
+    .sidebar-nav { padding: 14px 10px; flex: 1; }
 
     .nav-section-label {
       font-size: 10px;
       font-weight: 700;
-      color: var(--slate);
-      letter-spacing: 1px;
+      color: var(--sidebar-muted);
+      letter-spacing: 1.2px;
       text-transform: uppercase;
-      padding: 0 8px;
-      margin-bottom: 8px;
-      margin-top: 8px;
+      padding: 0 10px;
+      margin-bottom: 6px;
+      margin-top: 10px;
     }
 
     .nav-item {
       display: flex;
       align-items: center;
-      gap: 11px;
-      padding: 11px 12px;
+      gap: 10px;
+      padding: 10px 12px;
       border-radius: 8px;
       cursor: pointer;
-      font-size: 14px;
-      color: var(--text-muted);
+      font-size: 13.5px;
+      color: var(--sidebar-text);
       transition: background .15s, color .15s;
       margin-bottom: 2px;
-      text-decoration: none;
       user-select: none;
+      line-height: 1.3;
     }
-
-    .nav-item:hover {
-      background: var(--bg-hover);
-      color: var(--text);
-    }
-
+    .nav-item:hover { background: var(--sidebar-hover); color: #fff; }
     .nav-item.active {
-      background: var(--accent-light);
-      color: var(--accent);
+      background: var(--sidebar-active);
+      color: var(--gold);
       font-weight: 600;
+      border-right: 3px solid var(--gold);
     }
-
     .nav-item .nav-icon {
       font-size: 16px;
       flex-shrink: 0;
-      width: 20px;
+      width: 22px;
       text-align: center;
     }
-
     .nav-item .nav-badge {
       margin-right: auto;
-      background: var(--accent);
-      color: #fff;
+      background: var(--gold);
+      color: #0f1c33;
       font-size: 10px;
       padding: 2px 7px;
       border-radius: 20px;
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .sidebar-footer {
-      padding: 16px 12px;
-      border-top: 1px solid var(--border);
+      padding: 14px 10px;
+      border-top: 1px solid var(--sidebar-border);
     }
 
     .user-pill {
@@ -285,48 +268,31 @@
       gap: 10px;
       padding: 10px 12px;
       border-radius: 8px;
-      background: var(--bg-hover);
+      background: rgba(255,255,255,.05);
     }
-
     .user-avatar {
-      width: 32px;
-      height: 32px;
+      width: 32px; height: 32px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), #7c3aed);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      font-weight: 700;
-      color: #fff;
+      background: linear-gradient(135deg, var(--gold), #a07828);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 800; color: #0f1c33;
       flex-shrink: 0;
     }
-
     .user-info { flex: 1; min-width: 0; }
     .user-info .user-name {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 13px; font-weight: 600; color: #ffffff;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-    .user-info .user-role {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
+    .user-info .user-role { font-size: 11px; color: var(--sidebar-muted); }
 
     .btn-logout {
-      background: none;
-      border: none;
-      color: var(--slate);
-      cursor: pointer;
-      font-size: 16px;
-      padding: 4px;
-      border-radius: 6px;
+      background: none; border: none;
+      color: var(--sidebar-muted);
+      cursor: pointer; font-size: 16px;
+      padding: 4px; border-radius: 6px;
       transition: color .15s, background .15s;
     }
-    .btn-logout:hover { color: var(--danger); background: rgba(239,68,68,.1); }
+    .btn-logout:hover { color: #f87171; background: rgba(239,68,68,.12); }
 
     /* ── Main Content ── */
     .main-content {
@@ -334,146 +300,143 @@
       margin-right: var(--sidebar-w);
       padding: 32px 36px;
       min-height: 100vh;
+      background: var(--page-bg);
     }
 
-    .page-header {
-      margin-bottom: 28px;
-    }
-
+    .page-header { margin-bottom: 28px; }
     .page-header h1 {
-      font-size: 26px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 6px;
+      font-size: 24px; font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 5px;
     }
+    .page-header p { font-size: 14px; color: var(--text-secondary); }
 
-    .page-header p {
-      font-size: 14px;
+    /* Breadcrumb strip */
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
       color: var(--text-muted);
+      margin-bottom: 8px;
     }
+    .breadcrumb span { color: var(--text-primary); font-weight: 600; }
 
     /* ── Pages ── */
     .page { display: none; }
     .page.active { display: block; }
 
-    /* ── Credentials Page ── */
-    .search-bar-wrap {
-      position: relative;
+    /* ── Stats strip ── */
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
       margin-bottom: 24px;
     }
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      box-shadow: var(--card-shadow);
+    }
+    .stat-card .stat-label { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; }
+    .stat-card .stat-value { font-size: 28px; font-weight: 800; color: var(--text-primary); }
+    .stat-card .stat-sub { font-size: 11px; color: var(--blue); margin-top: 3px; font-weight: 600; }
 
+    /* ── Search bar ── */
+    .search-bar-wrap { position: relative; margin-bottom: 20px; }
     .search-bar-wrap .search-icon {
       position: absolute;
-      right: 14px;
-      top: 50%;
+      right: 14px; top: 50%;
       transform: translateY(-50%);
-      font-size: 16px;
-      color: var(--slate);
+      font-size: 15px; color: var(--text-muted);
       pointer-events: none;
     }
-
     #search-input {
       width: 100%;
-      background: var(--bg-card);
-      border: 1.5px solid var(--border);
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
       border-radius: var(--radius);
       padding: 12px 42px 12px 16px;
       font-size: 15px;
-      color: var(--text);
+      color: var(--text-primary);
       outline: none;
       transition: border-color .2s, box-shadow .2s;
       font-family: inherit;
+      box-shadow: var(--card-shadow);
     }
-
-    #search-input::placeholder { color: var(--slate); }
+    #search-input::placeholder { color: var(--text-muted); }
     #search-input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(59,130,246,.15);
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.12);
     }
 
+    /* ── Credentials table ── */
     .creds-table-wrap {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
       overflow: hidden;
+      box-shadow: var(--card-shadow);
     }
-
-    .creds-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .creds-table thead {
-      background: var(--bg-hover);
-    }
-
+    .creds-table { width: 100%; border-collapse: collapse; }
+    .creds-table thead { background: #f8fafc; }
     .creds-table th {
-      padding: 14px 18px;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--slate-light);
+      padding: 13px 18px;
+      font-size: 11px; font-weight: 700;
+      color: var(--text-muted);
       text-align: right;
-      letter-spacing: .5px;
+      letter-spacing: .6px;
       text-transform: uppercase;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--card-border);
     }
-
     .creds-table td {
-      padding: 16px 18px;
+      padding: 15px 18px;
       font-size: 14px;
-      color: var(--text);
-      border-bottom: 1px solid rgba(30,58,95,.5);
+      color: var(--text-primary);
+      border-bottom: 1px solid #f1f5f9;
       vertical-align: middle;
     }
-
     .creds-table tbody tr:last-child td { border-bottom: none; }
+    .creds-table tbody tr:hover td { background: #f8fafc; }
 
-    .creds-table tbody tr:hover td { background: rgba(59,130,246,.04); }
-
-    .company-cell {
-      display: flex;
+    .company-cell { display: flex; align-items: center; gap: 10px; }
+    .company-badge {
+      display: inline-flex;
       align-items: center;
-      gap: 10px;
-    }
-
-    .company-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--accent);
+      justify-content: center;
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: var(--blue-light);
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 800;
       flex-shrink: 0;
     }
+    .company-name { font-weight: 600; color: var(--text-primary); }
 
-    .password-cell {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
+    .password-cell { display: flex; align-items: center; gap: 8px; }
     .password-display {
       font-family: 'Courier New', monospace;
-      font-size: 14px;
-      color: var(--text);
-      min-width: 120px;
-      letter-spacing: 1px;
+      font-size: 14px; color: var(--text-primary);
+      min-width: 130px; letter-spacing: 1px;
+      background: #f8fafc;
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 4px 10px;
     }
-
     .btn-eye {
       background: none;
-      border: 1px solid var(--border);
+      border: 1px solid var(--card-border);
       border-radius: 6px;
-      color: var(--slate-light);
+      color: var(--text-muted);
       cursor: pointer;
       padding: 5px 9px;
       font-size: 14px;
       transition: color .15s, background .15s, border-color .15s;
     }
-
-    .btn-eye:hover {
-      color: var(--accent);
-      border-color: var(--accent);
-      background: var(--accent-light);
-    }
+    .btn-eye:hover { color: var(--blue); border-color: var(--blue); background: var(--blue-light); }
 
     .no-results {
       text-align: center;
@@ -481,54 +444,169 @@
       color: var(--text-muted);
       font-size: 15px;
     }
-
     .no-results .no-results-icon { font-size: 36px; margin-bottom: 12px; }
 
-    /* ── Placeholder Pages ── */
+    /* ── Placeholder pages ── */
     .placeholder-card {
-      background: var(--bg-card);
-      border: 1px dashed var(--border);
-      border-radius: 16px;
+      background: var(--card-bg);
+      border: 1.5px dashed var(--card-border);
+      border-radius: var(--radius-lg);
       padding: 64px 32px;
       text-align: center;
-      color: var(--text-muted);
     }
-    .placeholder-card .ph-icon { font-size: 48px; margin-bottom: 16px; opacity: .5; }
-    .placeholder-card h3 { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
-    .placeholder-card p { font-size: 14px; }
+    .placeholder-card .ph-icon { font-size: 48px; margin-bottom: 16px; opacity: .4; }
+    .placeholder-card h3 { font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+    .placeholder-card p { font-size: 14px; color: var(--text-muted); }
 
-    /* ── Stats strip ── */
-    .stats-strip {
+    /* ════════════════════════════════════════════
+       QUICK LINKS & FORMS PAGE
+    ════════════════════════════════════════════ */
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--card-border);
+      margin-right: 8px;
+    }
+
+    /* Portal cards grid */
+    .portals-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 16px;
-      margin-bottom: 28px;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 18px;
+      margin-bottom: 36px;
     }
 
-    .stat-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 18px 20px;
+    .portal-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 24px 20px 20px;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      transition: box-shadow .2s, transform .2s, border-color .2s;
+    }
+    .portal-card:hover {
+      box-shadow: var(--card-shadow-lg);
+      transform: translateY(-3px);
+      border-color: var(--gold-border);
     }
 
-    .stat-card .stat-label {
+    .portal-logo {
+      width: 52px; height: 52px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 900;
+      flex-shrink: 0;
+      color: #fff;
+      letter-spacing: -1px;
+    }
+
+    .portal-info { flex: 1; }
+    .portal-info .portal-name {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 3px;
+    }
+    .portal-info .portal-desc {
       font-size: 12px;
       color: var(--text-muted);
-      margin-bottom: 6px;
     }
 
-    .stat-card .stat-value {
-      font-size: 26px;
+    .btn-portal {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--sidebar-bg);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 16px;
+      font-size: 13px;
       font-weight: 700;
-      color: var(--text);
+      cursor: pointer;
+      text-decoration: none;
+      transition: background .15s, transform .1s;
+      font-family: inherit;
+      width: 100%;
+      justify-content: center;
     }
+    .btn-portal:hover { background: #1a3a6e; transform: translateY(-1px); }
+    .btn-portal .arrow { font-size: 11px; opacity: .8; }
 
-    .stat-card .stat-sub {
-      font-size: 11px;
-      color: var(--accent);
-      margin-top: 2px;
+    /* Forms table */
+    .forms-table-wrap {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
     }
+    .forms-table { width: 100%; border-collapse: collapse; }
+    .forms-table thead { background: #f8fafc; }
+    .forms-table th {
+      padding: 12px 18px;
+      font-size: 11px; font-weight: 700;
+      color: var(--text-muted);
+      text-align: right;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .forms-table td {
+      padding: 14px 18px;
+      font-size: 14px;
+      color: var(--text-primary);
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+    .forms-table tbody tr:last-child td { border-bottom: none; }
+    .forms-table tbody tr:hover td { background: #f8fafc; }
+
+    .form-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 20px;
+      background: var(--blue-light);
+      color: var(--blue);
+    }
+    .form-tag.tag-gold { background: var(--gold-light); color: #92650a; }
+    .form-tag.tag-green { background: #f0fdf4; color: var(--success); }
+
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: none;
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all .15s;
+      font-family: inherit;
+    }
+    .btn-download:hover { background: var(--blue-light); border-color: var(--blue); color: var(--blue); }
   </style>
 </head>
 <body>
@@ -539,30 +617,28 @@
 <div id="login-screen">
   <div class="login-card">
     <div class="login-logo">
-      <!-- Baruchi logo – gold on dark, fits the dark card perfectly -->
-      <svg width="160" height="160" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-        <!-- Arc above B -->
-        <path d="M148 88 Q200 42 252 88" stroke="#c9a84c" stroke-width="9" fill="none" stroke-linecap="round"/>
-        <!-- Letter B -->
-        <!-- Vertical stem -->
-        <rect x="138" y="100" width="22" height="185" rx="4" fill="#c9a84c"/>
-        <!-- Top bump -->
-        <path d="M160 100 Q230 100 230 148 Q230 195 160 195" stroke="#c9a84c" stroke-width="0" fill="#c9a84c"/>
-        <path d="M160 100 Q238 108 238 148 Q238 186 160 195 L160 100Z" fill="#c9a84c"/>
-        <!-- Bottom bump (wider) -->
-        <path d="M160 195 Q248 200 248 240 Q248 283 160 285 L160 195Z" fill="#c9a84c"/>
-        <!-- Inner cutouts to shape the B -->
-        <path d="M168 110 Q218 115 218 148 Q218 180 168 185 Z" fill="#1a2438"/>
-        <path d="M168 205 Q228 210 228 240 Q228 270 168 275 Z" fill="#1a2438"/>
-        <!-- Horizontal lines on stem (decorative) -->
-        <rect x="138" y="158" width="22" height="4" fill="#1a2438"/>
-        <rect x="138" y="167" width="22" height="4" fill="#1a2438"/>
-        <!-- BARUCHI text -->
-        <text x="200" y="325" font-family="'Segoe UI',Arial,sans-serif" font-size="42" font-weight="800"
-              fill="#c9a84c" text-anchor="middle" letter-spacing="6">BARUCHI</text>
+      <!-- Logo: navy B with gold accent on white card -->
+      <svg width="150" height="155" viewBox="0 0 400 415" xmlns="http://www.w3.org/2000/svg">
+        <!-- Arc -->
+        <path d="M148 88 Q200 42 252 88" stroke="#c9a84c" stroke-width="10" fill="none" stroke-linecap="round"/>
+        <!-- Stem -->
+        <rect x="138" y="100" width="22" height="185" rx="4" fill="#0f1c33"/>
+        <!-- Top belly -->
+        <path d="M160 100 Q238 108 238 148 Q238 186 160 195 L160 100Z" fill="#0f1c33"/>
+        <!-- Bottom belly (wider) -->
+        <path d="M160 195 Q248 200 248 240 Q248 283 160 285 L160 195Z" fill="#0f1c33"/>
+        <!-- Inner cutouts -->
+        <path d="M168 110 Q218 115 218 148 Q218 180 168 185 Z" fill="#ffffff"/>
+        <path d="M168 205 Q228 210 228 240 Q228 270 168 275 Z" fill="#ffffff"/>
+        <!-- Stem decoration lines (gold) -->
+        <rect x="138" y="158" width="22" height="4" rx="2" fill="#c9a84c"/>
+        <rect x="138" y="167" width="22" height="4" rx="2" fill="#c9a84c"/>
+        <!-- BARUCHI -->
+        <text x="200" y="334" font-family="'Segoe UI',Arial,sans-serif" font-size="40" font-weight="800"
+              fill="#0f1c33" text-anchor="middle" letter-spacing="6">BARUCHI</text>
         <!-- subtitle -->
-        <text x="200" y="358" font-family="'Segoe UI',Arial,sans-serif" font-size="18" font-weight="400"
-              fill="#ffffff" text-anchor="middle" letter-spacing="3.5">FINANCE &amp; INSURANCE</text>
+        <text x="200" y="365" font-family="'Segoe UI',Arial,sans-serif" font-size="17" font-weight="500"
+              fill="#c9a84c" text-anchor="middle" letter-spacing="3.5">FINANCE &amp; INSURANCE</text>
       </svg>
       <p>מערכת פנימית לצוות הסוכנות</p>
     </div>
@@ -584,7 +660,7 @@
       <label for="remember-me">זכור אותי למשך 7 ימים</label>
     </div>
 
-    <button class="btn-login" id="btn-login" onclick="attemptLogin()">כניסה למערכת</button>
+    <button class="btn-login" onclick="attemptLogin()">כניסה למערכת</button>
   </div>
 </div>
 
@@ -598,16 +674,17 @@
     <aside class="sidebar">
       <div class="sidebar-header">
         <div class="sidebar-brand">
-          <svg width="38" height="38" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
-            <rect width="400" height="400" rx="80" fill="#1a2438"/>
-            <path d="M148 88 Q200 42 252 88" stroke="#c9a84c" stroke-width="9" fill="none" stroke-linecap="round"/>
+          <!-- Small sidebar logo: gold on dark -->
+          <svg width="36" height="36" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
+            <rect width="400" height="400" rx="88" fill="#1a2d4f"/>
+            <path d="M148 88 Q200 42 252 88" stroke="#c9a84c" stroke-width="10" fill="none" stroke-linecap="round"/>
             <rect x="138" y="100" width="22" height="185" rx="4" fill="#c9a84c"/>
             <path d="M160 100 Q238 108 238 148 Q238 186 160 195 L160 100Z" fill="#c9a84c"/>
             <path d="M160 195 Q248 200 248 240 Q248 283 160 285 L160 195Z" fill="#c9a84c"/>
-            <path d="M168 110 Q218 115 218 148 Q218 180 168 185 Z" fill="#1a2438"/>
-            <path d="M168 205 Q228 210 228 240 Q228 270 168 275 Z" fill="#1a2438"/>
-            <rect x="138" y="158" width="22" height="4" fill="#1a2438"/>
-            <rect x="138" y="167" width="22" height="4" fill="#1a2438"/>
+            <path d="M168 110 Q218 115 218 148 Q218 180 168 185 Z" fill="#1a2d4f"/>
+            <path d="M168 205 Q228 210 228 240 Q228 270 168 275 Z" fill="#1a2d4f"/>
+            <rect x="138" y="158" width="22" height="4" rx="2" fill="#1a2d4f"/>
+            <rect x="138" y="167" width="22" height="4" rx="2" fill="#1a2d4f"/>
           </svg>
           <div class="brand-text">
             <h2>Baruchi-HQ</h2>
@@ -619,25 +696,30 @@
       <nav class="sidebar-nav">
         <div class="nav-section-label">ניהול מידע</div>
 
-        <div class="nav-item active" onclick="showPage('credentials')">
+        <div class="nav-item active" onclick="showPage('credentials', this)">
           <span class="nav-icon">🔑</span>
           פרטי התחברות ויוזרים
           <span class="nav-badge">4</span>
         </div>
 
-        <div class="nav-item" onclick="showPage('agent-numbers')">
+        <div class="nav-item" onclick="showPage('agent-numbers', this)">
           <span class="nav-icon">🔢</span>
           מספרי סוכן ומספרים חשובים
         </div>
 
-        <div class="nav-item" onclick="showPage('fees')">
+        <div class="nav-item" onclick="showPage('fees', this)">
           <span class="nav-icon">💰</span>
           דמי ניהול ומחירונים
         </div>
 
-        <div class="nav-item" onclick="showPage('workflows')">
+        <div class="nav-item" onclick="showPage('workflows', this)">
           <span class="nav-icon">📋</span>
           מדריכי עבודה ותהליכים
+        </div>
+
+        <div class="nav-item" onclick="showPage('quicklinks', this)">
+          <span class="nav-icon">🔗</span>
+          קישורים שימושיים וטפסים
         </div>
       </nav>
 
@@ -656,9 +738,10 @@
     <!-- Main Content -->
     <main class="main-content">
 
-      <!-- ── Credentials Page ── -->
+      <!-- ══ Credentials Page ══ -->
       <div class="page active" id="page-credentials">
         <div class="page-header">
+          <div class="breadcrumb">ברוכי HQ ← <span>פרטי התחברות</span></div>
           <h1>🔑 פרטי התחברות ויוזרים</h1>
           <p>פרטי כניסה לחברות הביטוח — גישה מורשית בלבד</p>
         </div>
@@ -678,7 +761,9 @@
 
         <div class="search-bar-wrap">
           <span class="search-icon">🔍</span>
-          <input type="text" id="search-input" placeholder="חיפוש לפי שם חברה או שם משתמש..." oninput="filterCredentials()" />
+          <input type="text" id="search-input"
+            placeholder="חיפוש לפי שם חברה, שם משתמש או מספר סוכן..."
+            oninput="filterCredentials()" />
         </div>
 
         <div class="creds-table-wrap">
@@ -700,9 +785,10 @@
         </div>
       </div>
 
-      <!-- ── Agent Numbers Placeholder ── -->
+      <!-- ══ Agent Numbers Placeholder ══ -->
       <div class="page" id="page-agent-numbers">
         <div class="page-header">
+          <div class="breadcrumb">ברוכי HQ ← <span>מספרי סוכן</span></div>
           <h1>🔢 מספרי סוכן ומספרים חשובים</h1>
           <p>מספרי הסוכן ומספרי קשר חשובים לכל חברה</p>
         </div>
@@ -713,9 +799,10 @@
         </div>
       </div>
 
-      <!-- ── Fees Placeholder ── -->
+      <!-- ══ Fees Placeholder ══ -->
       <div class="page" id="page-fees">
         <div class="page-header">
+          <div class="breadcrumb">ברוכי HQ ← <span>דמי ניהול</span></div>
           <h1>💰 דמי ניהול ומחירונים</h1>
           <p>עמלות, דמי ניהול ומחירוני חברות הביטוח</p>
         </div>
@@ -726,9 +813,10 @@
         </div>
       </div>
 
-      <!-- ── Workflows Placeholder ── -->
+      <!-- ══ Workflows Placeholder ══ -->
       <div class="page" id="page-workflows">
         <div class="page-header">
+          <div class="breadcrumb">ברוכי HQ ← <span>מדריכי עבודה</span></div>
           <h1>📋 מדריכי עבודה ותהליכים</h1>
           <p>נהלים, מדריכים ותהליכי עבודה פנימיים</p>
         </div>
@@ -736,6 +824,35 @@
           <div class="ph-icon">🚧</div>
           <h3>עמוד זה בפיתוח</h3>
           <p>תוכן העמוד יתווסף בשלב הבא של הפיתוח</p>
+        </div>
+      </div>
+
+      <!-- ══ Quick Links & Forms ══ -->
+      <div class="page" id="page-quicklinks">
+        <div class="page-header">
+          <div class="breadcrumb">ברוכי HQ ← <span>קישורים וטפסים</span></div>
+          <h1>🔗 קישורים שימושיים וטפסים</h1>
+          <p>כניסה מהירה לפורטלי חברות הביטוח וטפסים להורדה</p>
+        </div>
+
+        <!-- Portal Cards -->
+        <div class="section-title">🏢 פורטלי סוכנים — כניסה מהירה</div>
+        <div class="portals-grid" id="portals-grid"></div>
+
+        <!-- Forms Table -->
+        <div class="section-title">📄 טפסים שימושיים להורדה</div>
+        <div class="forms-table-wrap">
+          <table class="forms-table">
+            <thead>
+              <tr>
+                <th>שם הטופס</th>
+                <th>חברה</th>
+                <th>קטגוריה</th>
+                <th>פעולה</th>
+              </tr>
+            </thead>
+            <tbody id="forms-tbody"></tbody>
+          </table>
         </div>
       </div>
 
@@ -748,22 +865,75 @@
    DATA
 ══════════════════════════════════════════════ */
 const STAFF = [
-  { username: 'oren',       password: '1122' },
-  { username: 'asher',      password: '1122' },
-  { username: 'yehonatan',  password: '1122' },
-  { username: 'riki',       password: '1122' },
-  { username: 'heidi',      password: '1122' },
-  { username: 'chaya',      password: '1122' },
+  { username: 'oren',      password: '1122' },
+  { username: 'asher',     password: '1122' },
+  { username: 'yehonatan', password: '1122' },
+  { username: 'riki',      password: '1122' },
+  { username: 'heidi',     password: '1122' },
+  { username: 'chaya',     password: '1122' },
 ];
 
 const CREDENTIALS = [
   { company: 'הראל',    agentNum: '12345', username: 'harel_user',   password: 'harel_password'   },
-  { company: 'מגדל',   agentNum: '67890', username: 'migdal_user',  password: 'migdal_password'  },
-  { company: 'הפניקס', agentNum: '55443', username: 'phoenix_user', password: 'phoenix_password' },
-  { company: 'כלל',    agentNum: '99887', username: 'clal_user',    password: 'clal_password'    },
+  { company: 'מגדל',    agentNum: '67890', username: 'migdal_user',  password: 'migdal_password'  },
+  { company: 'הפניקס',  agentNum: '55443', username: 'phoenix_user', password: 'phoenix_password' },
+  { company: 'כלל',     agentNum: '99887', username: 'clal_user',    password: 'clal_password'    },
 ];
 
-// Track which rows have their password revealed
+const PORTALS = [
+  {
+    name: 'הראל',
+    short: 'HR',
+    color: '#d32f2f',
+    desc: 'פורטל סוכנים — חיים, בריאות, רכב',
+    url: 'https://www.harel-group.co.il',
+  },
+  {
+    name: 'מגדל',
+    short: 'MG',
+    color: '#1565c0',
+    desc: 'פורטל סוכנים — ביטוח ופיננסים',
+    url: 'https://www.migdal.co.il',
+  },
+  {
+    name: 'הפניקס',
+    short: 'PH',
+    color: '#e65100',
+    desc: 'פורטל סוכנים — ביטוח כללי וחיים',
+    url: 'https://www.fnx.co.il',
+  },
+  {
+    name: 'כלל',
+    short: 'CL',
+    color: '#2e7d32',
+    desc: 'פורטל סוכנים — ביטוח וחיסכון',
+    url: 'https://www.clal.co.il',
+  },
+  {
+    name: 'מנורה',
+    short: 'MN',
+    color: '#6a1b9a',
+    desc: 'פורטל סוכנים — ביטוח חיים ובריאות',
+    url: 'https://www.menora.co.il',
+  },
+  {
+    name: 'איילון',
+    short: 'AY',
+    color: '#00695c',
+    desc: 'פורטל סוכנים — ביטוח כללי',
+    url: 'https://www.ayalon.co.il',
+  },
+];
+
+const FORMS = [
+  { name: 'טופס פתיחת תיק לקוח חדש',         company: 'כלל',     cat: 'tag-gold',  catLabel: 'פתיחת תיק' },
+  { name: 'טופס העברת סוכן — ביטוח חיים',    company: 'הראל',    cat: '',          catLabel: 'העברה'     },
+  { name: 'הצהרת בריאות — ביטוח מנהלים',     company: 'מגדל',    cat: 'tag-green', catLabel: 'בריאות'    },
+  { name: 'טופס ביטול פוליסה',                company: 'הפניקס',  cat: '',          catLabel: 'ביטול'     },
+  { name: 'בקשה לשינוי מוטב',                 company: 'כלל',     cat: 'tag-green', catLabel: 'שינוי פרטים'},
+  { name: 'טופס תביעה — ביטוח רכב',          company: 'מנורה',   cat: '',          catLabel: 'תביעה'     },
+];
+
 const revealed = {};
 
 /* ══════════════════════════════════════════════
@@ -780,7 +950,6 @@ function attemptLogin() {
   const errEl    = document.getElementById('login-error');
 
   const user = STAFF.find(u => u.username === username && u.password === password);
-
   if (!user) {
     errEl.style.display = 'block';
     document.getElementById('password').value = '';
@@ -788,42 +957,28 @@ function attemptLogin() {
   }
 
   errEl.style.display = 'none';
-
-  const session = { username: user.username, ts: Date.now() };
-  sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
+  sessionStorage.setItem(SESSION_KEY, JSON.stringify({ username: user.username, ts: Date.now() }));
 
   if (remember) {
     const exp = Date.now() + 7 * 24 * 60 * 60 * 1000;
     localStorage.setItem(REMEMBER_KEY, JSON.stringify({ username: user.username, exp }));
   }
-
   launchApp(user.username);
 }
 
 function checkAutoLogin() {
-  // Check sessionStorage first
   const sess = sessionStorage.getItem(SESSION_KEY);
   if (sess) {
-    try {
-      const { username } = JSON.parse(sess);
-      launchApp(username);
-      return;
-    } catch(e) {}
+    try { const { username } = JSON.parse(sess); launchApp(username); return; } catch(e) {}
   }
-
-  // Check localStorage remember-me
   const rem = localStorage.getItem(REMEMBER_KEY);
   if (rem) {
     try {
       const { username, exp } = JSON.parse(rem);
       if (Date.now() < exp) {
-        const session = { username, ts: Date.now() };
-        sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
-        launchApp(username);
-        return;
-      } else {
-        localStorage.removeItem(REMEMBER_KEY);
-      }
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify({ username, ts: Date.now() }));
+        launchApp(username); return;
+      } else { localStorage.removeItem(REMEMBER_KEY); }
     } catch(e) {}
   }
 }
@@ -840,12 +995,11 @@ function logout() {
 function launchApp(username) {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
-
-  // Set user display
   document.getElementById('user-name-display').textContent = username;
   document.getElementById('user-avatar').textContent = username.charAt(0).toUpperCase();
-
   renderCredentials(CREDENTIALS);
+  renderPortals();
+  renderForms();
 }
 
 /* ══════════════════════════════════════════════
@@ -856,16 +1010,14 @@ const PAGE_MAP = {
   'agent-numbers':'page-agent-numbers',
   'fees':         'page-fees',
   'workflows':    'page-workflows',
+  'quicklinks':   'page-quicklinks',
 };
 
-function showPage(key) {
-  // Update pages
+function showPage(key, el) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(PAGE_MAP[key]).classList.add('active');
-
-  // Update nav
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  el.classList.add('active');
 }
 
 /* ══════════════════════════════════════════════
@@ -883,44 +1035,42 @@ function renderCredentials(data) {
     noRes.style.display = 'block';
     return;
   }
-
   noRes.style.display = 'none';
 
-  tbody.innerHTML = data.map((row, i) => {
-    const globalIdx = CREDENTIALS.indexOf(row);
+  tbody.innerHTML = data.map(row => {
+    const globalIdx  = CREDENTIALS.indexOf(row);
     const isRevealed = !!revealed[globalIdx];
-    const passDisplay = isRevealed ? row.password : '••••••••••••';
+    const passDisplay = isRevealed ? escHtml(row.password) : '••••••••••••';
     const eyeLabel    = isRevealed ? '🙈' : '👁️';
+    const initials    = row.company.charAt(0);
 
     return `
       <tr>
         <td>
           <div class="company-cell">
-            <div class="company-dot"></div>
-            ${escHtml(row.company)}
+            <div class="company-badge">${initials}</div>
+            <span class="company-name">${escHtml(row.company)}</span>
           </div>
         </td>
-        <td style="font-family:'Courier New',monospace;color:var(--slate-light);">${escHtml(row.agentNum)}</td>
-        <td style="font-family:'Courier New',monospace;">${escHtml(row.username)}</td>
+        <td style="font-family:'Courier New',monospace;color:var(--text-secondary);font-size:13px;">${escHtml(row.agentNum)}</td>
+        <td style="font-family:'Courier New',monospace;font-size:13px;">${escHtml(row.username)}</td>
         <td>
           <div class="password-cell">
-            <span class="password-display" id="pass-${globalIdx}">${escHtml(passDisplay)}</span>
+            <span class="password-display" id="pass-${globalIdx}">${passDisplay}</span>
             <button class="btn-eye" onclick="togglePassword(${globalIdx})" title="${isRevealed ? 'הסתר' : 'הצג'} סיסמה">
               ${eyeLabel}
             </button>
           </div>
         </td>
-      </tr>
-    `;
+      </tr>`;
   }).join('');
 }
 
 function togglePassword(idx) {
   revealed[idx] = !revealed[idx];
-  const row = CREDENTIALS[idx];
+  const row  = CREDENTIALS[idx];
   const span = document.getElementById('pass-' + idx);
   const btn  = span.parentElement.querySelector('.btn-eye');
-
   if (revealed[idx]) {
     span.textContent = row.password;
     btn.textContent  = '🙈';
@@ -934,10 +1084,7 @@ function togglePassword(idx) {
 
 function filterCredentials() {
   const q = document.getElementById('search-input').value.trim().toLowerCase();
-  if (!q) {
-    renderCredentials(CREDENTIALS);
-    return;
-  }
+  if (!q) { renderCredentials(CREDENTIALS); return; }
   const filtered = CREDENTIALS.filter(row =>
     row.company.toLowerCase().includes(q)  ||
     row.username.toLowerCase().includes(q) ||
@@ -946,6 +1093,45 @@ function filterCredentials() {
   renderCredentials(filtered);
 }
 
+/* ══════════════════════════════════════════════
+   PORTALS GRID
+══════════════════════════════════════════════ */
+function renderPortals() {
+  document.getElementById('portals-grid').innerHTML = PORTALS.map(p => `
+    <div class="portal-card">
+      <div class="portal-logo" style="background:${p.color};">${p.short}</div>
+      <div class="portal-info">
+        <div class="portal-name">${escHtml(p.name)}</div>
+        <div class="portal-desc">${escHtml(p.desc)}</div>
+      </div>
+      <a href="${escHtml(p.url)}" target="_blank" rel="noopener noreferrer" class="btn-portal">
+        כניסה לאתר סוכן <span class="arrow">↗</span>
+      </a>
+    </div>
+  `).join('');
+}
+
+/* ══════════════════════════════════════════════
+   FORMS TABLE
+══════════════════════════════════════════════ */
+function renderForms() {
+  document.getElementById('forms-tbody').innerHTML = FORMS.map(f => `
+    <tr>
+      <td style="font-weight:600;">${escHtml(f.name)}</td>
+      <td>${escHtml(f.company)}</td>
+      <td><span class="form-tag ${f.cat}">${escHtml(f.catLabel)}</span></td>
+      <td>
+        <button class="btn-download" onclick="alert('הקובץ יתווסף בקרוב')">
+          ⬇ הורדה
+        </button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+/* ══════════════════════════════════════════════
+   UTILS
+══════════════════════════════════════════════ */
 function escHtml(str) {
   return String(str)
     .replace(/&/g,'&amp;')
@@ -954,18 +1140,12 @@ function escHtml(str) {
     .replace(/"/g,'&quot;');
 }
 
-/* ══════════════════════════════════════════════
-   KEYBOARD SHORTCUT — Enter to login
-══════════════════════════════════════════════ */
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') {
     attemptLogin();
   }
 });
 
-/* ══════════════════════════════════════════════
-   INIT
-══════════════════════════════════════════════ */
 checkAutoLogin();
 </script>
 </body>
