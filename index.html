@@ -195,6 +195,30 @@
     .btn-eye { background: none; border: 1px solid var(--card-border); border-radius: 6px; color: var(--text-muted); cursor: pointer; padding: 5px 9px; font-size: 14px; transition: color .15s, background .15s, border-color .15s; }
     .btn-eye:hover { color: var(--blue); border-color: var(--blue); background: var(--blue-light); }
 
+    /* ── Copy button ── */
+    .copy-cell { display: flex; align-items: center; gap: 8px; }
+    .copy-value { font-family: 'Courier New', monospace; font-size: 13px; color: var(--text-primary); }
+    .btn-copy {
+      position: relative; background: none; border: 1px solid var(--card-border);
+      border-radius: 6px; color: var(--text-muted); cursor: pointer;
+      padding: 4px 8px; font-size: 13px; line-height: 1;
+      transition: color .15s, background .15s, border-color .15s; flex-shrink: 0;
+    }
+    .btn-copy:hover { color: var(--blue); border-color: var(--blue); background: var(--blue-light); }
+    .btn-copy.copied { color: var(--success); border-color: var(--success); background: #f0fdf4; }
+    .copy-tip {
+      position: absolute; bottom: calc(100% + 6px); right: 50%; transform: translateX(50%);
+      background: #1e293b; color: #fff; font-size: 11px; font-weight: 700;
+      padding: 4px 8px; border-radius: 6px; white-space: nowrap; pointer-events: none;
+      opacity: 0; transition: opacity .15s;
+      font-family: 'Heebo', Arial, sans-serif;
+    }
+    .copy-tip::after {
+      content: ''; position: absolute; top: 100%; right: 50%; transform: translateX(50%);
+      border: 4px solid transparent; border-top-color: #1e293b;
+    }
+    .btn-copy.copied .copy-tip { opacity: 1; }
+
     /* ── No results ── */
     .no-results { text-align: center; padding: 48px 20px; color: var(--text-muted); font-size: 15px; }
     .no-results .no-results-icon { font-size: 36px; margin-bottom: 12px; }
@@ -772,7 +796,6 @@
         <div class="nav-section-label">ניהול מידע</div>
         <div class="nav-item" id="nav-credentials" onclick="showPage('credentials',this)">
           <span class="nav-icon">🔑</span> פרטי התחברות ויוזרים
-          <span class="nav-badge">13</span>
         </div>
         <div class="nav-item" onclick="showPage('agent-numbers',this)">
           <span class="nav-icon">🔢</span> מספרי סוכן
@@ -780,14 +803,14 @@
         <div class="nav-item" onclick="showPage('contacts',this)">
           <span class="nav-icon">📞</span> אנשי קשר ומספרים חשובים
         </div>
+        <div class="nav-item" onclick="showPage('quicklinks',this)">
+          <span class="nav-icon">🔗</span> קישורים מהירים לאתרים
+        </div>
         <div class="nav-item" onclick="showPage('fees',this)">
           <span class="nav-icon">💰</span> דמי ניהול ופרטי קרנות
         </div>
         <div class="nav-item" onclick="showPage('workflows',this)">
           <span class="nav-icon">📋</span> מדריכי עבודה ותהליכים
-        </div>
-        <div class="nav-item" onclick="showPage('quicklinks',this)">
-          <span class="nav-icon">🔗</span> קישורים מהירים לאתרים
         </div>
         <div class="nav-item" onclick="showPage('forms',this)">
           <span class="nav-icon">📄</span> טפסים שימושיים
@@ -1668,16 +1691,28 @@ function renderCredentials(data) {
     const i = CREDENTIALS.indexOf(row);
     const shown = !!revealed[i];
     const hasPass = !!row.password;
-    const passDisplay = !hasPass
+
+    const userCell = `<div class="copy-cell">
+      <span class="copy-value">${esc(row.username)}</span>
+      <button class="btn-copy" onclick="copyVal(this,'${esc(row.username).replace(/'/g,"&#39;")}')" title="העתק שם משתמש">
+        📋<span class="copy-tip">הועתק!</span>
+      </button>
+    </div>`;
+
+    const passCell = !hasPass
       ? `<span style="color:var(--text-muted);font-size:15px">—</span>`
       : `<div class="password-cell">
           <span class="password-display" id="pass-${i}">${shown ? esc(row.password) : '••••••••••'}</span>
           <button class="btn-eye" onclick="togglePwd(${i})">${shown ? '🙈' : '👁️'}</button>
-         </div>`;
+          <button class="btn-copy" onclick="copyVal(this,'${esc(row.password).replace(/'/g,"&#39;")}')" title="העתק סיסמה">
+            📋<span class="copy-tip">הועתק!</span>
+          </button>
+        </div>`;
+
     return `<tr>
       <td><div class="company-cell"><div class="company-badge">${row.company.charAt(0)}</div><span class="company-name">${esc(row.company)}</span></div></td>
-      <td style="font-family:'Courier New',monospace;font-size:13px">${esc(row.username)}</td>
-      <td>${passDisplay}</td>
+      <td>${userCell}</td>
+      <td>${passCell}</td>
       <td style="font-size:13px;color:var(--text-muted)">${row.notes ? esc(row.notes) : '<span style="color:var(--text-muted)">—</span>'}</td>
     </tr>`;
   }).join('');
@@ -1924,6 +1959,22 @@ function renderForms() {
 ══════════════════════════ */
 function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function copyVal(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add('copied');
+    setTimeout(() => btn.classList.remove('copied'), 1800);
+  }).catch(() => {
+    // Fallback for older browsers / file:// context
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.classList.add('copied');
+    setTimeout(() => btn.classList.remove('copied'), 1800);
+  });
 }
 
 /* ══════════════════════════
