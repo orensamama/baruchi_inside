@@ -8,640 +8,311 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
-    /* ── Reset & Base ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      /* Sidebar — stays deep navy */
       --sidebar-bg:     #0f1c33;
       --sidebar-hover:  #1a2d4f;
       --sidebar-active: rgba(201,168,76,.13);
       --sidebar-border: rgba(255,255,255,.07);
       --sidebar-text:   #b8c9e1;
       --sidebar-muted:  #5a7a9a;
-      --sidebar-w:      268px;
-
-      /* Light content area */
+      --sidebar-w:      272px;
       --page-bg:        #f0f4f9;
       --card-bg:        #ffffff;
       --card-border:    #e2e8f0;
       --card-shadow:    0 1px 4px rgba(15,28,51,.08), 0 4px 16px rgba(15,28,51,.05);
       --card-shadow-lg: 0 2px 8px rgba(15,28,51,.10), 0 8px 32px rgba(15,28,51,.08);
-
-      /* Typography */
       --text-primary:   #0f1c33;
       --text-secondary: #4a6080;
       --text-muted:     #8aa0b8;
-
-      /* Accent — Baruchi gold */
       --gold:           #c9a84c;
       --gold-light:     #fdf6e3;
       --gold-border:    #e8d49a;
-
-      /* Blue accent */
       --blue:           #2563eb;
       --blue-light:     #eff6ff;
       --blue-border:    #bfdbfe;
-
-      /* Status */
       --success:        #059669;
       --danger:         #dc2626;
-
       --radius:         10px;
       --radius-lg:      14px;
     }
 
     body {
-      font-family: 'Heebo', 'Segoe UI', 'Arial', sans-serif;
+      font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
       background: var(--page-bg);
       color: var(--text-primary);
       min-height: 100vh;
     }
 
-    /* ═══════════════════════════════════════════
-       LOGIN SCREEN
-    ═══════════════════════════════════════════ */
+    /* ══ LOGIN ══ */
     #login-screen {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       min-height: 100vh;
       background: linear-gradient(150deg, #0f1c33 0%, #1a2d4f 55%, #0d2244 100%);
       padding: 20px;
     }
-
     .login-card {
-      background: #ffffff;
-      border-radius: 20px;
-      padding: 48px 44px 44px;
-      width: 100%;
-      max-width: 430px;
+      background: #fff; border-radius: 20px;
+      padding: 48px 44px 44px; width: 100%; max-width: 430px;
       box-shadow: 0 24px 80px rgba(0,0,0,.35);
     }
-
-    .login-logo {
-      text-align: center;
-      margin-bottom: 36px;
-    }
+    .login-logo { text-align: center; margin-bottom: 36px; }
     .login-logo svg { display: block; margin: 0 auto 12px; }
-    .login-logo p {
-      font-size: 13px;
-      color: var(--text-muted);
-      letter-spacing: .3px;
-    }
-
+    .login-logo p { font-size: 13px; color: var(--text-muted); }
     .form-group { margin-bottom: 18px; }
-
-    .form-group label {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      margin-bottom: 7px;
-    }
-
+    .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 7px; }
     .form-group input[type="text"],
     .form-group input[type="password"] {
-      width: 100%;
-      background: #f8fafc;
-      border: 1.5px solid var(--card-border);
-      border-radius: var(--radius);
-      padding: 11px 14px;
-      font-size: 15px;
-      color: var(--text-primary);
-      outline: none;
-      transition: border-color .2s, box-shadow .2s;
+      width: 100%; background: #f8fafc;
+      border: 1.5px solid var(--card-border); border-radius: var(--radius);
+      padding: 11px 14px; font-size: 15px; color: var(--text-primary);
+      outline: none; transition: border-color .2s, box-shadow .2s;
       font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
     }
-    .form-group input:focus {
-      border-color: var(--blue);
-      background: #fff;
-      box-shadow: 0 0 0 3px rgba(37,99,235,.12);
-    }
-
-    .remember-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 24px;
-    }
-    .remember-row input[type="checkbox"] {
-      width: 16px; height: 16px;
-      accent-color: var(--blue);
-      cursor: pointer;
-    }
-    .remember-row label {
-      font-size: 13px;
-      color: var(--text-secondary);
-      cursor: pointer;
-      user-select: none;
-    }
-
+    .form-group input:focus { border-color: var(--blue); background: #fff; box-shadow: 0 0 0 3px rgba(37,99,235,.12); }
+    .remember-row { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; }
+    .remember-row input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--blue); cursor: pointer; }
+    .remember-row label { font-size: 13px; color: var(--text-secondary); cursor: pointer; user-select: none; }
     .btn-login {
-      width: 100%;
-      background: linear-gradient(135deg, #0f1c33, #1a3a6e);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius);
-      padding: 13px;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      letter-spacing: .4px;
-      transition: opacity .2s, transform .1s, box-shadow .2s;
-      font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
+      width: 100%; background: linear-gradient(135deg, #0f1c33, #1a3a6e);
+      color: #fff; border: none; border-radius: var(--radius); padding: 13px;
+      font-size: 15px; font-weight: 700; cursor: pointer; letter-spacing: .3px;
+      transition: opacity .2s, transform .1s; font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
       box-shadow: 0 4px 16px rgba(15,28,51,.3);
     }
-    .btn-login:hover { opacity: .92; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(15,28,51,.4); }
+    .btn-login:hover { opacity: .92; transform: translateY(-1px); }
     .btn-login:active { transform: translateY(0); }
-
     .login-error {
-      background: #fef2f2;
-      border: 1px solid #fecaca;
-      border-radius: 8px;
-      color: #b91c1c;
-      font-size: 13px;
-      padding: 10px 14px;
-      margin-bottom: 16px;
-      display: none;
+      background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px;
+      color: #b91c1c; font-size: 13px; padding: 10px 14px; margin-bottom: 16px; display: none;
     }
 
-    /* ═══════════════════════════════════════════
-       APP SHELL
-    ═══════════════════════════════════════════ */
+    /* ══ APP SHELL ══ */
     #app { display: none; min-height: 100vh; }
-
     .layout { display: flex; min-height: 100vh; }
 
     /* ── Sidebar ── */
     .sidebar {
-      width: var(--sidebar-w);
-      background: var(--sidebar-bg);
+      width: var(--sidebar-w); background: var(--sidebar-bg);
       border-left: 1px solid var(--sidebar-border);
-      display: flex;
-      flex-direction: column;
-      flex-shrink: 0;
-      position: fixed;
-      top: 0; right: 0;
-      height: 100vh;
-      overflow-y: auto;
+      display: flex; flex-direction: column; flex-shrink: 0;
+      position: fixed; top: 0; right: 0; height: 100vh; overflow-y: auto;
     }
-
-    .sidebar-header {
-      padding: 22px 18px 18px;
-      border-bottom: 1px solid var(--sidebar-border);
-    }
-
-    .sidebar-brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .sidebar-brand .brand-text h2 {
-      font-size: 15px;
-      font-weight: 700;
-      color: #ffffff;
-      line-height: 1.2;
-    }
-    .sidebar-brand .brand-text p {
-      font-size: 11px;
-      color: var(--sidebar-muted);
-      margin-top: 2px;
-    }
-
+    .sidebar-header { padding: 22px 18px 18px; border-bottom: 1px solid var(--sidebar-border); }
+    .sidebar-brand { display: flex; align-items: center; gap: 12px; }
+    .sidebar-brand .brand-text h2 { font-size: 15px; font-weight: 700; color: #fff; line-height: 1.2; }
+    .sidebar-brand .brand-text p { font-size: 11px; color: var(--sidebar-muted); margin-top: 2px; }
     .sidebar-nav { padding: 14px 10px; flex: 1; }
-
     .nav-section-label {
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--sidebar-muted);
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      padding: 0 10px;
-      margin-bottom: 6px;
-      margin-top: 10px;
+      font-size: 10px; font-weight: 700; color: var(--sidebar-muted);
+      letter-spacing: 1.2px; text-transform: uppercase;
+      padding: 0 10px; margin-bottom: 6px; margin-top: 10px;
     }
-
     .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 13.5px;
-      color: var(--sidebar-text);
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: 8px; cursor: pointer;
+      font-size: 13.5px; color: var(--sidebar-text);
       transition: background .15s, color .15s;
-      margin-bottom: 2px;
-      user-select: none;
-      line-height: 1.3;
+      margin-bottom: 2px; user-select: none; line-height: 1.3;
     }
     .nav-item:hover { background: var(--sidebar-hover); color: #fff; }
-    .nav-item.active {
-      background: var(--sidebar-active);
-      color: var(--gold);
-      font-weight: 600;
-      border-right: 3px solid var(--gold);
-    }
-    .nav-item .nav-icon {
-      font-size: 16px;
-      flex-shrink: 0;
-      width: 22px;
-      text-align: center;
-    }
+    .nav-item.active { background: var(--sidebar-active); color: var(--gold); font-weight: 600; border-right: 3px solid var(--gold); }
+    .nav-item .nav-icon { font-size: 15px; flex-shrink: 0; width: 22px; text-align: center; }
     .nav-item .nav-badge {
-      margin-right: auto;
-      background: var(--gold);
-      color: #0f1c33;
-      font-size: 10px;
-      padding: 2px 7px;
-      border-radius: 20px;
-      font-weight: 800;
+      margin-right: auto; background: var(--gold); color: #0f1c33;
+      font-size: 10px; padding: 2px 7px; border-radius: 20px; font-weight: 800;
     }
-
-    .sidebar-footer {
-      padding: 14px 10px;
-      border-top: 1px solid var(--sidebar-border);
-    }
-
-    .user-pill {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 8px;
-      background: rgba(255,255,255,.05);
-    }
+    .sidebar-footer { padding: 14px 10px; border-top: 1px solid var(--sidebar-border); }
+    .user-pill { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; background: rgba(255,255,255,.05); }
     .user-avatar {
-      width: 32px; height: 32px;
-      border-radius: 50%;
+      width: 32px; height: 32px; border-radius: 50%;
       background: linear-gradient(135deg, var(--gold), #a07828);
       display: flex; align-items: center; justify-content: center;
-      font-size: 14px; font-weight: 800; color: #0f1c33;
-      flex-shrink: 0;
+      font-size: 14px; font-weight: 800; color: #0f1c33; flex-shrink: 0;
     }
     .user-info { flex: 1; min-width: 0; }
-    .user-info .user-name {
-      font-size: 13px; font-weight: 600; color: #ffffff;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
+    .user-info .user-name { font-size: 13px; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .user-info .user-role { font-size: 11px; color: var(--sidebar-muted); }
-
-    .btn-logout {
-      background: none; border: none;
-      color: var(--sidebar-muted);
-      cursor: pointer; font-size: 16px;
-      padding: 4px; border-radius: 6px;
-      transition: color .15s, background .15s;
-    }
-    .btn-logout:hover { color: #f87171; background: rgba(239,68,68,.12); }
+    .btn-logout { background: none; border: none; color: var(--sidebar-muted); cursor: pointer; font-size: 16px; padding: 4px; border-radius: 6px; transition: color .15s; }
+    .btn-logout:hover { color: #f87171; }
 
     /* ── Main Content ── */
-    .main-content {
-      flex: 1;
-      margin-right: var(--sidebar-w);
-      padding: 32px 36px;
-      min-height: 100vh;
-      background: var(--page-bg);
-    }
+    .main-content { flex: 1; margin-right: var(--sidebar-w); padding: 32px 36px; min-height: 100vh; background: var(--page-bg); }
 
-    .page-header { margin-bottom: 28px; }
-    .page-header h1 {
-      font-size: 24px; font-weight: 800;
-      color: var(--text-primary);
-      margin-bottom: 5px;
-    }
-    .page-header p { font-size: 14px; color: var(--text-secondary); }
-
-    /* Breadcrumb strip */
-    .breadcrumb {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 8px;
-    }
-    .breadcrumb span { color: var(--text-primary); font-weight: 600; }
-
-    /* ── Pages ── */
+    /* ── Page ── */
     .page { display: none; }
     .page.active { display: block; }
+    .page-header { margin-bottom: 28px; }
+    .page-header h1 { font-size: 24px; font-weight: 800; color: var(--text-primary); margin-bottom: 5px; }
+    .page-header p { font-size: 14px; color: var(--text-secondary); }
+    .breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+    .breadcrumb span { color: var(--text-primary); font-weight: 600; }
 
-    /* ── Stats strip ── */
-    .stats-strip {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-    .stat-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius-lg);
-      padding: 18px 20px;
-      box-shadow: var(--card-shadow);
-    }
+    /* ── Stats ── */
+    .stats-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .stat-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-lg); padding: 18px 20px; box-shadow: var(--card-shadow); }
     .stat-card .stat-label { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; }
     .stat-card .stat-value { font-size: 28px; font-weight: 800; color: var(--text-primary); }
     .stat-card .stat-sub { font-size: 11px; color: var(--blue); margin-top: 3px; font-weight: 600; }
 
     /* ── Search bar ── */
     .search-bar-wrap { position: relative; margin-bottom: 20px; }
-    .search-bar-wrap .search-icon {
-      position: absolute;
-      right: 14px; top: 50%;
-      transform: translateY(-50%);
-      font-size: 15px; color: var(--text-muted);
-      pointer-events: none;
-    }
-    #search-input {
-      width: 100%;
-      background: var(--card-bg);
-      border: 1.5px solid var(--card-border);
-      border-radius: var(--radius);
-      padding: 12px 42px 12px 16px;
-      font-size: 15px;
-      color: var(--text-primary);
-      outline: none;
+    .search-bar-wrap .search-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 15px; color: var(--text-muted); pointer-events: none; }
+    .search-bar-wrap input[type="text"] {
+      width: 100%; background: var(--card-bg); border: 1.5px solid var(--card-border);
+      border-radius: var(--radius); padding: 12px 42px 12px 16px;
+      font-size: 15px; color: var(--text-primary); outline: none;
       transition: border-color .2s, box-shadow .2s;
       font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
       box-shadow: var(--card-shadow);
     }
-    #search-input::placeholder { color: var(--text-muted); }
-    #search-input:focus {
-      border-color: var(--blue);
-      box-shadow: 0 0 0 3px rgba(37,99,235,.12);
-    }
+    .search-bar-wrap input::placeholder { color: var(--text-muted); }
+    .search-bar-wrap input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,.12); }
 
-    /* ── Credentials table ── */
-    .creds-table-wrap {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      box-shadow: var(--card-shadow);
-    }
-    .creds-table { width: 100%; border-collapse: collapse; }
-    .creds-table thead { background: #f8fafc; }
-    .creds-table th {
-      padding: 13px 18px;
-      font-size: 11px; font-weight: 700;
-      color: var(--text-muted);
-      text-align: right;
-      letter-spacing: .6px;
-      text-transform: uppercase;
+    /* ── Generic table card ── */
+    .table-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--card-shadow); }
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table thead { background: #f8fafc; }
+    .data-table th {
+      padding: 13px 18px; font-size: 11px; font-weight: 700; color: var(--text-muted);
+      text-align: right; letter-spacing: .6px; text-transform: uppercase;
       border-bottom: 1px solid var(--card-border);
     }
-    .creds-table td {
-      padding: 15px 18px;
-      font-size: 14px;
-      color: var(--text-primary);
-      border-bottom: 1px solid #f1f5f9;
-      vertical-align: middle;
-    }
-    .creds-table tbody tr:last-child td { border-bottom: none; }
-    .creds-table tbody tr:hover td { background: #f8fafc; }
+    .data-table td { padding: 14px 18px; font-size: 14px; color: var(--text-primary); border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+    .data-table tbody tr:last-child td { border-bottom: none; }
+    .data-table tbody tr:hover td { background: #f8fafc; }
+    .data-table .row-hidden { display: none; }
 
+    /* ── Company badge ── */
     .company-cell { display: flex; align-items: center; gap: 10px; }
-    .company-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 32px; height: 32px;
-      border-radius: 8px;
-      background: var(--blue-light);
-      color: var(--blue);
-      font-size: 13px;
-      font-weight: 800;
-      flex-shrink: 0;
-    }
-    .company-name { font-weight: 600; color: var(--text-primary); }
+    .company-badge { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; background: var(--blue-light); color: var(--blue); font-size: 13px; font-weight: 800; flex-shrink: 0; }
+    .company-name { font-weight: 600; }
 
+    /* ── Password cell ── */
     .password-cell { display: flex; align-items: center; gap: 8px; }
-    .password-display {
-      font-family: 'Courier New', monospace;
-      font-size: 14px; color: var(--text-primary);
-      min-width: 130px; letter-spacing: 1px;
-      background: #f8fafc;
-      border: 1px solid var(--card-border);
-      border-radius: 6px;
-      padding: 4px 10px;
-    }
-    .btn-eye {
-      background: none;
-      border: 1px solid var(--card-border);
-      border-radius: 6px;
-      color: var(--text-muted);
-      cursor: pointer;
-      padding: 5px 9px;
-      font-size: 14px;
-      transition: color .15s, background .15s, border-color .15s;
-    }
+    .password-display { font-family: 'Courier New', monospace; font-size: 14px; min-width: 130px; letter-spacing: 1px; background: #f8fafc; border: 1px solid var(--card-border); border-radius: 6px; padding: 4px 10px; }
+    .btn-eye { background: none; border: 1px solid var(--card-border); border-radius: 6px; color: var(--text-muted); cursor: pointer; padding: 5px 9px; font-size: 14px; transition: color .15s, background .15s, border-color .15s; }
     .btn-eye:hover { color: var(--blue); border-color: var(--blue); background: var(--blue-light); }
 
-    .no-results {
-      text-align: center;
-      padding: 48px 20px;
-      color: var(--text-muted);
-      font-size: 15px;
-    }
+    /* ── No results ── */
+    .no-results { text-align: center; padding: 48px 20px; color: var(--text-muted); font-size: 15px; }
     .no-results .no-results-icon { font-size: 36px; margin-bottom: 12px; }
 
-    /* ── Placeholder pages ── */
-    .placeholder-card {
-      background: var(--card-bg);
-      border: 1.5px dashed var(--card-border);
-      border-radius: var(--radius-lg);
-      padding: 64px 32px;
-      text-align: center;
-    }
+    /* ── Placeholder ── */
+    .placeholder-card { background: var(--card-bg); border: 1.5px dashed var(--card-border); border-radius: var(--radius-lg); padding: 64px 32px; text-align: center; }
     .placeholder-card .ph-icon { font-size: 48px; margin-bottom: 16px; opacity: .4; }
     .placeholder-card h3 { font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
     .placeholder-card p { font-size: 14px; color: var(--text-muted); }
 
-    /* ════════════════════════════════════════════
-       QUICK LINKS & FORMS PAGE
-    ════════════════════════════════════════════ */
-    .section-title {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .section-title::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--card-border);
-      margin-right: 8px;
-    }
-
-    /* Portal cards grid */
-    .portals-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 18px;
-      margin-bottom: 36px;
-    }
-
-    .portal-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius-lg);
-      padding: 24px 20px 20px;
-      box-shadow: var(--card-shadow);
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 12px;
-      transition: box-shadow .2s, transform .2s, border-color .2s;
-    }
-    .portal-card:hover {
-      box-shadow: var(--card-shadow-lg);
-      transform: translateY(-3px);
-      border-color: var(--gold-border);
-    }
-
-    .portal-logo {
-      width: 52px; height: 52px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      font-weight: 900;
-      flex-shrink: 0;
-      color: #fff;
-      letter-spacing: -1px;
-    }
-
-    .portal-info { flex: 1; }
-    .portal-info .portal-name {
-      font-size: 17px;
-      font-weight: 800;
-      color: var(--text-primary);
-      margin-bottom: 3px;
-    }
-    .portal-info .portal-desc {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .btn-portal {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--sidebar-bg);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 9px 16px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background .15s, transform .1s;
+    /* ══ TABS ══ */
+    .tabs-wrap { display: flex; gap: 4px; margin-bottom: 24px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-lg); padding: 5px; box-shadow: var(--card-shadow); width: fit-content; }
+    .tab-btn {
+      padding: 9px 20px; border-radius: 8px; border: none; cursor: pointer;
+      font-size: 14px; font-weight: 600; color: var(--text-muted);
+      background: none; transition: background .15s, color .15s;
       font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
-      width: 100%;
-      justify-content: center;
     }
-    .btn-portal:hover { background: #1a3a6e; transform: translateY(-1px); }
-    .btn-portal .arrow { font-size: 11px; opacity: .8; }
+    .tab-btn:hover { color: var(--text-primary); background: #f1f5f9; }
+    .tab-btn.active { background: var(--sidebar-bg); color: #fff; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
 
-    /* Forms table */
-    .forms-table-wrap {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-      box-shadow: var(--card-shadow);
+    /* ── Section label ── */
+    .section-label {
+      font-size: 13px; font-weight: 700; color: var(--text-secondary);
+      margin-bottom: 14px; margin-top: 24px;
+      display: flex; align-items: center; gap: 8px;
     }
-    .forms-table { width: 100%; border-collapse: collapse; }
-    .forms-table thead { background: #f8fafc; }
-    .forms-table th {
-      padding: 12px 18px;
-      font-size: 11px; font-weight: 700;
-      color: var(--text-muted);
-      text-align: right;
-      letter-spacing: .6px;
-      text-transform: uppercase;
-      border-bottom: 1px solid var(--card-border);
-    }
-    .forms-table td {
-      padding: 14px 18px;
-      font-size: 14px;
-      color: var(--text-primary);
-      border-bottom: 1px solid #f1f5f9;
-      vertical-align: middle;
-    }
-    .forms-table tbody tr:last-child td { border-bottom: none; }
-    .forms-table tbody tr:hover td { background: #f8fafc; }
+    .section-label:first-child { margin-top: 0; }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--card-border); margin-right: 6px; }
 
-    .form-tag {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 3px 9px;
-      border-radius: 20px;
-      background: var(--blue-light);
-      color: var(--blue);
-    }
-    .form-tag.tag-gold { background: var(--gold-light); color: #92650a; }
-    .form-tag.tag-green { background: #f0fdf4; color: var(--success); }
+    /* ── Tags ── */
+    .tag { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 20px; }
+    .tag-blue { background: var(--blue-light); color: var(--blue); }
+    .tag-gold { background: var(--gold-light); color: #92650a; }
+    .tag-green { background: #f0fdf4; color: var(--success); }
+    .tag-gray { background: #f1f5f9; color: var(--text-secondary); }
 
+    /* ── Download btn ── */
     .btn-download {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      background: none;
-      border: 1px solid var(--card-border);
-      border-radius: 6px;
-      padding: 5px 12px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: all .15s;
-      font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
+      display: inline-flex; align-items: center; gap: 5px;
+      background: none; border: 1px solid var(--card-border); border-radius: 6px;
+      padding: 5px 12px; font-size: 12px; font-weight: 600; color: var(--text-secondary);
+      cursor: pointer; transition: all .15s; font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
     }
     .btn-download:hover { background: var(--blue-light); border-color: var(--blue); color: var(--blue); }
+
+    /* ══ ACCORDION (funds) ══ */
+    .accordion { display: flex; flex-direction: column; gap: 8px; }
+    .acc-item { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--card-shadow); }
+    .acc-header {
+      display: flex; align-items: center; gap: 12px; padding: 16px 20px;
+      cursor: pointer; user-select: none;
+      transition: background .15s;
+    }
+    .acc-header:hover { background: #f8fafc; }
+    .acc-header.open { border-bottom: 1px solid var(--card-border); }
+    .acc-company-logo {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 900; color: #fff; flex-shrink: 0;
+    }
+    .acc-title { flex: 1; }
+    .acc-title strong { font-size: 15px; font-weight: 700; color: var(--text-primary); display: block; }
+    .acc-title span { font-size: 12px; color: var(--text-muted); }
+    .acc-count { font-size: 12px; font-weight: 700; color: var(--text-muted); background: #f1f5f9; padding: 4px 10px; border-radius: 20px; }
+    .acc-chevron { font-size: 13px; color: var(--text-muted); transition: transform .25s; }
+    .acc-header.open .acc-chevron { transform: rotate(180deg); }
+    .acc-body { display: none; padding: 0; }
+    .acc-body.open { display: block; }
+    .acc-inner-table { width: 100%; border-collapse: collapse; }
+    .acc-inner-table th { padding: 11px 20px; font-size: 11px; font-weight: 700; color: var(--text-muted); text-align: right; letter-spacing: .5px; text-transform: uppercase; background: #fafbfc; border-bottom: 1px solid #f1f5f9; }
+    .acc-inner-table td { padding: 13px 20px; font-size: 13px; color: var(--text-primary); border-bottom: 1px solid #f7f9fb; }
+    .acc-inner-table tbody tr:last-child td { border-bottom: none; }
+    .acc-inner-table tbody tr:hover td { background: #f8fafc; }
+    .acc-no-match { display: none; padding: 24px; text-align: center; color: var(--text-muted); font-size: 14px; }
+
+    /* ══ PORTAL CARDS ══ */
+    .portals-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
+    .portal-card {
+      background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-lg);
+      padding: 24px 20px 20px; box-shadow: var(--card-shadow);
+      display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
+      transition: box-shadow .2s, transform .2s, border-color .2s;
+    }
+    .portal-card:hover { box-shadow: var(--card-shadow-lg); transform: translateY(-3px); border-color: var(--gold-border); }
+    .portal-logo { width: 52px; height: 52px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; color: #fff; flex-shrink: 0; }
+    .portal-info .portal-name { font-size: 17px; font-weight: 800; color: var(--text-primary); margin-bottom: 3px; }
+    .portal-info .portal-desc { font-size: 12px; color: var(--text-muted); }
+    .btn-portal {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--sidebar-bg); color: #fff; border: none; border-radius: 8px;
+      padding: 9px 16px; font-size: 13px; font-weight: 700; cursor: pointer;
+      text-decoration: none; transition: background .15s, transform .1s;
+      font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
+      width: 100%; justify-content: center;
+    }
+    .btn-portal:hover { background: #1a3a6e; transform: translateY(-1px); }
   </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════════
-     LOGIN SCREEN
-══════════════════════════════════════════════ -->
+<!-- ══ LOGIN ══ -->
 <div id="login-screen">
   <div class="login-card">
     <div class="login-logo">
-      <!-- Logo: navy B with gold accent on white card -->
       <svg width="150" height="155" viewBox="0 0 400 415" xmlns="http://www.w3.org/2000/svg">
-        <!-- Arc -->
         <path d="M148 88 Q200 42 252 88" stroke="#c9a84c" stroke-width="10" fill="none" stroke-linecap="round"/>
-        <!-- Stem -->
         <rect x="138" y="100" width="22" height="185" rx="4" fill="#0f1c33"/>
-        <!-- Top belly -->
         <path d="M160 100 Q238 108 238 148 Q238 186 160 195 L160 100Z" fill="#0f1c33"/>
-        <!-- Bottom belly (wider) -->
         <path d="M160 195 Q248 200 248 240 Q248 283 160 285 L160 195Z" fill="#0f1c33"/>
-        <!-- Inner cutouts -->
         <path d="M168 110 Q218 115 218 148 Q218 180 168 185 Z" fill="#ffffff"/>
         <path d="M168 205 Q228 210 228 240 Q228 270 168 275 Z" fill="#ffffff"/>
-        <!-- Stem decoration lines (gold) -->
         <rect x="138" y="158" width="22" height="4" rx="2" fill="#c9a84c"/>
         <rect x="138" y="167" width="22" height="4" rx="2" fill="#c9a84c"/>
-        <!-- BARUCHI -->
-        <text x="200" y="334" font-family="'Segoe UI',Arial,sans-serif" font-size="40" font-weight="800"
-              fill="#0f1c33" text-anchor="middle" letter-spacing="6">BARUCHI</text>
-        <!-- subtitle -->
-        <text x="200" y="365" font-family="'Segoe UI',Arial,sans-serif" font-size="17" font-weight="500"
-              fill="#c9a84c" text-anchor="middle" letter-spacing="3.5">FINANCE &amp; INSURANCE</text>
+        <text x="200" y="334" font-family="Arial,sans-serif" font-size="40" font-weight="800" fill="#0f1c33" text-anchor="middle" letter-spacing="6">BARUCHI</text>
+        <text x="200" y="365" font-family="Arial,sans-serif" font-size="17" font-weight="500" fill="#c9a84c" text-anchor="middle" letter-spacing="3.5">FINANCE &amp; INSURANCE</text>
       </svg>
       <p>מערכת פנימית לצוות הסוכנות</p>
     </div>
@@ -652,32 +323,25 @@
       <label for="username">שם משתמש</label>
       <input type="text" id="username" placeholder="הכנס שם משתמש" autocomplete="username" />
     </div>
-
     <div class="form-group">
       <label for="password">סיסמה</label>
       <input type="password" id="password" placeholder="הכנס סיסמה" autocomplete="current-password" />
     </div>
-
     <div class="remember-row">
       <input type="checkbox" id="remember-me" />
       <label for="remember-me">זכור אותי למשך 7 ימים</label>
     </div>
-
     <button class="btn-login" onclick="attemptLogin()">כניסה למערכת</button>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     APP SHELL
-══════════════════════════════════════════════ -->
+<!-- ══ APP ══ -->
 <div id="app">
   <div class="layout">
 
-    <!-- Sidebar -->
     <aside class="sidebar">
       <div class="sidebar-header">
         <div class="sidebar-brand">
-          <!-- Small sidebar logo: gold on dark -->
           <svg width="36" height="36" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
             <rect width="400" height="400" rx="88" fill="#1a2d4f"/>
             <path d="M148 88 Q200 42 252 88" stroke="#c9a84c" stroke-width="10" fill="none" stroke-linecap="round"/>
@@ -698,41 +362,27 @@
 
       <nav class="sidebar-nav">
         <div class="nav-section-label">ניהול מידע</div>
-
-        <div class="nav-item active" onclick="showPage('credentials', this)">
-          <span class="nav-icon">🔑</span>
-          פרטי התחברות ויוזרים
+        <div class="nav-item active" onclick="showPage('credentials',this)">
+          <span class="nav-icon">🔑</span> פרטי התחברות ויוזרים
           <span class="nav-badge">4</span>
         </div>
-
-        <div class="nav-item" onclick="showPage('agent-numbers', this)">
-          <span class="nav-icon">🔢</span>
-          מספרי סוכן
+        <div class="nav-item" onclick="showPage('agent-numbers',this)">
+          <span class="nav-icon">🔢</span> מספרי סוכן
         </div>
-
-        <div class="nav-item" onclick="showPage('company-contacts', this)">
-          <span class="nav-icon">📞</span>
-          מספרים חשובים של החברות
+        <div class="nav-item" onclick="showPage('contacts',this)">
+          <span class="nav-icon">📞</span> אנשי קשר ומספרים חשובים
         </div>
-
-        <div class="nav-item" onclick="showPage('fees', this)">
-          <span class="nav-icon">💰</span>
-          דמי ניהול ומחירונים
+        <div class="nav-item" onclick="showPage('fees',this)">
+          <span class="nav-icon">💰</span> דמי ניהול ופרטי קרנות
         </div>
-
-        <div class="nav-item" onclick="showPage('workflows', this)">
-          <span class="nav-icon">📋</span>
-          מדריכי עבודה ותהליכים
+        <div class="nav-item" onclick="showPage('workflows',this)">
+          <span class="nav-icon">📋</span> מדריכי עבודה ותהליכים
         </div>
-
-        <div class="nav-item" onclick="showPage('quicklinks', this)">
-          <span class="nav-icon">🔗</span>
-          קישורים מהירים לאתרים
+        <div class="nav-item" onclick="showPage('quicklinks',this)">
+          <span class="nav-icon">🔗</span> קישורים מהירים לאתרים
         </div>
-
-        <div class="nav-item" onclick="showPage('forms', this)">
-          <span class="nav-icon">📄</span>
-          טפסים שימושיים
+        <div class="nav-item" onclick="showPage('forms',this)">
+          <span class="nav-icon">📄</span> טפסים שימושיים
         </div>
       </nav>
 
@@ -748,17 +398,15 @@
       </div>
     </aside>
 
-    <!-- Main Content -->
     <main class="main-content">
 
-      <!-- ══ Credentials Page ══ -->
+      <!-- ══ 1. CREDENTIALS ══ -->
       <div class="page active" id="page-credentials">
         <div class="page-header">
           <div class="breadcrumb">ברוכי HQ ← <span>פרטי התחברות</span></div>
           <h1>🔑 פרטי התחברות ויוזרים</h1>
           <p>פרטי כניסה לחברות הביטוח — גישה מורשית בלבד</p>
         </div>
-
         <div class="stats-strip">
           <div class="stat-card">
             <div class="stat-label">סה"כ חברות</div>
@@ -766,39 +414,27 @@
             <div class="stat-sub">במאגר</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">תוצאות מסוננות</div>
+            <div class="stat-label">מוצגות כעת</div>
             <div class="stat-value" id="stat-filtered">4</div>
-            <div class="stat-sub">מוצגות כעת</div>
+            <div class="stat-sub">תוצאות</div>
           </div>
         </div>
-
         <div class="search-bar-wrap">
           <span class="search-icon">🔍</span>
-          <input type="text" id="search-input"
-            placeholder="חיפוש לפי שם חברה, שם משתמש או מספר סוכן..."
-            oninput="filterCredentials()" />
+          <input type="text" id="creds-search" placeholder="חיפוש לפי שם חברה, שם משתמש או מספר סוכן..." oninput="filterCredentials()" />
         </div>
-
-        <div class="creds-table-wrap">
-          <table class="creds-table">
-            <thead>
-              <tr>
-                <th>חברת ביטוח</th>
-                <th>מספר סוכן</th>
-                <th>שם משתמש</th>
-                <th>סיסמה</th>
-              </tr>
-            </thead>
+        <div class="table-card">
+          <table class="data-table">
+            <thead><tr><th>חברת ביטוח</th><th>מספר סוכן</th><th>שם משתמש</th><th>סיסמה</th></tr></thead>
             <tbody id="creds-tbody"></tbody>
           </table>
-          <div class="no-results" id="no-results" style="display:none;">
-            <div class="no-results-icon">🔎</div>
-            <div>לא נמצאו תוצאות לחיפוש זה</div>
+          <div class="no-results" id="creds-no-results" style="display:none;">
+            <div class="no-results-icon">🔎</div><div>לא נמצאו תוצאות</div>
           </div>
         </div>
       </div>
 
-      <!-- ══ Agent Numbers ══ -->
+      <!-- ══ 2. AGENT NUMBERS ══ -->
       <div class="page" id="page-agent-numbers">
         <div class="page-header">
           <div class="breadcrumb">ברוכי HQ ← <span>מספרי סוכן</span></div>
@@ -808,39 +444,112 @@
         <div class="placeholder-card">
           <div class="ph-icon">🚧</div>
           <h3>עמוד זה בפיתוח</h3>
-          <p>תוכן העמוד יתווסף בשלב הבא של הפיתוח</p>
+          <p>תוכן העמוד יתווסף בשלב הבא</p>
         </div>
       </div>
 
-      <!-- ══ Company Contacts ══ -->
-      <div class="page" id="page-company-contacts">
+      <!-- ══ 3. CONTACTS ══ -->
+      <div class="page" id="page-contacts">
         <div class="page-header">
-          <div class="breadcrumb">ברוכי HQ ← <span>מספרים חשובים</span></div>
-          <h1>📞 מספרים חשובים של החברות</h1>
-          <p>מספרי טלפון ואנשי קשר חשובים בחברות הביטוח</p>
+          <div class="breadcrumb">ברוכי HQ ← <span>אנשי קשר</span></div>
+          <h1>📞 אנשי קשר ומספרים חשובים</h1>
+          <p>אנשי קשר פנימיים וחיצוניים של חברות הביטוח</p>
         </div>
-        <div class="placeholder-card">
-          <div class="ph-icon">🚧</div>
-          <h3>עמוד זה בפיתוח</h3>
-          <p>תוכן העמוד יתווסף בשלב הבא של הפיתוח</p>
+
+        <div class="search-bar-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="contacts-search" placeholder="חיפוש לפי שם, תפקיד, טלפון, מייל או הערה..." oninput="filterContacts()" />
+        </div>
+
+        <div class="tabs-wrap">
+          <button class="tab-btn active" onclick="switchTab('contacts','internal',this)">🏢 טלפונים פנימיים וסוכנות שחם</button>
+          <button class="tab-btn" onclick="switchTab('contacts','external',this)">🏦 מספרי חברות הביטוח</button>
+        </div>
+
+        <!-- Section A: Internal -->
+        <div class="tab-panel active" id="contacts-tab-internal">
+          <div class="table-card">
+            <table class="data-table" id="internal-table">
+              <thead>
+                <tr>
+                  <th>שם / תפקיד</th>
+                  <th>מספר טלפון</th>
+                  <th>כתובת מייל</th>
+                  <th>הערות</th>
+                </tr>
+              </thead>
+              <tbody id="internal-tbody"></tbody>
+            </table>
+            <div class="no-results" id="internal-no-results" style="display:none;">
+              <div class="no-results-icon">🔎</div><div>לא נמצאו תוצאות</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section B: External -->
+        <div class="tab-panel" id="contacts-tab-external">
+          <div class="table-card">
+            <table class="data-table" id="external-table">
+              <thead>
+                <tr>
+                  <th>שם / תפקיד</th>
+                  <th>מספר טלפון</th>
+                  <th>כתובת מייל</th>
+                  <th>הערות</th>
+                </tr>
+              </thead>
+              <tbody id="external-tbody"></tbody>
+            </table>
+            <div class="no-results" id="external-no-results" style="display:none;">
+              <div class="no-results-icon">🔎</div><div>לא נמצאו תוצאות</div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- ══ Fees Placeholder ══ -->
+      <!-- ══ 4. FEES & FUNDS ══ -->
       <div class="page" id="page-fees">
         <div class="page-header">
-          <div class="breadcrumb">ברוכי HQ ← <span>דמי ניהול</span></div>
-          <h1>💰 דמי ניהול ומחירונים</h1>
-          <p>עמלות, דמי ניהול ומחירוני חברות הביטוח</p>
+          <div class="breadcrumb">ברוכי HQ ← <span>דמי ניהול ופרטי קרנות</span></div>
+          <h1>💰 דמי ניהול ופרטי קרנות</h1>
+          <p>מחירונים, דמי ניהול ופרטי חשבונות בנק לפי חברה</p>
         </div>
-        <div class="placeholder-card">
-          <div class="ph-icon">🚧</div>
-          <h3>עמוד זה בפיתוח</h3>
-          <p>תוכן העמוד יתווסף בשלב הבא של הפיתוח</p>
+
+        <div class="search-bar-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="fees-search" placeholder="חיפוש לפי שם קרן, בנק, מספר חשבון או קוד מוסד..." oninput="filterFees()" />
+        </div>
+
+        <div class="tabs-wrap">
+          <button class="tab-btn active" onclick="switchTab('fees','pricing',this)">📊 מחירונים ודמי ניהול</button>
+          <button class="tab-btn" onclick="switchTab('fees','bank',this)">🏦 פרטי חשבון בנק וקודי מוסד</button>
+        </div>
+
+        <!-- Tab 1: Pricing -->
+        <div class="tab-panel active" id="fees-tab-pricing">
+          <div class="table-card">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>חברה</th>
+                  <th>מוצר</th>
+                  <th>דמי ניהול מהפקדה</th>
+                  <th>דמי ניהול מצבירה</th>
+                  <th>הערות</th>
+                </tr>
+              </thead>
+              <tbody id="pricing-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tab 2: Bank Accordion -->
+        <div class="tab-panel" id="fees-tab-bank">
+          <div class="accordion" id="funds-accordion"></div>
         </div>
       </div>
 
-      <!-- ══ Workflows Placeholder ══ -->
+      <!-- ══ 5. WORKFLOWS ══ -->
       <div class="page" id="page-workflows">
         <div class="page-header">
           <div class="breadcrumb">ברוכי HQ ← <span>מדריכי עבודה</span></div>
@@ -850,11 +559,11 @@
         <div class="placeholder-card">
           <div class="ph-icon">🚧</div>
           <h3>עמוד זה בפיתוח</h3>
-          <p>תוכן העמוד יתווסף בשלב הבא של הפיתוח</p>
+          <p>תוכן העמוד יתווסף בשלב הבא</p>
         </div>
       </div>
 
-      <!-- ══ Quick Links ══ -->
+      <!-- ══ 6. QUICK LINKS ══ -->
       <div class="page" id="page-quicklinks">
         <div class="page-header">
           <div class="breadcrumb">ברוכי HQ ← <span>קישורים מהירים</span></div>
@@ -864,23 +573,16 @@
         <div class="portals-grid" id="portals-grid"></div>
       </div>
 
-      <!-- ══ Forms ══ -->
+      <!-- ══ 7. FORMS ══ -->
       <div class="page" id="page-forms">
         <div class="page-header">
           <div class="breadcrumb">ברוכי HQ ← <span>טפסים שימושיים</span></div>
           <h1>📄 טפסים שימושיים</h1>
           <p>טפסים להורדה מחברות הביטוח השונות</p>
         </div>
-        <div class="forms-table-wrap">
-          <table class="forms-table">
-            <thead>
-              <tr>
-                <th>שם הטופס</th>
-                <th>חברה</th>
-                <th>קטגוריה</th>
-                <th>פעולה</th>
-              </tr>
-            </thead>
+        <div class="table-card">
+          <table class="data-table">
+            <thead><tr><th>שם הטופס</th><th>חברה</th><th>קטגוריה</th><th>פעולה</th></tr></thead>
             <tbody id="forms-tbody"></tbody>
           </table>
         </div>
@@ -891,106 +593,138 @@
 </div>
 
 <script>
-/* ══════════════════════════════════════════════
+/* ══════════════════════════════
    DATA
-══════════════════════════════════════════════ */
+══════════════════════════════ */
 const STAFF = [
-  { username: 'oren',      password: '1122' },
-  { username: 'asher',     password: '1122' },
-  { username: 'yehonatan', password: '1122' },
-  { username: 'riki',      password: '1122' },
-  { username: 'heidi',     password: '1122' },
-  { username: 'chaya',     password: '1122' },
+  { username:'oren',      password:'1122' },
+  { username:'asher',     password:'1122' },
+  { username:'yehonatan', password:'1122' },
+  { username:'riki',      password:'1122' },
+  { username:'heidi',     password:'1122' },
+  { username:'chaya',     password:'1122' },
 ];
 
 const CREDENTIALS = [
-  { company: 'הראל',    agentNum: '12345', username: 'harel_user',   password: 'harel_password'   },
-  { company: 'מגדל',    agentNum: '67890', username: 'migdal_user',  password: 'migdal_password'  },
-  { company: 'הפניקס',  agentNum: '55443', username: 'phoenix_user', password: 'phoenix_password' },
-  { company: 'כלל',     agentNum: '99887', username: 'clal_user',    password: 'clal_password'    },
+  { company:'הראל',   agentNum:'12345', username:'harel_user',   password:'harel_password'   },
+  { company:'מגדל',   agentNum:'67890', username:'migdal_user',  password:'migdal_password'  },
+  { company:'הפניקס', agentNum:'55443', username:'phoenix_user', password:'phoenix_password' },
+  { company:'כלל',    agentNum:'99887', username:'clal_user',    password:'clal_password'    },
+];
+
+const INTERNAL_CONTACTS = [
+  { name:'אורן ברוכי — מנהל הסוכנות',       phone:'050-0000001', email:'oren@baruchi.co.il',      notes:'זמין א׳–ה׳ 8:00–18:00' },
+  { name:'אשר ברוכי — שותף בכיר',            phone:'050-0000002', email:'asher@baruchi.co.il',     notes:''                        },
+  { name:'יהונתן — טיפול לקוחות',            phone:'050-0000003', email:'yehonatan@baruchi.co.il', notes:'אחראי על חידושים'        },
+  { name:'ריקי — אדמיניסטרציה',              phone:'050-0000004', email:'riki@baruchi.co.il',      notes:''                        },
+  { name:'היידי — ביטוח כללי',               phone:'050-0000005', email:'heidi@baruchi.co.il',     notes:'מומחית רכב ודירה'        },
+  { name:'חיה — פנסיה וגמל',                 phone:'050-0000006', email:'chaya@baruchi.co.il',     notes:''                        },
+  { name:'שחם — מוקד תמיכה',                 phone:'03-0000100',  email:'support@shaham.co.il',    notes:'פניות טכניות לתוכנה'     },
+  { name:'שחם — מנהל חשבון',                 phone:'03-0000101',  email:'accounts@shaham.co.il',   notes:'חשבוניות ותשלומים'       },
+];
+
+const EXTERNAL_CONTACTS = [
+  { name:'הראל — מוקד סוכנים',     phone:'03-7540000', email:'agents@harel.co.il',     notes:'שעות: א׳–ה׳ 8–17'     },
+  { name:'הראל — שירות לקוחות',    phone:'*4613',      email:'service@harel.co.il',    notes:''                      },
+  { name:'מגדל — ראש צוות סוכנים', phone:'03-7656000', email:'agents@migdal.co.il',    notes:'פניה ישירה לנציג קבוע' },
+  { name:'מגדל — מוקד כללי',       phone:'*3400',      email:'info@migdal.co.il',      notes:''                      },
+  { name:'הפניקס — מוקד סוכנים',   phone:'03-7109999', email:'agents@fnx.co.il',       notes:'פניות בענין פוליסות'   },
+  { name:'הפניקס — תביעות',        phone:'03-7108888', email:'claims@fnx.co.il',       notes:''                      },
+  { name:'כלל — מוקד סוכנים',      phone:'03-9196000', email:'agents@clal.co.il',      notes:'שעות: א׳–ה׳ 8–17'     },
+  { name:'כלל — שירות חיים',       phone:'*5555',      email:'life@clal.co.il',        notes:''                      },
+  { name:'מנורה — שירות סוכנים',   phone:'03-9339333', email:'agents@menora.co.il',    notes:''                      },
+  { name:'איילון — מוקד',          phone:'03-7610000', email:'agents@ayalon.co.il',    notes:''                      },
+];
+
+const PRICING = [
+  { company:'הראל',    product:'קרן פנסיה מקיפה', fromDeposit:'1.49%', fromBalance:'0.00%', notes:'מחיר מקסימלי'   },
+  { company:'הראל',    product:'ביטוח מנהלים',   fromDeposit:'4.00%', fromBalance:'1.05%', notes:''               },
+  { company:'מגדל',    product:'קרן פנסיה מקיפה', fromDeposit:'1.49%', fromBalance:'0.00%', notes:''               },
+  { company:'מגדל',    product:'קופת גמל להשקעה', fromDeposit:'0.00%', fromBalance:'0.70%', notes:''               },
+  { company:'הפניקס',  product:'קרן פנסיה מקיפה', fromDeposit:'1.49%', fromBalance:'0.00%', notes:'הסכם מיוחד'     },
+  { company:'הפניקס',  product:'פוליסת חיסכון',   fromDeposit:'0.00%', fromBalance:'0.80%', notes:''               },
+  { company:'כלל',     product:'קרן פנסיה מקיפה', fromDeposit:'1.49%', fromBalance:'0.00%', notes:''               },
+  { company:'כלל',     product:'קופת גמל',        fromDeposit:'0.00%', fromBalance:'0.65%', notes:'עמלה מינימלית'  },
+];
+
+const FUNDS = [
+  {
+    name: 'הראל', short: 'HR', color: '#d32f2f',
+    funds: [
+      { fundName:'הראל פנסיה מקיפה',    bank:'לאומי',    branch:'800', account:'12345678', code:'550' },
+      { fundName:'הראל גמל',            bank:'הפועלים',  branch:'532', account:'87654321', code:'551' },
+      { fundName:'הראל השתלמות',        bank:'דיסקונט',  branch:'22',  account:'11223344', code:'552' },
+    ]
+  },
+  {
+    name: 'מגדל', short: 'MG', color: '#1565c0',
+    funds: [
+      { fundName:'מגדל פנסיה מקיפה',    bank:'הפועלים',  branch:'520', account:'22334455', code:'610' },
+      { fundName:'מגדל גמל להשקעה',     bank:'לאומי',    branch:'810', account:'55443322', code:'611' },
+      { fundName:'מגדל השתלמות',        bank:'מזרחי',    branch:'105', account:'99887766', code:'612' },
+    ]
+  },
+  {
+    name: 'הפניקס', short: 'PH', color: '#e65100',
+    funds: [
+      { fundName:'הפניקס פנסיה מקיפה',  bank:'לאומי',    branch:'802', account:'33221144', code:'710' },
+      { fundName:'הפניקס גמל',          bank:'הפועלים',  branch:'518', account:'44332211', code:'711' },
+    ]
+  },
+  {
+    name: 'כלל', short: 'CL', color: '#2e7d32',
+    funds: [
+      { fundName:'כלל פנסיה מקיפה',     bank:'מזרחי',    branch:'110', account:'66554433', code:'810' },
+      { fundName:'כלל גמל',             bank:'דיסקונט',  branch:'26',  account:'77665544', code:'811' },
+      { fundName:'כלל השתלמות',         bank:'הפועלים',  branch:'522', account:'88776655', code:'812' },
+    ]
+  },
+  {
+    name: 'מנורה', short: 'MN', color: '#6a1b9a',
+    funds: [
+      { fundName:'מנורה פנסיה מקיפה',   bank:'לאומי',    branch:'805', account:'12121212', code:'910' },
+      { fundName:'מנורה השתלמות',       bank:'הפועלים',  branch:'525', account:'21212121', code:'911' },
+    ]
+  },
 ];
 
 const PORTALS = [
-  {
-    name: 'הראל',
-    short: 'HR',
-    color: '#d32f2f',
-    desc: 'פורטל סוכנים — חיים, בריאות, רכב',
-    url: 'https://www.harel-group.co.il',
-  },
-  {
-    name: 'מגדל',
-    short: 'MG',
-    color: '#1565c0',
-    desc: 'פורטל סוכנים — ביטוח ופיננסים',
-    url: 'https://www.migdal.co.il',
-  },
-  {
-    name: 'הפניקס',
-    short: 'PH',
-    color: '#e65100',
-    desc: 'פורטל סוכנים — ביטוח כללי וחיים',
-    url: 'https://www.fnx.co.il',
-  },
-  {
-    name: 'כלל',
-    short: 'CL',
-    color: '#2e7d32',
-    desc: 'פורטל סוכנים — ביטוח וחיסכון',
-    url: 'https://www.clal.co.il',
-  },
-  {
-    name: 'מנורה',
-    short: 'MN',
-    color: '#6a1b9a',
-    desc: 'פורטל סוכנים — ביטוח חיים ובריאות',
-    url: 'https://www.menora.co.il',
-  },
-  {
-    name: 'איילון',
-    short: 'AY',
-    color: '#00695c',
-    desc: 'פורטל סוכנים — ביטוח כללי',
-    url: 'https://www.ayalon.co.il',
-  },
+  { name:'הראל',   short:'HR', color:'#d32f2f', desc:'פורטל סוכנים — חיים, בריאות, רכב',   url:'https://www.harel-group.co.il' },
+  { name:'מגדל',   short:'MG', color:'#1565c0', desc:'פורטל סוכנים — ביטוח ופיננסים',      url:'https://www.migdal.co.il'      },
+  { name:'הפניקס', short:'PH', color:'#e65100', desc:'פורטל סוכנים — ביטוח כללי וחיים',    url:'https://www.fnx.co.il'         },
+  { name:'כלל',    short:'CL', color:'#2e7d32', desc:'פורטל סוכנים — ביטוח וחיסכון',       url:'https://www.clal.co.il'        },
+  { name:'מנורה',  short:'MN', color:'#6a1b9a', desc:'פורטל סוכנים — ביטוח חיים ובריאות',  url:'https://www.menora.co.il'      },
+  { name:'איילון', short:'AY', color:'#00695c', desc:'פורטל סוכנים — ביטוח כללי',           url:'https://www.ayalon.co.il'      },
 ];
 
-const FORMS = [
-  { name: 'טופס פתיחת תיק לקוח חדש',         company: 'כלל',     cat: 'tag-gold',  catLabel: 'פתיחת תיק' },
-  { name: 'טופס העברת סוכן — ביטוח חיים',    company: 'הראל',    cat: '',          catLabel: 'העברה'     },
-  { name: 'הצהרת בריאות — ביטוח מנהלים',     company: 'מגדל',    cat: 'tag-green', catLabel: 'בריאות'    },
-  { name: 'טופס ביטול פוליסה',                company: 'הפניקס',  cat: '',          catLabel: 'ביטול'     },
-  { name: 'בקשה לשינוי מוטב',                 company: 'כלל',     cat: 'tag-green', catLabel: 'שינוי פרטים'},
-  { name: 'טופס תביעה — ביטוח רכב',          company: 'מנורה',   cat: '',          catLabel: 'תביעה'     },
+const FORMS_DATA = [
+  { name:'טופס פתיחת תיק לקוח חדש',      company:'כלל',    cat:'tag-gold',  catLabel:'פתיחת תיק'  },
+  { name:'טופס העברת סוכן — ביטוח חיים', company:'הראל',   cat:'',          catLabel:'העברה'       },
+  { name:'הצהרת בריאות — ביטוח מנהלים',  company:'מגדל',   cat:'tag-green', catLabel:'בריאות'      },
+  { name:'טופס ביטול פוליסה',             company:'הפניקס', cat:'',          catLabel:'ביטול'       },
+  { name:'בקשה לשינוי מוטב',              company:'כלל',    cat:'tag-green', catLabel:'שינוי פרטים' },
+  { name:'טופס תביעה — ביטוח רכב',       company:'מנורה',  cat:'',          catLabel:'תביעה'       },
 ];
 
 const revealed = {};
 
-/* ══════════════════════════════════════════════
+/* ══════════════════════════
    AUTH
-══════════════════════════════════════════════ */
+══════════════════════════ */
 const SESSION_KEY  = 'bq_session';
 const REMEMBER_KEY = 'bq_remember';
 
 function attemptLogin() {
-  const raw      = document.getElementById('username').value.trim();
-  const username = raw.toLowerCase();
+  const username = document.getElementById('username').value.trim().toLowerCase();
   const password = document.getElementById('password').value;
   const remember = document.getElementById('remember-me').checked;
   const errEl    = document.getElementById('login-error');
-
   const user = STAFF.find(u => u.username === username && u.password === password);
-  if (!user) {
-    errEl.style.display = 'block';
-    document.getElementById('password').value = '';
-    return;
-  }
-
+  if (!user) { errEl.style.display = 'block'; document.getElementById('password').value = ''; return; }
   errEl.style.display = 'none';
   sessionStorage.setItem(SESSION_KEY, JSON.stringify({ username: user.username, ts: Date.now() }));
-
   if (remember) {
-    const exp = Date.now() + 7 * 24 * 60 * 60 * 1000;
+    const exp = Date.now() + 7*24*60*60*1000;
     localStorage.setItem(REMEMBER_KEY, JSON.stringify({ username: user.username, exp }));
   }
   launchApp(user.username);
@@ -998,9 +732,7 @@ function attemptLogin() {
 
 function checkAutoLogin() {
   const sess = sessionStorage.getItem(SESSION_KEY);
-  if (sess) {
-    try { const { username } = JSON.parse(sess); launchApp(username); return; } catch(e) {}
-  }
+  if (sess) { try { launchApp(JSON.parse(sess).username); return; } catch(e){} }
   const rem = localStorage.getItem(REMEMBER_KEY);
   if (rem) {
     try {
@@ -1009,13 +741,12 @@ function checkAutoLogin() {
         sessionStorage.setItem(SESSION_KEY, JSON.stringify({ username, ts: Date.now() }));
         launchApp(username); return;
       } else { localStorage.removeItem(REMEMBER_KEY); }
-    } catch(e) {}
+    } catch(e){}
   }
 }
 
 function logout() {
-  sessionStorage.removeItem(SESSION_KEY);
-  localStorage.removeItem(REMEMBER_KEY);
+  sessionStorage.removeItem(SESSION_KEY); localStorage.removeItem(REMEMBER_KEY);
   document.getElementById('app').style.display = 'none';
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('username').value = '';
@@ -1028,21 +759,25 @@ function launchApp(username) {
   document.getElementById('user-name-display').textContent = username;
   document.getElementById('user-avatar').textContent = username.charAt(0).toUpperCase();
   renderCredentials(CREDENTIALS);
+  renderContacts(INTERNAL_CONTACTS, 'internal-tbody', 'internal-no-results');
+  renderContacts(EXTERNAL_CONTACTS, 'external-tbody', 'external-no-results');
+  renderPricing(PRICING);
+  renderFundsAccordion(FUNDS);
   renderPortals();
   renderForms();
 }
 
-/* ══════════════════════════════════════════════
+/* ══════════════════════════
    NAVIGATION
-══════════════════════════════════════════════ */
+══════════════════════════ */
 const PAGE_MAP = {
-  'credentials':     'page-credentials',
-  'agent-numbers':   'page-agent-numbers',
-  'company-contacts':'page-company-contacts',
-  'fees':            'page-fees',
-  'workflows':       'page-workflows',
-  'quicklinks':      'page-quicklinks',
-  'forms':           'page-forms',
+  'credentials':  'page-credentials',
+  'agent-numbers':'page-agent-numbers',
+  'contacts':     'page-contacts',
+  'fees':         'page-fees',
+  'workflows':    'page-workflows',
+  'quicklinks':   'page-quicklinks',
+  'forms':        'page-forms',
 };
 
 function showPage(key, el) {
@@ -1052,130 +787,199 @@ function showPage(key, el) {
   el.classList.add('active');
 }
 
-/* ══════════════════════════════════════════════
-   CREDENTIALS TABLE
-══════════════════════════════════════════════ */
-function renderCredentials(data) {
-  const tbody = document.getElementById('creds-tbody');
-  const noRes = document.getElementById('no-results');
+function switchTab(pageKey, tabKey, btn) {
+  const prefix = pageKey + '-tab-';
+  document.querySelectorAll(`[id^="${prefix}"]`).forEach(p => p.classList.remove('active'));
+  document.getElementById(prefix + tabKey).classList.add('active');
+  btn.closest('.tabs-wrap').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
 
+/* ══════════════════════════
+   CREDENTIALS
+══════════════════════════ */
+function renderCredentials(data) {
   document.getElementById('stat-total').textContent    = CREDENTIALS.length;
   document.getElementById('stat-filtered').textContent = data.length;
-
-  if (data.length === 0) {
-    tbody.innerHTML = '';
-    noRes.style.display = 'block';
-    return;
-  }
+  const noRes = document.getElementById('creds-no-results');
+  if (!data.length) { document.getElementById('creds-tbody').innerHTML = ''; noRes.style.display = 'block'; return; }
   noRes.style.display = 'none';
-
-  tbody.innerHTML = data.map(row => {
-    const globalIdx  = CREDENTIALS.indexOf(row);
-    const isRevealed = !!revealed[globalIdx];
-    const passDisplay = isRevealed ? escHtml(row.password) : '••••••••••••';
-    const eyeLabel    = isRevealed ? '🙈' : '👁️';
-    const initials    = row.company.charAt(0);
-
-    return `
-      <tr>
-        <td>
-          <div class="company-cell">
-            <div class="company-badge">${initials}</div>
-            <span class="company-name">${escHtml(row.company)}</span>
-          </div>
-        </td>
-        <td style="font-family:'Courier New',monospace;color:var(--text-secondary);font-size:13px;">${escHtml(row.agentNum)}</td>
-        <td style="font-family:'Courier New',monospace;font-size:13px;">${escHtml(row.username)}</td>
-        <td>
-          <div class="password-cell">
-            <span class="password-display" id="pass-${globalIdx}">${passDisplay}</span>
-            <button class="btn-eye" onclick="togglePassword(${globalIdx})" title="${isRevealed ? 'הסתר' : 'הצג'} סיסמה">
-              ${eyeLabel}
-            </button>
-          </div>
-        </td>
-      </tr>`;
+  document.getElementById('creds-tbody').innerHTML = data.map(row => {
+    const i = CREDENTIALS.indexOf(row);
+    const shown = !!revealed[i];
+    return `<tr>
+      <td><div class="company-cell"><div class="company-badge">${row.company.charAt(0)}</div><span class="company-name">${esc(row.company)}</span></div></td>
+      <td style="font-family:'Courier New',monospace;font-size:13px;color:var(--text-secondary)">${esc(row.agentNum)}</td>
+      <td style="font-family:'Courier New',monospace;font-size:13px">${esc(row.username)}</td>
+      <td><div class="password-cell">
+        <span class="password-display" id="pass-${i}">${shown ? esc(row.password) : '••••••••••••'}</span>
+        <button class="btn-eye" onclick="togglePwd(${i})">${shown ? '🙈' : '👁️'}</button>
+      </div></td>
+    </tr>`;
   }).join('');
 }
 
-function togglePassword(idx) {
-  revealed[idx] = !revealed[idx];
-  const row  = CREDENTIALS[idx];
-  const span = document.getElementById('pass-' + idx);
+function togglePwd(i) {
+  revealed[i] = !revealed[i];
+  const span = document.getElementById('pass-'+i);
   const btn  = span.parentElement.querySelector('.btn-eye');
-  if (revealed[idx]) {
-    span.textContent = row.password;
-    btn.textContent  = '🙈';
-    btn.title        = 'הסתר סיסמה';
-  } else {
-    span.textContent = '••••••••••••';
-    btn.textContent  = '👁️';
-    btn.title        = 'הצג סיסמה';
-  }
+  span.textContent = revealed[i] ? CREDENTIALS[i].password : '••••••••••••';
+  btn.textContent  = revealed[i] ? '🙈' : '👁️';
 }
 
 function filterCredentials() {
-  const q = document.getElementById('search-input').value.trim().toLowerCase();
-  if (!q) { renderCredentials(CREDENTIALS); return; }
-  const filtered = CREDENTIALS.filter(row =>
-    row.company.toLowerCase().includes(q)  ||
-    row.username.toLowerCase().includes(q) ||
-    row.agentNum.toLowerCase().includes(q)
-  );
-  renderCredentials(filtered);
+  const q = document.getElementById('creds-search').value.trim().toLowerCase();
+  renderCredentials(q ? CREDENTIALS.filter(r => [r.company,r.username,r.agentNum].some(v => v.toLowerCase().includes(q))) : CREDENTIALS);
 }
 
-/* ══════════════════════════════════════════════
-   PORTALS GRID
-══════════════════════════════════════════════ */
+/* ══════════════════════════
+   CONTACTS
+══════════════════════════ */
+function renderContacts(data, tbodyId, noResId) {
+  const noRes = document.getElementById(noResId);
+  if (!data.length) { document.getElementById(tbodyId).innerHTML = ''; noRes.style.display = 'block'; return; }
+  noRes.style.display = 'none';
+  document.getElementById(tbodyId).innerHTML = data.map(r => `
+    <tr>
+      <td style="font-weight:600">${esc(r.name)}</td>
+      <td><a href="tel:${esc(r.phone)}" style="color:var(--blue);text-decoration:none;font-weight:600">${esc(r.phone)}</a></td>
+      <td><a href="mailto:${esc(r.email)}" style="color:var(--text-secondary);text-decoration:none">${esc(r.email)}</a></td>
+      <td style="color:var(--text-muted);font-size:13px">${esc(r.notes)}</td>
+    </tr>`).join('');
+}
+
+function filterContacts() {
+  const q = document.getElementById('contacts-search').value.trim().toLowerCase();
+  const match = arr => q ? arr.filter(r => [r.name,r.phone,r.email,r.notes].some(v => v.toLowerCase().includes(q))) : arr;
+  renderContacts(match(INTERNAL_CONTACTS), 'internal-tbody', 'internal-no-results');
+  renderContacts(match(EXTERNAL_CONTACTS), 'external-tbody', 'external-no-results');
+}
+
+/* ══════════════════════════
+   PRICING TABLE
+══════════════════════════ */
+function renderPricing(data) {
+  document.getElementById('pricing-tbody').innerHTML = data.map(r => `
+    <tr>
+      <td><div class="company-cell"><div class="company-badge">${r.company.charAt(0)}</div><span class="company-name">${esc(r.company)}</span></div></td>
+      <td>${esc(r.product)}</td>
+      <td style="font-weight:700;color:var(--blue)">${esc(r.fromDeposit)}</td>
+      <td style="font-weight:700;color:var(--success)">${esc(r.fromBalance)}</td>
+      <td style="color:var(--text-muted);font-size:13px">${esc(r.notes)}</td>
+    </tr>`).join('');
+}
+
+/* ══════════════════════════
+   FUNDS ACCORDION
+══════════════════════════ */
+function renderFundsAccordion(fundsData) {
+  document.getElementById('funds-accordion').innerHTML = fundsData.map((co, ci) => `
+    <div class="acc-item" id="acc-${ci}">
+      <div class="acc-header" onclick="toggleAcc(${ci})">
+        <div class="acc-company-logo" style="background:${co.color}">${co.short}</div>
+        <div class="acc-title">
+          <strong>${esc(co.name)}</strong>
+          <span>${co.funds.length} קרנות / חשבונות</span>
+        </div>
+        <span class="acc-count" id="acc-count-${ci}">${co.funds.length}</span>
+        <span class="acc-chevron">▼</span>
+      </div>
+      <div class="acc-body" id="acc-body-${ci}">
+        <div class="acc-no-match" id="acc-nomatch-${ci}">לא נמצאו תוצאות לחיפוש זה</div>
+        <table class="acc-inner-table">
+          <thead><tr>
+            <th>שם הקרן / המוצר</th>
+            <th>בנק</th>
+            <th>סניף</th>
+            <th>מספר חשבון</th>
+            <th>קוד מוסד</th>
+          </tr></thead>
+          <tbody id="acc-tbody-${ci}"></tbody>
+        </table>
+      </div>
+    </div>`).join('');
+
+  fundsData.forEach((co, ci) => renderFundRows(co.funds, ci));
+}
+
+function renderFundRows(funds, ci) {
+  document.getElementById('acc-tbody-'+ci).innerHTML = funds.map(f => `
+    <tr class="fund-row" data-search="${esc([f.fundName,f.bank,f.branch,f.account,f.code].join(' ').toLowerCase())}">
+      <td style="font-weight:600">${esc(f.fundName)}</td>
+      <td>${esc(f.bank)}</td>
+      <td style="font-family:'Courier New',monospace">${esc(f.branch)}</td>
+      <td style="font-family:'Courier New',monospace;font-weight:700">${esc(f.account)}</td>
+      <td><span class="tag tag-blue">${esc(f.code)}</span></td>
+    </tr>`).join('');
+}
+
+function toggleAcc(ci) {
+  const header = document.querySelector(`#acc-${ci} .acc-header`);
+  const body   = document.getElementById('acc-body-'+ci);
+  header.classList.toggle('open');
+  body.classList.toggle('open');
+}
+
+function filterFees() {
+  const q = document.getElementById('fees-search').value.trim().toLowerCase();
+  FUNDS.forEach((co, ci) => {
+    const rows    = document.querySelectorAll(`#acc-tbody-${ci} .fund-row`);
+    const noMatch = document.getElementById('acc-nomatch-'+ci);
+    const countEl = document.getElementById('acc-count-'+ci);
+    let visible = 0;
+    rows.forEach(row => {
+      const matches = !q || row.dataset.search.includes(q);
+      row.style.display = matches ? '' : 'none';
+      if (matches) visible++;
+    });
+    countEl.textContent = visible;
+    noMatch.style.display = (visible === 0 && q) ? 'block' : 'none';
+    if (q && visible > 0) {
+      document.querySelector(`#acc-${ci} .acc-header`).classList.add('open');
+      document.getElementById('acc-body-'+ci).classList.add('open');
+    } else if (!q) {
+      document.querySelector(`#acc-${ci} .acc-header`).classList.remove('open');
+      document.getElementById('acc-body-'+ci).classList.remove('open');
+    }
+  });
+}
+
+/* ══════════════════════════
+   PORTALS & FORMS
+══════════════════════════ */
 function renderPortals() {
   document.getElementById('portals-grid').innerHTML = PORTALS.map(p => `
     <div class="portal-card">
-      <div class="portal-logo" style="background:${p.color};">${p.short}</div>
+      <div class="portal-logo" style="background:${p.color}">${p.short}</div>
       <div class="portal-info">
-        <div class="portal-name">${escHtml(p.name)}</div>
-        <div class="portal-desc">${escHtml(p.desc)}</div>
+        <div class="portal-name">${esc(p.name)}</div>
+        <div class="portal-desc">${esc(p.desc)}</div>
       </div>
-      <a href="${escHtml(p.url)}" target="_blank" rel="noopener noreferrer" class="btn-portal">
-        כניסה לאתר סוכן <span class="arrow">↗</span>
+      <a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer" class="btn-portal">
+        כניסה לאתר סוכן ↗
       </a>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
-/* ══════════════════════════════════════════════
-   FORMS TABLE
-══════════════════════════════════════════════ */
 function renderForms() {
-  document.getElementById('forms-tbody').innerHTML = FORMS.map(f => `
+  document.getElementById('forms-tbody').innerHTML = FORMS_DATA.map(f => `
     <tr>
-      <td style="font-weight:600;">${escHtml(f.name)}</td>
-      <td>${escHtml(f.company)}</td>
-      <td><span class="form-tag ${f.cat}">${escHtml(f.catLabel)}</span></td>
-      <td>
-        <button class="btn-download" onclick="alert('הקובץ יתווסף בקרוב')">
-          ⬇ הורדה
-        </button>
-      </td>
-    </tr>
-  `).join('');
+      <td style="font-weight:600">${esc(f.name)}</td>
+      <td>${esc(f.company)}</td>
+      <td><span class="tag ${f.cat || 'tag-gray'}">${esc(f.catLabel)}</span></td>
+      <td><button class="btn-download" onclick="alert('הקובץ יתווסף בקרוב')">⬇ הורדה</button></td>
+    </tr>`).join('');
 }
 
-/* ══════════════════════════════════════════════
+/* ══════════════════════════
    UTILS
-══════════════════════════════════════════════ */
-function escHtml(str) {
-  return String(str)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
+══════════════════════════ */
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') {
-    attemptLogin();
-  }
+  if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') attemptLogin();
 });
 
 checkAutoLogin();
