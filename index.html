@@ -569,6 +569,115 @@
       border-bottom: 1px solid var(--card-border);
     }
     .portals-section-label:first-of-type { margin-top: 0; }
+
+    /* ══ MOBILE OVERLAY ══ */
+    .sidebar-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.45); z-index: 150;
+    }
+    .sidebar-overlay.active { display: block; }
+
+    /* ══ MOBILE RESPONSIVENESS ══ */
+    @media (max-width: 768px) {
+      :root { --sidebar-w: 272px; }
+
+      .sidebar {
+        transform: translateX(100%);
+        transition: transform .28s cubic-bezier(.4,0,.2,1), width .28s;
+        width: var(--sidebar-w) !important;
+        z-index: 160;
+      }
+      .sidebar.mobile-open {
+        transform: translateX(0);
+      }
+      .sidebar.collapsed {
+        transform: translateX(100%);
+        width: var(--sidebar-w) !important;
+      }
+
+      .main-content {
+        margin-right: 0 !important;
+        padding: 20px 16px;
+      }
+
+      .sidebar-toggle {
+        right: 14px !important;
+      }
+
+      /* Stack featured tools */
+      .featured-tools { grid-template-columns: 1fr !important; }
+
+      /* Stack form grid */
+      .form-grid { grid-template-columns: 1fr !important; }
+      .form-grid .full { grid-column: 1 !important; }
+
+      /* Mobile table cards */
+      .data-table thead { display: none; }
+      .data-table tbody tr {
+        display: block;
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius);
+        margin-bottom: 10px;
+        padding: 12px 14px;
+        background: var(--card-bg);
+      }
+      .data-table td {
+        display: flex; align-items: flex-start;
+        gap: 8px; padding: 5px 0;
+        border: none; font-size: 13px;
+      }
+      .data-table td::before {
+        content: attr(data-label);
+        font-size: 11px; font-weight: 700;
+        color: var(--text-muted); min-width: 80px; flex-shrink: 0;
+      }
+      .table-card { border-radius: var(--radius-lg); overflow: visible; background: transparent; border: none; box-shadow: none; }
+
+      .page-header h1 { font-size: 20px; }
+      .stats-strip { grid-template-columns: 1fr 1fr; }
+      .agent-id-grid { grid-template-columns: 1fr; }
+      .portals-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .portals-grid { grid-template-columns: 1fr; }
+      .stats-strip { grid-template-columns: 1fr; }
+    }
+
+    /* ══ CUSTOMER TYPE TOGGLE (mortgage) ══ */
+    .toggle-group {
+      display: flex; gap: 0; border: 1.5px solid var(--card-border);
+      border-radius: var(--radius); overflow: hidden; width: fit-content;
+    }
+    .toggle-btn {
+      padding: 9px 20px; border: none; cursor: pointer; font-size: 14px; font-weight: 700;
+      background: #f8fafc; color: var(--text-muted);
+      font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
+      transition: background .15s, color .15s;
+    }
+    .toggle-btn.active { background: var(--sidebar-bg); color: #fff; }
+    .toggle-btn:first-child { border-left: 1px solid var(--card-border); }
+
+    .discount-info-box {
+      background: var(--gold-light); border: 1px solid var(--gold-border);
+      border-radius: var(--radius); padding: 12px 16px; margin-top: 10px;
+      font-size: 13px; color: #92650a; font-weight: 600;
+    }
+
+    /* Price breakdown in proposal */
+    .price-breakdown {
+      background: #f8fafc; border-radius: 10px; padding: 16px 20px;
+      margin-bottom: 24px; border-right: 4px solid var(--gold);
+    }
+    .price-breakdown-row {
+      display: flex; justify-content: space-between;
+      padding: 5px 0; font-size: 14px; color: var(--text-secondary);
+    }
+    .price-breakdown-row.total {
+      border-top: 1px solid var(--card-border); margin-top: 8px; padding-top: 10px;
+      font-size: 17px; font-weight: 800; color: var(--text-primary);
+    }
+    .price-breakdown-row .strike { text-decoration: line-through; color: var(--text-muted); }
   </style>
 </head>
 <body>
@@ -613,13 +722,14 @@
 <!-- ══ APP ══ -->
 <div id="app">
   <div class="layout">
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
 
     <!-- floating toggle button -->
     <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()" title="הסתר/הצג תפריט">☰</button>
 
     <aside class="sidebar">
       <div class="sidebar-header">
-        <div class="sidebar-brand" onclick="showPage('credentials',document.querySelector('.nav-item'))" style="cursor:pointer" title="חזרה לדף הבית">
+        <div class="sidebar-brand" onclick="showPage('dashboard',document.getElementById('nav-dashboard'))" style="cursor:pointer" title="חזרה לדשבורד">
           <svg width="36" height="36" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
             <rect width="400" height="400" rx="88" fill="#1a2d4f"/>
             <path d="M148 88 Q200 42 252 88" stroke="#c9a84c" stroke-width="10" fill="none" stroke-linecap="round"/>
@@ -654,8 +764,12 @@
       </div>
 
       <nav class="sidebar-nav">
+        <div class="nav-section-label">ראשי</div>
+        <div class="nav-item" id="nav-dashboard" onclick="showPage('dashboard',this)">
+          <span class="nav-icon">🏠</span> דשבורד ראשי
+        </div>
         <div class="nav-section-label">ניהול מידע</div>
-        <div class="nav-item active" onclick="showPage('credentials',this)">
+        <div class="nav-item" id="nav-credentials" onclick="showPage('credentials',this)">
           <span class="nav-icon">🔑</span> פרטי התחברות ויוזרים
           <span class="nav-badge">4</span>
         </div>
@@ -678,7 +792,10 @@
           <span class="nav-icon">📄</span> טפסים שימושיים
         </div>
         <div class="nav-item" onclick="showPage('mortgage',this)">
-          <span class="nav-icon">🏠</span> עולם המשכנתאות
+          <span class="nav-icon">🏡</span> עולם המשכנתאות
+        </div>
+        <div class="nav-item" onclick="showPage('elementary',this)">
+          <span class="nav-icon">🛡️</span> ביטוח אלמנטרי
         </div>
       </nav>
 
@@ -696,8 +813,49 @@
 
     <main class="main-content">
 
+      <!-- ══ 0. DASHBOARD ══ -->
+      <div class="page active" id="page-dashboard">
+        <div class="page-header">
+          <h1 id="dash-welcome">ברוכים הבאים 👋</h1>
+          <p>לוח הבקרה הפנימי של ברוכי סוכנות לביטוח</p>
+        </div>
+
+        <!-- Featured sheets -->
+        <div class="featured-tools" style="margin-bottom:28px">
+          <a href="https://docs.google.com/spreadsheets/d/1a2B8AfUBjCMo7jhHuvZoxqzYEMjPwjE81j8-_41JQ1U/edit?gid=0#gid=0"
+             target="_blank" rel="noopener noreferrer" class="featured-card gold">
+            <div class="featured-icon gold-bg">🎯</div>
+            <div class="featured-label">
+              <strong>תוכנית עבודה 2026</strong>
+              <span>לוח הבקרה הראשי היומי</span>
+            </div>
+          </a>
+          <a href="https://docs.google.com/spreadsheets/d/1IDqxT9RTPOk2z0n7niJ7CSjSxHMR8rRd02NqABigZu8/edit?gid=316826309#gid=316826309"
+             target="_blank" rel="noopener noreferrer" class="featured-card blue">
+            <div class="featured-icon blue-bg">📊</div>
+            <div class="featured-label">
+              <strong>טבלת גביה</strong>
+              <span>מעקב גביה ותשלומים</span>
+            </div>
+          </a>
+        </div>
+
+        <!-- Quick nav tiles -->
+        <div class="section-label">ניווט מהיר</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:32px" id="dash-nav-tiles"></div>
+
+        <!-- Top contacts -->
+        <div class="section-label">אנשי קשר מהירים</div>
+        <div class="table-card">
+          <table class="data-table">
+            <thead><tr><th>שם</th><th>טלפון</th><th>הערות</th></tr></thead>
+            <tbody id="dash-contacts-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
       <!-- ══ 1. CREDENTIALS ══ -->
-      <div class="page active" id="page-credentials">
+      <div class="page" id="page-credentials">
         <div class="page-header">
           <div class="breadcrumb">ברוכי HQ ← <span>פרטי התחברות</span></div>
           <h1>🔑 פרטי התחברות ויוזרים</h1>
@@ -980,12 +1138,34 @@
                 <input type="date" id="prop-date" />
               </div>
               <div class="form-field full">
+                <label>סוג לקוח</label>
+                <div class="toggle-group">
+                  <button class="toggle-btn" id="toggle-external" onclick="setClientType('external')">לקוח חיצוני</button>
+                  <button class="toggle-btn active" id="toggle-internal" onclick="setClientType('internal')">לקוח פנימי</button>
+                </div>
+                <div class="discount-info-box" id="discount-info-box">
+                  ✨ לקוח פנימי — הנחה של 20% מחיר הבסיס
+                </div>
+              </div>
+              <div class="form-field full">
                 <label for="prop-service">תיאור השירות / מסלול הליווי</label>
                 <textarea id="prop-service" placeholder="ליווי מלא לתהליך קבלת משכנתא — ייעוץ, תכנון מסלולים, ליווי מול הבנקים וסגירת עסקה..."></textarea>
               </div>
               <div class="form-field">
-                <label for="prop-price">מחיר קבוע / שכר טרחה</label>
-                <input type="text" id="prop-price" placeholder="₪ 5,000" />
+                <label for="prop-base-price">מחיר בסיס</label>
+                <input type="number" id="prop-base-price" placeholder="5000" oninput="updatePriceCalc()" />
+              </div>
+              <div class="form-field">
+                <label for="prop-discount">הנחה נוספת (%)</label>
+                <input type="number" id="prop-discount" placeholder="0" min="0" max="100" value="0" oninput="updatePriceCalc()" />
+              </div>
+              <div class="form-field full" id="price-calc-display" style="display:none">
+                <div class="price-breakdown">
+                  <div class="price-breakdown-row"><span>מחיר בסיס</span><span id="calc-base">—</span></div>
+                  <div class="price-breakdown-row" id="calc-client-row" style="display:none"><span>הנחת לקוח פנימי (20%)</span><span id="calc-client-disc" style="color:var(--success)">—</span></div>
+                  <div class="price-breakdown-row" id="calc-extra-row" style="display:none"><span>הנחה נוספת</span><span id="calc-extra-disc" style="color:var(--success)">—</span></div>
+                  <div class="price-breakdown-row total"><span>סה"כ לתשלום</span><span id="calc-total" style="color:var(--gold)">—</span></div>
+                </div>
               </div>
               <div class="form-field">
                 <label for="prop-payment">תנאי תשלום</label>
@@ -1030,8 +1210,9 @@
               <div class="proposal-service-box" id="pdoc-service"></div>
 
               <div class="proposal-section-title">עלות השירות</div>
+              <div id="pdoc-price-breakdown"></div>
               <div class="proposal-price-row">
-                <div class="proposal-price-label">שכר טרחה כולל</div>
+                <div class="proposal-price-label">סה"כ לתשלום</div>
                 <div class="proposal-price-amount" id="pdoc-price"></div>
               </div>
 
@@ -1072,6 +1253,20 @@
             <h3>מדריכים ותהליכים — בקרוב</h3>
             <p>נהלי עבודה ומדריכי משכנתא יתווספו כאן בשלב הבא</p>
           </div>
+        </div>
+      </div>
+
+      <!-- ══ 9. ELEMENTARY INSURANCE ══ -->
+      <div class="page" id="page-elementary">
+        <div class="page-header">
+          <div class="breadcrumb">ברוכי HQ ← <span>ביטוח אלמנטרי</span></div>
+          <h1>🛡️ ביטוח אלמנטרי</h1>
+          <p>ביטוח רכב, דירה, עסק ועוד — כלי עבודה וטפסים</p>
+        </div>
+        <div class="placeholder-card">
+          <div class="ph-icon">🚧</div>
+          <h3>עמוד זה בפיתוח</h3>
+          <p>תוכן תחום ביטוח אלמנטרי יתווסף כאן בשלב הבא</p>
         </div>
       </div>
 
@@ -1191,7 +1386,7 @@ const AGENT_NUMBERS = [
   { company:'הראל — חדש',            number:'24807',    notes:'' },
   { company:'הראל — ישן',            number:'1850',     notes:'' },
   { company:'הכשרה בסט',             number:'38387',    notes:'' },
-  { company:'הכשרה חיים',            number:'8287',     notes:'L-00127650' },
+  { company:'הכשרה חיים',            number:'8287',     notes:'' },
   { company:'ילין לפידות',           number:'10640',    notes:'' },
   { company:'כלל',                   number:'7015',     notes:'' },
   { company:'כלל השתלמות',           number:'33065',    notes:'' },
@@ -1350,12 +1545,59 @@ function launchApp(username) {
   renderFundsAccordion(FUNDS);
   renderPortals();
   renderForms();
+  renderDashboard(username);
+  // Boot to dashboard
+  showPage('dashboard', document.getElementById('nav-dashboard'));
+  // On mobile, start with sidebar hidden
+  if (isMobile()) { sidebarOpen = false; }
+}
+
+function renderDashboard(username) {
+  const names = { oren:'אורן', asher:'אשר', yehonatan:'יהונתן', riki:'ריקי', heidi:'היידי', chaya:'חיה שרה' };
+  document.getElementById('dash-welcome').textContent = 'שלום, ' + (names[username] || username) + ' 👋';
+
+  // Quick nav tiles
+  const tiles = [
+    { key:'credentials', icon:'🔑', label:'פרטי התחברות' },
+    { key:'agent-numbers', icon:'🔢', label:'מספרי סוכן' },
+    { key:'contacts', icon:'📞', label:'אנשי קשר' },
+    { key:'fees', icon:'💰', label:'דמי ניהול' },
+    { key:'workflows', icon:'📋', label:'מדריכי עבודה' },
+    { key:'quicklinks', icon:'🔗', label:'קישורים מהירים' },
+    { key:'forms', icon:'📄', label:'טפסים' },
+    { key:'mortgage', icon:'🏡', label:'משכנתאות' },
+    { key:'elementary', icon:'🛡️', label:'אלמנטרי' },
+  ];
+  document.getElementById('dash-nav-tiles').innerHTML = tiles.map(t => `
+    <div onclick="navTo('${t.key}')"
+         style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius-lg);
+                padding:18px 14px;text-align:center;cursor:pointer;box-shadow:var(--card-shadow);
+                transition:box-shadow .2s,transform .2s"
+         onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='var(--card-shadow-lg)'"
+         onmouseout="this.style.transform='';this.style.boxShadow='var(--card-shadow)'">
+      <div style="font-size:24px;margin-bottom:8px">${t.icon}</div>
+      <div style="font-size:13px;font-weight:700;color:var(--text-primary)">${t.label}</div>
+    </div>`).join('');
+
+  // Top 5 internal contacts
+  const top = INTERNAL_CONTACTS.slice(0, 5);
+  document.getElementById('dash-contacts-tbody').innerHTML = top.map(r => {
+    const phone = r.phone.startsWith('שלוחה')
+      ? `<span style="font-family:'Courier New',monospace;font-weight:700">${esc(r.phone)}</span>`
+      : `<a href="tel:${esc(r.phone.replace(/[-\s]/g,''))}" style="color:var(--blue);font-weight:700;text-decoration:none">${esc(r.phone)}</a>`;
+    return `<tr>
+      <td style="font-weight:600">${esc(r.name)}</td>
+      <td>${phone}</td>
+      <td style="font-size:13px;color:var(--text-muted)">${r.notes ? esc(r.notes) : '—'}</td>
+    </tr>`;
+  }).join('');
 }
 
 /* ══════════════════════════
    NAVIGATION
 ══════════════════════════ */
 const PAGE_MAP = {
+  'dashboard':    'page-dashboard',
   'credentials':  'page-credentials',
   'agent-numbers':'page-agent-numbers',
   'contacts':     'page-contacts',
@@ -1364,13 +1606,27 @@ const PAGE_MAP = {
   'quicklinks':   'page-quicklinks',
   'forms':        'page-forms',
   'mortgage':     'page-mortgage',
+  'elementary':   'page-elementary',
 };
 
 function showPage(key, el) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(PAGE_MAP[key]).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  el.classList.add('active');
+  if (el) el.classList.add('active');
+  // Close sidebar on mobile after navigation
+  if (isMobile() && sidebarOpen) {
+    sidebarOpen = false;
+    document.querySelector('.sidebar').classList.remove('mobile-open');
+    document.getElementById('sidebar-overlay').classList.remove('active');
+  }
+}
+
+function navTo(key) {
+  const navEls = document.querySelectorAll('.nav-item');
+  let navEl = null;
+  navEls.forEach(n => { if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'" + key + "'")) navEl = n; });
+  showPage(key, navEl);
 }
 
 function switchTab(pageKey, tabKey, btn) {
@@ -1654,45 +1910,117 @@ function esc(s) {
    SIDEBAR TOGGLE
 ══════════════════════════ */
 let sidebarOpen = true;
-const SIDEBAR_W = getComputedStyle(document.documentElement).getPropertyValue('--sidebar-w').trim();
+
+function isMobile() { return window.innerWidth <= 768; }
 
 function toggleSidebar() {
   const sidebar  = document.querySelector('.sidebar');
   const main     = document.querySelector('.main-content');
-  const btn      = document.getElementById('sidebar-toggle');
+  const overlay  = document.getElementById('sidebar-overlay');
   sidebarOpen = !sidebarOpen;
-  if (sidebarOpen) {
-    sidebar.classList.remove('collapsed');
-    main.classList.remove('expanded');
-    btn.textContent = '☰';
-    btn.style.right = '';
+  if (isMobile()) {
+    if (sidebarOpen) {
+      sidebar.classList.add('mobile-open');
+      overlay.classList.add('active');
+    } else {
+      sidebar.classList.remove('mobile-open');
+      overlay.classList.remove('active');
+    }
   } else {
-    sidebar.classList.add('collapsed');
-    main.classList.add('expanded');
-    btn.textContent = '☰';
-    btn.style.right = '14px';
+    if (sidebarOpen) {
+      sidebar.classList.remove('collapsed');
+      main.classList.remove('expanded');
+    } else {
+      sidebar.classList.add('collapsed');
+      main.classList.add('expanded');
+    }
   }
 }
+
+// On resize, reset mobile state if switching to desktop
+window.addEventListener('resize', () => {
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  if (!isMobile()) {
+    sidebar.classList.remove('mobile-open');
+    overlay.classList.remove('active');
+    if (!sidebarOpen) { sidebar.classList.add('collapsed'); }
+  } else {
+    sidebar.classList.remove('collapsed');
+    document.querySelector('.main-content').classList.remove('expanded');
+  }
+});
 
 /* ══════════════════════════
    MORTGAGE PROPOSAL
 ══════════════════════════ */
+let clientType = 'internal';
+
+function setClientType(type) {
+  clientType = type;
+  document.getElementById('toggle-internal').classList.toggle('active', type === 'internal');
+  document.getElementById('toggle-external').classList.toggle('active', type === 'external');
+  document.getElementById('discount-info-box').style.display = type === 'internal' ? 'block' : 'none';
+  updatePriceCalc();
+}
+
+function fmt(n) { return '₪' + Number(n).toLocaleString('he-IL'); }
+
+function updatePriceCalc() {
+  const base = parseFloat(document.getElementById('prop-base-price').value) || 0;
+  const extraPct = parseFloat(document.getElementById('prop-discount').value) || 0;
+  const display = document.getElementById('price-calc-display');
+  if (!base) { display.style.display = 'none'; return; }
+  display.style.display = 'block';
+
+  const clientDisc = clientType === 'internal' ? base * 0.20 : 0;
+  const afterClient = base - clientDisc;
+  const extraDisc = afterClient * (extraPct / 100);
+  const total = afterClient - extraDisc;
+
+  document.getElementById('calc-base').textContent = fmt(base);
+  const clientRow = document.getElementById('calc-client-row');
+  clientRow.style.display = clientDisc ? '' : 'none';
+  document.getElementById('calc-client-disc').textContent = '− ' + fmt(clientDisc);
+  const extraRow = document.getElementById('calc-extra-row');
+  extraRow.style.display = extraDisc ? '' : 'none';
+  document.getElementById('calc-extra-disc').textContent = '− ' + fmt(Math.round(extraDisc));
+  document.getElementById('calc-total').textContent = fmt(Math.round(total));
+}
+
 function generateProposal() {
   const client  = document.getElementById('prop-client').value.trim()  || 'לקוח יקר';
   const date    = document.getElementById('prop-date').value;
   const service = document.getElementById('prop-service').value.trim() || '—';
-  const price   = document.getElementById('prop-price').value.trim()   || '—';
   const payment = document.getElementById('prop-payment').value.trim() || '—';
   const notes   = document.getElementById('prop-notes').value.trim();
 
-  const fmt = d => d ? new Date(d).toLocaleDateString('he-IL', { year:'numeric', month:'long', day:'numeric' }) : new Date().toLocaleDateString('he-IL', { year:'numeric', month:'long', day:'numeric' });
+  const base = parseFloat(document.getElementById('prop-base-price').value) || 0;
+  const extraPct = parseFloat(document.getElementById('prop-discount').value) || 0;
+  const clientDisc = clientType === 'internal' ? base * 0.20 : 0;
+  const afterClient = base - clientDisc;
+  const extraDisc = afterClient * (extraPct / 100);
+  const total = Math.round(afterClient - extraDisc);
 
-  document.getElementById('pdoc-date').textContent    = fmt(date);
+  const fmtDate = d => d ? new Date(d).toLocaleDateString('he-IL', { year:'numeric', month:'long', day:'numeric' }) : new Date().toLocaleDateString('he-IL', { year:'numeric', month:'long', day:'numeric' });
+
+  document.getElementById('pdoc-date').textContent    = fmtDate(date);
   document.getElementById('pdoc-client').textContent  = client;
   document.getElementById('pdoc-service').textContent = service;
-  document.getElementById('pdoc-price').textContent   = price;
+  document.getElementById('pdoc-price').textContent   = base ? fmt(total) : '—';
   document.getElementById('pdoc-payment').textContent = payment;
   document.getElementById('pdoc-notes').textContent   = notes || 'הצעה זו בתוקף ל-30 יום ממועד הפקתה.';
+
+  // Build price breakdown HTML for proposal doc
+  let breakdownHtml = '';
+  if (base) {
+    breakdownHtml = `<div style="background:#f8fafc;border-radius:8px;padding:14px 18px;margin-bottom:16px;border-right:3px solid #c9a84c;font-size:13px">`;
+    breakdownHtml += `<div style="display:flex;justify-content:space-between;padding:3px 0"><span>מחיר בסיס</span><span>${esc(fmt(base))}</span></div>`;
+    if (clientDisc) breakdownHtml += `<div style="display:flex;justify-content:space-between;padding:3px 0;color:#059669"><span>הנחת לקוח פנימי (20%)</span><span>− ${esc(fmt(clientDisc))}</span></div>`;
+    if (extraDisc)  breakdownHtml += `<div style="display:flex;justify-content:space-between;padding:3px 0;color:#059669"><span>הנחה נוספת (${extraPct}%)</span><span>− ${esc(fmt(Math.round(extraDisc)))}</span></div>`;
+    breakdownHtml += `</div>`;
+  }
+  document.getElementById('pdoc-price-breakdown').innerHTML = breakdownHtml;
 
   const preview = document.getElementById('proposal-preview');
   preview.style.display = 'block';
