@@ -295,6 +295,34 @@
     }
     .btn-portal:hover { background: #1a3a6e; transform: translateY(-1px); }
 
+    /* ══ COLLAPSIBLE SIDEBAR ══ */
+    .sidebar {
+      transition: width .28s cubic-bezier(.4,0,.2,1);
+      overflow: hidden;
+    }
+    .sidebar.collapsed { width: 0; border: none; }
+    .main-content { transition: margin-right .28s cubic-bezier(.4,0,.2,1); }
+    .main-content.expanded { margin-right: 0; }
+
+    .sidebar-toggle {
+      position: fixed;
+      top: 14px;
+      right: 14px;
+      z-index: 200;
+      width: 34px; height: 34px;
+      background: var(--sidebar-bg);
+      border: 1px solid var(--sidebar-border);
+      border-radius: 8px;
+      color: var(--sidebar-text);
+      font-size: 16px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s, right .28s cubic-bezier(.4,0,.2,1);
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+    }
+    .sidebar-toggle:hover { background: var(--sidebar-hover); color: #fff; }
+    .sidebar-toggle.at-edge { right: 14px; }
+
     /* ══ WORK TOOL SHORTCUTS ══ */
     .sidebar-shortcuts {
       padding: 10px 10px 4px;
@@ -410,6 +438,129 @@
       border-bottom: 1px solid var(--card-border);
     }
 
+    /* ══ MORTGAGE / PROPOSAL ══ */
+    .proposal-form-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 28px 32px;
+      box-shadow: var(--card-shadow);
+      margin-bottom: 20px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    .form-grid .full { grid-column: 1 / -1; }
+    .form-field label {
+      display: block; font-size: 13px; font-weight: 700;
+      color: var(--text-secondary); margin-bottom: 6px;
+    }
+    .form-field input,
+    .form-field textarea,
+    .form-field select {
+      width: 100%; background: #f8fafc;
+      border: 1.5px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 10px 13px; font-size: 14px;
+      color: var(--text-primary); outline: none;
+      font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .form-field input:focus,
+    .form-field textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,.1); background:#fff; }
+    .form-field textarea { resize: vertical; min-height: 80px; }
+
+    .btn-generate {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--gold), #a07828);
+      color: #0f1c33; border: none; border-radius: var(--radius);
+      padding: 13px 28px; font-size: 15px; font-weight: 800;
+      cursor: pointer; font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
+      box-shadow: 0 4px 16px rgba(201,168,76,.35);
+      transition: opacity .2s, transform .1s;
+    }
+    .btn-generate:hover { opacity: .92; transform: translateY(-1px); }
+
+    /* ── Printable proposal ── */
+    #proposal-preview {
+      background: #fff;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 48px 52px;
+      box-shadow: var(--card-shadow-lg);
+      margin-top: 28px;
+      max-width: 780px;
+    }
+    .proposal-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding-bottom: 20px;
+      border-bottom: 3px solid var(--gold);
+      margin-bottom: 28px;
+    }
+    .proposal-agency-name {
+      font-size: 22px; font-weight: 900; color: var(--sidebar-bg);
+      margin-bottom: 4px;
+    }
+    .proposal-agency-sub { font-size: 13px; color: var(--text-muted); }
+    .proposal-doc-title {
+      font-size: 26px; font-weight: 900; color: var(--sidebar-bg);
+      text-align: left;
+    }
+    .proposal-doc-date { font-size: 13px; color: var(--text-muted); text-align: left; margin-top: 4px; }
+    .proposal-to { margin-bottom: 28px; }
+    .proposal-to .to-label { font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; letter-spacing: .5px; }
+    .proposal-to .to-name { font-size: 20px; font-weight: 800; color: var(--text-primary); }
+    .proposal-section-title {
+      font-size: 13px; font-weight: 800; color: var(--text-secondary);
+      letter-spacing: .6px; text-transform: uppercase;
+      margin-bottom: 12px; padding-bottom: 6px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .proposal-service-box {
+      background: #f8fafc; border-radius: 10px;
+      padding: 16px 20px; margin-bottom: 24px;
+      border-right: 4px solid var(--gold);
+      font-size: 15px; color: var(--text-primary); line-height: 1.7;
+    }
+    .proposal-price-row {
+      display: flex; justify-content: space-between; align-items: center;
+      background: var(--sidebar-bg); color: #fff;
+      border-radius: 10px; padding: 18px 24px; margin-bottom: 24px;
+    }
+    .proposal-price-label { font-size: 14px; font-weight: 600; opacity: .8; }
+    .proposal-price-amount { font-size: 28px; font-weight: 900; color: var(--gold); }
+    .proposal-notes {
+      font-size: 13px; color: var(--text-secondary);
+      line-height: 1.7; margin-bottom: 32px;
+    }
+    .proposal-footer {
+      border-top: 1px solid var(--card-border);
+      padding-top: 16px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .proposal-sig { font-size: 13px; color: var(--text-muted); }
+    .proposal-sig strong { display: block; color: var(--text-primary); font-size: 14px; }
+
+    .btn-print {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--sidebar-bg); color: #fff; border: none;
+      border-radius: var(--radius); padding: 11px 22px;
+      font-size: 14px; font-weight: 700; cursor: pointer;
+      font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
+      transition: background .15s;
+    }
+    .btn-print:hover { background: #1a3a6e; }
+
+    @media print {
+      body > *:not(#print-root) { display: none !important; }
+      #print-root { display: block !important; }
+      #proposal-preview { box-shadow: none !important; border: none !important; max-width: 100%; padding: 0; }
+      .no-print { display: none !important; }
+    }
+
     /* Category label in portals page */
     .portals-section-label {
       font-size: 12px; font-weight: 700; color: var(--text-muted);
@@ -462,6 +613,9 @@
 <!-- ══ APP ══ -->
 <div id="app">
   <div class="layout">
+
+    <!-- floating toggle button -->
+    <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()" title="הסתר/הצג תפריט">☰</button>
 
     <aside class="sidebar">
       <div class="sidebar-header">
@@ -522,6 +676,9 @@
         </div>
         <div class="nav-item" onclick="showPage('forms',this)">
           <span class="nav-icon">📄</span> טפסים שימושיים
+        </div>
+        <div class="nav-item" onclick="showPage('mortgage',this)">
+          <span class="nav-icon">🏠</span> עולם המשכנתאות
         </div>
       </nav>
 
@@ -796,6 +953,128 @@
         </div>
       </div>
 
+      <!-- ══ 8. MORTGAGE ══ -->
+      <div class="page" id="page-mortgage">
+        <div class="page-header">
+          <div class="breadcrumb">ברוכי HQ ← <span>עולם המשכנתאות</span></div>
+          <h1>🏠 עולם המשכנתאות</h1>
+          <p>כלי עבודה, מחוללי הצעות וטפסים לתחום המשכנתאות</p>
+        </div>
+
+        <div class="tabs-wrap">
+          <button class="tab-btn active" onclick="switchTab('mortgage','proposal',this)">📋 מחולל הצעת מחיר לשירות</button>
+          <button class="tab-btn" onclick="switchTab('mortgage','mforms',this)">📄 טפסים שימושיים</button>
+          <button class="tab-btn" onclick="switchTab('mortgage','guides',this)">📚 מדריכים ותהליכים</button>
+        </div>
+
+        <!-- Tab 1: Proposal Generator -->
+        <div class="tab-panel active" id="mortgage-tab-proposal">
+          <div class="proposal-form-card">
+            <div class="form-grid">
+              <div class="form-field">
+                <label for="prop-client">שם הלקוח</label>
+                <input type="text" id="prop-client" placeholder="ישראל ישראלי" />
+              </div>
+              <div class="form-field">
+                <label for="prop-date">תאריך</label>
+                <input type="date" id="prop-date" />
+              </div>
+              <div class="form-field full">
+                <label for="prop-service">תיאור השירות / מסלול הליווי</label>
+                <textarea id="prop-service" placeholder="ליווי מלא לתהליך קבלת משכנתא — ייעוץ, תכנון מסלולים, ליווי מול הבנקים וסגירת עסקה..."></textarea>
+              </div>
+              <div class="form-field">
+                <label for="prop-price">מחיר קבוע / שכר טרחה</label>
+                <input type="text" id="prop-price" placeholder="₪ 5,000" />
+              </div>
+              <div class="form-field">
+                <label for="prop-payment">תנאי תשלום</label>
+                <input type="text" id="prop-payment" placeholder="50% בחתימה, 50% בסגירת עסקה" />
+              </div>
+              <div class="form-field full">
+                <label for="prop-notes">הערות נוספות</label>
+                <textarea id="prop-notes" placeholder="הצעה זו בתוקף ל-30 יום..."></textarea>
+              </div>
+            </div>
+            <button class="btn-generate no-print" onclick="generateProposal()">✨ הפקת הצעה מעוצבת</button>
+          </div>
+
+          <!-- Rendered proposal -->
+          <div id="proposal-preview" style="display:none">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px" class="no-print">
+              <h3 style="font-size:16px;font-weight:700;color:var(--text-primary)">תצוגה מקדימה — הצעת המחיר</h3>
+              <div style="display:flex;gap:10px">
+                <button class="btn-print" onclick="printProposal()">🖨️ הדפסה / שמירה כ-PDF</button>
+                <button class="btn-download" onclick="document.getElementById('proposal-preview').style.display='none'">✕ סגור</button>
+              </div>
+            </div>
+
+            <div id="proposal-doc">
+              <div class="proposal-header">
+                <div>
+                  <div class="proposal-agency-name">ברוכי — פיננסים וביטוח</div>
+                  <div class="proposal-agency-sub">Baruchi Finance &amp; Insurance</div>
+                </div>
+                <div style="text-align:left">
+                  <div class="proposal-doc-title">הצעת מחיר לשירות</div>
+                  <div class="proposal-doc-date" id="pdoc-date"></div>
+                </div>
+              </div>
+
+              <div class="proposal-to">
+                <div class="to-label">לכבוד</div>
+                <div class="to-name" id="pdoc-client"></div>
+              </div>
+
+              <div class="proposal-section-title">פירוט השירות</div>
+              <div class="proposal-service-box" id="pdoc-service"></div>
+
+              <div class="proposal-section-title">עלות השירות</div>
+              <div class="proposal-price-row">
+                <div class="proposal-price-label">שכר טרחה כולל</div>
+                <div class="proposal-price-amount" id="pdoc-price"></div>
+              </div>
+
+              <div class="proposal-section-title">תנאי תשלום והערות</div>
+              <div class="proposal-notes">
+                <div id="pdoc-payment" style="margin-bottom:8px;font-weight:600"></div>
+                <div id="pdoc-notes"></div>
+              </div>
+
+              <div class="proposal-footer">
+                <div class="proposal-sig">
+                  <strong>אשר ברוכי</strong>
+                  סוכן, מנהל המשרד<br>
+                  ברוכי סוכנות לביטוח בע"מ
+                </div>
+                <div style="text-align:left">
+                  <div style="font-size:12px;color:var(--text-muted)">חתימה ואישור לקוח</div>
+                  <div style="margin-top:24px;border-top:1px solid #ccc;padding-top:4px;width:160px;font-size:11px;color:var(--text-muted)">חתימה / תאריך</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 2: Forms placeholder -->
+        <div class="tab-panel" id="mortgage-tab-mforms">
+          <div class="placeholder-card">
+            <div class="ph-icon">🚧</div>
+            <h3>טפסים שימושיים — בקרוב</h3>
+            <p>טפסי משכנתא להורדה יתווספו כאן בשלב הבא</p>
+          </div>
+        </div>
+
+        <!-- Tab 3: Guides placeholder -->
+        <div class="tab-panel" id="mortgage-tab-guides">
+          <div class="placeholder-card">
+            <div class="ph-icon">🚧</div>
+            <h3>מדריכים ותהליכים — בקרוב</h3>
+            <p>נהלי עבודה ומדריכי משכנתא יתווספו כאן בשלב הבא</p>
+          </div>
+        </div>
+      </div>
+
     </main>
   </div>
 </div>
@@ -822,20 +1101,20 @@ const CREDENTIALS = [
 
 const INTERNAL_CONTACTS = [
   // אנשי צוות
-  { name:'אשר ברוכי — מנהל המשרד', phone:'054-4289164', email:'', notes:'' },
-  { name:'יהונתן ברוכי',            phone:'054-391-3343', email:'', notes:'' },
+  { name:'אשר ברוכי',               phone:'054-4289164',  email:'', notes:'סוכן, מנהל המשרד' },
+  { name:'יהונתן ברוכי',            phone:'054-391-3343', email:'', notes:'סוכן' },
   { name:'וואצאפ משרד',             phone:'054-911-1656', email:'', notes:'' },
-  { name:'היידי ברוכי',             phone:'054-4289162',  email:'', notes:'' },
-  { name:'אורן טל סממה',           phone:'054-2008230',  email:'', notes:'' },
-  { name:'משה — מחשוב שחם',        phone:'054-6667625',  email:'', notes:'' },
+  { name:'היידי ברוכי',             phone:'054-4289162',  email:'', notes:'אחראית תחום תביעות' },
+  { name:'אורן טל סממה',            phone:'054-2008230',  email:'', notes:'יועץ משכנתאות' },
+  { name:'משה — מחשוב שחם',        phone:'054-6667625',  email:'', notes:'אחראי מחשוב' },
   { name:'תמיכה טכנית — שחם אורלן', phone:'03-9206777',  email:'', notes:'' },
   // שלוחות
-  { name:'אילנה',                   phone:'שלוחה 6691',   email:'', notes:'' },
-  { name:'ריקי',                    phone:'שלוחה 6652',   email:'', notes:'' },
+  { name:'אילנה קבסה',              phone:'שלוחה 6691',   email:'', notes:'רפרנטית תפעול וקשרי חברות (סוכנות שחם) – מנהלת ממשקי עבודה ופתרון פניות' },
+  { name:'ריקי',                    phone:'שלוחה 6652',   email:'', notes:'אחראית תיקי לקוחות' },
   { name:'יהונתן / אשר',           phone:'שלוחה 6656',   email:'', notes:'' },
   { name:'אורן',                    phone:'שלוחה 6619',   email:'', notes:'' },
-  { name:'משה גוזגל',               phone:'שלוחה 6696',   email:'', notes:'' },
-  { name:'חיה שרה',                 phone:'שלוחה 6610',   email:'', notes:'' },
+  { name:'משה גוזגל',               phone:'שלוחה 6696',   email:'', notes:'אחראי מחשוב' },
+  { name:'חיה שרה',                 phone:'שלוחה 6610',   email:'', notes:'אחראית תחום אלמנטרי' },
 ];
 
 // External contacts grouped by company
@@ -1084,6 +1363,7 @@ const PAGE_MAP = {
   'workflows':    'page-workflows',
   'quicklinks':   'page-quicklinks',
   'forms':        'page-forms',
+  'mortgage':     'page-mortgage',
 };
 
 function showPage(key, el) {
@@ -1370,8 +1650,84 @@ function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+/* ══════════════════════════
+   SIDEBAR TOGGLE
+══════════════════════════ */
+let sidebarOpen = true;
+const SIDEBAR_W = getComputedStyle(document.documentElement).getPropertyValue('--sidebar-w').trim();
+
+function toggleSidebar() {
+  const sidebar  = document.querySelector('.sidebar');
+  const main     = document.querySelector('.main-content');
+  const btn      = document.getElementById('sidebar-toggle');
+  sidebarOpen = !sidebarOpen;
+  if (sidebarOpen) {
+    sidebar.classList.remove('collapsed');
+    main.classList.remove('expanded');
+    btn.textContent = '☰';
+    btn.style.right = '';
+  } else {
+    sidebar.classList.add('collapsed');
+    main.classList.add('expanded');
+    btn.textContent = '☰';
+    btn.style.right = '14px';
+  }
+}
+
+/* ══════════════════════════
+   MORTGAGE PROPOSAL
+══════════════════════════ */
+function generateProposal() {
+  const client  = document.getElementById('prop-client').value.trim()  || 'לקוח יקר';
+  const date    = document.getElementById('prop-date').value;
+  const service = document.getElementById('prop-service').value.trim() || '—';
+  const price   = document.getElementById('prop-price').value.trim()   || '—';
+  const payment = document.getElementById('prop-payment').value.trim() || '—';
+  const notes   = document.getElementById('prop-notes').value.trim();
+
+  const fmt = d => d ? new Date(d).toLocaleDateString('he-IL', { year:'numeric', month:'long', day:'numeric' }) : new Date().toLocaleDateString('he-IL', { year:'numeric', month:'long', day:'numeric' });
+
+  document.getElementById('pdoc-date').textContent    = fmt(date);
+  document.getElementById('pdoc-client').textContent  = client;
+  document.getElementById('pdoc-service').textContent = service;
+  document.getElementById('pdoc-price').textContent   = price;
+  document.getElementById('pdoc-payment').textContent = payment;
+  document.getElementById('pdoc-notes').textContent   = notes || 'הצעה זו בתוקף ל-30 יום ממועד הפקתה.';
+
+  const preview = document.getElementById('proposal-preview');
+  preview.style.display = 'block';
+  preview.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function printProposal() {
+  const doc    = document.getElementById('proposal-doc').innerHTML;
+  const styles = Array.from(document.styleSheets)
+    .flatMap(s => { try { return Array.from(s.cssRules).map(r => r.cssText); } catch(e){ return []; } })
+    .join('\n');
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html><html lang="he" dir="rtl"><head>
+    <meta charset="UTF-8">
+    <title>הצעת מחיר — ברוכי פיננסים וביטוח</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+      *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+      body{font-family:'Heebo',Arial,sans-serif;background:#fff;color:#0f1c33;padding:48px 56px;direction:rtl}
+      ${styles}
+    </style>
+  </head><body>${doc}</body></html>`);
+  win.document.close();
+  win.focus();
+  setTimeout(() => { win.print(); }, 600);
+}
+
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') attemptLogin();
+});
+
+// Set today's date as default for proposal form
+document.addEventListener('DOMContentLoaded', () => {
+  const d = document.getElementById('prop-date');
+  if (d) d.value = new Date().toISOString().split('T')[0];
 });
 
 checkAutoLogin();
