@@ -353,6 +353,30 @@
     .featured-label strong { display: block; font-size: 15px; font-weight: 800; color: var(--text-primary); margin-bottom: 2px; }
     .featured-label span { font-size: 12px; color: var(--text-muted); }
 
+    /* ── Contacts table group header ── */
+    .contact-group-header td {
+      background: #f8fafc;
+      padding: 9px 18px;
+      border-bottom: 1px solid var(--card-border);
+      border-top: 1px solid var(--card-border);
+    }
+    .contact-group-header:first-child td { border-top: none; }
+    .group-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 800; color: var(--text-secondary);
+      letter-spacing: .4px;
+    }
+    .group-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    /* ── Internal contacts divider ── */
+    .divider-row td {
+      padding: 6px 18px;
+      background: var(--page-bg);
+      font-size: 11px; font-weight: 700; color: var(--text-muted);
+      letter-spacing: .8px; text-transform: uppercase;
+      border-bottom: 1px solid var(--card-border);
+    }
+
     /* Category label in portals page */
     .portals-section-label {
       font-size: 12px; font-weight: 700; color: var(--text-muted);
@@ -720,28 +744,89 @@ const CREDENTIALS = [
 ];
 
 const INTERNAL_CONTACTS = [
-  { name:'אורן ברוכי — מנהל הסוכנות',       phone:'050-0000001', email:'oren@baruchi.co.il',      notes:'זמין א׳–ה׳ 8:00–18:00' },
-  { name:'אשר ברוכי — שותף בכיר',            phone:'050-0000002', email:'asher@baruchi.co.il',     notes:''                        },
-  { name:'יהונתן — טיפול לקוחות',            phone:'050-0000003', email:'yehonatan@baruchi.co.il', notes:'אחראי על חידושים'        },
-  { name:'ריקי — אדמיניסטרציה',              phone:'050-0000004', email:'riki@baruchi.co.il',      notes:''                        },
-  { name:'היידי — ביטוח כללי',               phone:'050-0000005', email:'heidi@baruchi.co.il',     notes:'מומחית רכב ודירה'        },
-  { name:'חיה — פנסיה וגמל',                 phone:'050-0000006', email:'chaya@baruchi.co.il',     notes:''                        },
-  { name:'שחם — מוקד תמיכה',                 phone:'03-0000100',  email:'support@shaham.co.il',    notes:'פניות טכניות לתוכנה'     },
-  { name:'שחם — מנהל חשבון',                 phone:'03-0000101',  email:'accounts@shaham.co.il',   notes:'חשבוניות ותשלומים'       },
+  // אנשי צוות
+  { name:'אשר ברוכי — מנהל המשרד', phone:'054-4289164', email:'', notes:'' },
+  { name:'יהונתן',                  phone:'054-391-3343', email:'', notes:'' },
+  { name:'וואצאפ משרד',             phone:'054-911-1656', email:'', notes:'' },
+  { name:'היידי',                   phone:'054-4289162',  email:'', notes:'' },
+  { name:'אורן',                    phone:'054-2008230',  email:'', notes:'' },
+  { name:'משה — מחשוב שחם',        phone:'054-6667625',  email:'', notes:'' },
+  { name:'תמיכה טכנית — שחם אורלן', phone:'03-9206777',  email:'', notes:'' },
+  // שלוחות
+  { name:'אילנה',                   phone:'שלוחה 6691',   email:'', notes:'' },
+  { name:'ריקי',                    phone:'שלוחה 6652',   email:'', notes:'' },
+  { name:'יהונתן / אשר',           phone:'שלוחה 6656',   email:'', notes:'' },
+  { name:'אורן',                    phone:'שלוחה 6619',   email:'', notes:'' },
+  { name:'משה גוזגל',               phone:'שלוחה 6696',   email:'', notes:'' },
+  { name:'חיה שרה',                 phone:'שלוחה 6610',   email:'', notes:'' },
 ];
 
-const EXTERNAL_CONTACTS = [
-  { name:'הראל — מוקד סוכנים',     phone:'03-7540000', email:'agents@harel.co.il',     notes:'שעות: א׳–ה׳ 8–17'     },
-  { name:'הראל — שירות לקוחות',    phone:'*4613',      email:'service@harel.co.il',    notes:''                      },
-  { name:'מגדל — ראש צוות סוכנים', phone:'03-7656000', email:'agents@migdal.co.il',    notes:'פניה ישירה לנציג קבוע' },
-  { name:'מגדל — מוקד כללי',       phone:'*3400',      email:'info@migdal.co.il',      notes:''                      },
-  { name:'הפניקס — מוקד סוכנים',   phone:'03-7109999', email:'agents@fnx.co.il',       notes:'פניות בענין פוליסות'   },
-  { name:'הפניקס — תביעות',        phone:'03-7108888', email:'claims@fnx.co.il',       notes:''                      },
-  { name:'כלל — מוקד סוכנים',      phone:'03-9196000', email:'agents@clal.co.il',      notes:'שעות: א׳–ה׳ 8–17'     },
-  { name:'כלל — שירות חיים',       phone:'*5555',      email:'life@clal.co.il',        notes:''                      },
-  { name:'מנורה — שירות סוכנים',   phone:'03-9339333', email:'agents@menora.co.il',    notes:''                      },
-  { name:'איילון — מוקד',          phone:'03-7610000', email:'agents@ayalon.co.il',    notes:''                      },
+// External contacts grouped by company
+const EXTERNAL_CONTACTS_GROUPS = [
+  {
+    company: 'מגדל', color: '#1565c0',
+    rows: [
+      { name:'אפרת לוי — מפקחת מגדל',     phone:'054-798-1777', email:'', notes:'' },
+      { name:'כרמית לוי — מנהלת תיק מגדל', phone:'076-8867805',  email:'', notes:'' },
+      { name:'צוות ניודים מגדל',           phone:'076-8865040',  email:'', notes:'' },
+      { name:'מוקד משכנתא מגדל',           phone:'076-8865544',  email:'', notes:'' },
+    ]
+  },
+  {
+    company: 'הראל', color: '#b71c1c',
+    rows: [
+      { name:'עידן קלאוורה — מפקח הראל',  phone:'052-3452392', email:'', notes:'' },
+      { name:'צחי — אחראי פנסיה הראל',    phone:'050-6866038', email:'', notes:'' },
+      { name:'מוקד הראל',                  phone:'*9254',        email:'', notes:'' },
+      { name:'הראל סוכנים',               phone:'03-7473491',   email:'', notes:'' },
+    ]
+  },
+  {
+    company: 'הפניקס', color: '#e65100',
+    rows: [
+      { name:'משה — מפקח פניקס', phone:'054-4448841', email:'', notes:'' },
+      { name:'מוקד הפניקס',       phone:'*2724',       email:'', notes:'' },
+    ]
+  },
+  {
+    company: 'מור', color: '#00695c',
+    rows: [
+      { name:'מיכל — מפקחת מור',  phone:'050-2526272', email:'', notes:'' },
+      { name:'מור לוי',            phone:'076-8865924', email:'', notes:'' },
+      { name:'מור לוי — אישי',    phone:'052-8008621', email:'', notes:'' },
+      { name:'מור סוכנים',         phone:'074-7811201', email:'', notes:'' },
+    ]
+  },
+  {
+    company: 'כלל', color: '#2e7d32',
+    rows: [
+      { name:'כלל בריאות',                       phone:'1700-503-001', email:'', notes:'' },
+      { name:'כלל סוכנים — ביטוח חיים ומנהלים', phone:'03-7912661',   email:'', notes:'' },
+      { name:'כלל פנסיה',                        phone:'03-7912667',   email:'', notes:'' },
+      { name:'כלל ביטוח ופיננסים',               phone:'03-6388025',   email:'', notes:'' },
+    ]
+  },
+  {
+    company: 'מנורה', color: '#6a1b9a',
+    rows: [
+      { name:'מנורה סוכנים — פנסיה וגמל',  phone:'072-3838103', email:'', notes:'' },
+      { name:'מנורה ביטוח',                 phone:'03-7107777',  email:'', notes:'' },
+      { name:'מנורה סוכנים — מנהלים',      phone:'03-7108744',  email:'', notes:'' },
+      { name:'דניאל טופ פייננס — מנורה',   phone:'03-9438062',  email:'', notes:'' },
+    ]
+  },
+  {
+    company: 'גופים נוספים', color: '#37474f',
+    rows: [
+      { name:'אנליסט',          phone:'03-7147168',   email:'', notes:'' },
+      { name:'אלטשולר',         phone:'*5664',         email:'', notes:'' },
+      { name:'מסלקה פנסיונית', phone:'076-8020400',   email:'', notes:'' },
+    ]
+  },
 ];
+
+// Flat list for search
+const EXTERNAL_CONTACTS = EXTERNAL_CONTACTS_GROUPS.flatMap(g => g.rows.map(r => ({ ...r, company: g.company })));
 
 const PRICING = [
   { company:'הראל',    product:'קרן פנסיה מקיפה', fromDeposit:'1.49%', fromBalance:'0.00%', notes:'מחיר מקסימלי'   },
@@ -883,8 +968,8 @@ function launchApp(username) {
   document.getElementById('user-name-display').textContent = username;
   document.getElementById('user-avatar').textContent = username.charAt(0).toUpperCase();
   renderCredentials(CREDENTIALS);
-  renderContacts(INTERNAL_CONTACTS, 'internal-tbody', 'internal-no-results');
-  renderContacts(EXTERNAL_CONTACTS, 'external-tbody', 'external-no-results');
+  renderInternalContacts('');
+  renderExternalContacts('');
   renderPricing(PRICING);
   renderFundsAccordion(FUNDS);
   renderPortals();
@@ -959,24 +1044,80 @@ function filterCredentials() {
 /* ══════════════════════════
    CONTACTS
 ══════════════════════════ */
-function renderContacts(data, tbodyId, noResId) {
-  const noRes = document.getElementById(noResId);
-  if (!data.length) { document.getElementById(tbodyId).innerHTML = ''; noRes.style.display = 'block'; return; }
+function contactRow(r) {
+  const phone = r.phone.startsWith('שלוחה')
+    ? `<span style="font-family:'Courier New',monospace;font-weight:700;color:var(--text-secondary)">${esc(r.phone)}</span>`
+    : `<a href="tel:${esc(r.phone.replace(/[-\s]/g,''))}" style="color:var(--blue);text-decoration:none;font-weight:700">${esc(r.phone)}</a>`;
+  const email = r.email
+    ? `<a href="mailto:${esc(r.email)}" style="color:var(--text-secondary);text-decoration:none">${esc(r.email)}</a>`
+    : `<span style="color:var(--text-muted)">—</span>`;
+  const notes = r.notes || `<span style="color:var(--text-muted)">—</span>`;
+  return `<tr>
+    <td style="font-weight:600">${esc(r.name)}</td>
+    <td>${phone}</td>
+    <td>${email}</td>
+    <td style="font-size:13px;color:var(--text-muted)">${esc(notes)}</td>
+  </tr>`;
+}
+
+function renderInternalContacts(q) {
+  const staff = INTERNAL_CONTACTS.slice(0, 7);   // rows 0-6 = staff / shaham
+  const exts  = INTERNAL_CONTACTS.slice(7);       // rows 7-12 = extensions
+  const match = arr => q ? arr.filter(r => [r.name,r.phone,r.email,r.notes].some(v => v.toLowerCase().includes(q))) : arr;
+  const ms = match(staff), me = match(exts);
+  const noRes = document.getElementById('internal-no-results');
+
+  if (!ms.length && !me.length) {
+    document.getElementById('internal-tbody').innerHTML = '';
+    noRes.style.display = 'block'; return;
+  }
   noRes.style.display = 'none';
-  document.getElementById(tbodyId).innerHTML = data.map(r => `
-    <tr>
-      <td style="font-weight:600">${esc(r.name)}</td>
-      <td><a href="tel:${esc(r.phone)}" style="color:var(--blue);text-decoration:none;font-weight:600">${esc(r.phone)}</a></td>
-      <td><a href="mailto:${esc(r.email)}" style="color:var(--text-secondary);text-decoration:none">${esc(r.email)}</a></td>
-      <td style="color:var(--text-muted);font-size:13px">${esc(r.notes)}</td>
-    </tr>`).join('');
+
+  let html = '';
+  if (ms.length) {
+    html += `<tr class="divider-row"><td colspan="4">אנשי צוות ושחם</td></tr>`;
+    html += ms.map(contactRow).join('');
+  }
+  if (me.length) {
+    html += `<tr class="divider-row"><td colspan="4">שלוחות טלפוניות משרדיות</td></tr>`;
+    html += me.map(contactRow).join('');
+  }
+  document.getElementById('internal-tbody').innerHTML = html;
+}
+
+function renderExternalContacts(q) {
+  const noRes = document.getElementById('external-no-results');
+  let html = '', totalVisible = 0;
+
+  EXTERNAL_CONTACTS_GROUPS.forEach(group => {
+    const rows = q
+      ? group.rows.filter(r => [r.name, r.phone, r.email, r.notes, group.company].some(v => v.toLowerCase().includes(q)))
+      : group.rows;
+    if (!rows.length) return;
+    totalVisible += rows.length;
+    html += `<tr class="contact-group-header">
+      <td colspan="4">
+        <span class="group-label">
+          <span class="group-dot" style="background:${group.color}"></span>
+          ${esc(group.company)}
+        </span>
+      </td>
+    </tr>`;
+    html += rows.map(contactRow).join('');
+  });
+
+  if (!totalVisible) {
+    document.getElementById('external-tbody').innerHTML = '';
+    noRes.style.display = 'block'; return;
+  }
+  noRes.style.display = 'none';
+  document.getElementById('external-tbody').innerHTML = html;
 }
 
 function filterContacts() {
   const q = document.getElementById('contacts-search').value.trim().toLowerCase();
-  const match = arr => q ? arr.filter(r => [r.name,r.phone,r.email,r.notes].some(v => v.toLowerCase().includes(q))) : arr;
-  renderContacts(match(INTERNAL_CONTACTS), 'internal-tbody', 'internal-no-results');
-  renderContacts(match(EXTERNAL_CONTACTS), 'external-tbody', 'external-no-results');
+  renderInternalContacts(q);
+  renderExternalContacts(q);
 }
 
 /* ══════════════════════════
