@@ -201,20 +201,26 @@
     .btn-copy {
       position: relative; background: none; border: 1px solid var(--card-border);
       border-radius: 6px; color: var(--text-muted); cursor: pointer;
-      padding: 4px 8px; font-size: 13px; line-height: 1;
+      padding: 5px 7px; line-height: 0; display: inline-flex; align-items: center; justify-content: center;
       transition: color .15s, background .15s, border-color .15s; flex-shrink: 0;
     }
+    .btn-copy svg { width: 14px; height: 14px; display: block; }
     .btn-copy:hover { color: var(--blue); border-color: var(--blue); background: var(--blue-light); }
     .btn-copy.copied { color: var(--success); border-color: var(--success); background: #f0fdf4; }
+    /* Checkmark swaps in when copied */
+    .btn-copy .icon-copy { display: block; }
+    .btn-copy .icon-check { display: none; }
+    .btn-copy.copied .icon-copy { display: none; }
+    .btn-copy.copied .icon-check { display: block; }
     .copy-tip {
-      position: absolute; bottom: calc(100% + 6px); right: 50%; transform: translateX(50%);
+      position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
       background: #1e293b; color: #fff; font-size: 11px; font-weight: 700;
       padding: 4px 8px; border-radius: 6px; white-space: nowrap; pointer-events: none;
       opacity: 0; transition: opacity .15s;
-      font-family: 'Heebo', Arial, sans-serif;
+      font-family: 'Heebo', Arial, sans-serif; z-index: 10;
     }
     .copy-tip::after {
-      content: ''; position: absolute; top: 100%; right: 50%; transform: translateX(50%);
+      content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
       border: 4px solid transparent; border-top-color: #1e293b;
     }
     .btn-copy.copied .copy-tip { opacity: 1; }
@@ -924,23 +930,32 @@
         <div class="agent-id-grid">
           <div class="agent-id-card">
             <div class="agent-id-icon" style="background:#eff6ff;color:#2563eb">🪪</div>
-            <div class="agent-id-body">
+            <div class="agent-id-body" style="flex:1">
               <div class="agent-id-label">ת.ז אשר ברוכי</div>
-              <div class="agent-id-value">056157712</div>
+              <div class="copy-cell" style="gap:10px">
+                <div class="agent-id-value">056157712</div>
+                <button class="btn-copy" onclick="copyVal(this,'056157712')" title="העתק ת.ז"><svg class="icon-copy" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="1" width="9" height="11" rx="2"/><rect x="1" y="4" width="9" height="11" rx="2" fill="var(--card-bg)"/></svg><svg class="icon-check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,8 6,12 14,4"/></svg><span class="copy-tip">הועתק!</span></button>
+              </div>
             </div>
           </div>
           <div class="agent-id-card">
             <div class="agent-id-icon" style="background:#eff6ff;color:#2563eb">🪪</div>
-            <div class="agent-id-body">
+            <div class="agent-id-body" style="flex:1">
               <div class="agent-id-label">ת.ז יהונתן ברוכי</div>
-              <div class="agent-id-value">316392166</div>
+              <div class="copy-cell" style="gap:10px">
+                <div class="agent-id-value">316392166</div>
+                <button class="btn-copy" onclick="copyVal(this,'316392166')" title="העתק ת.ז"><svg class="icon-copy" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="1" width="9" height="11" rx="2"/><rect x="1" y="4" width="9" height="11" rx="2" fill="var(--card-bg)"/></svg><svg class="icon-check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,8 6,12 14,4"/></svg><span class="copy-tip">הועתק!</span></button>
+              </div>
             </div>
           </div>
           <div class="agent-id-card">
             <div class="agent-id-icon" style="background:#fdf6e3;color:#92650a">🏢</div>
-            <div class="agent-id-body">
+            <div class="agent-id-body" style="flex:1">
               <div class="agent-id-label">ח.פ ברוכי סוכנות לביטוח</div>
-              <div class="agent-id-value">516322021</div>
+              <div class="copy-cell" style="gap:10px">
+                <div class="agent-id-value">516322021</div>
+                <button class="btn-copy" onclick="copyVal(this,'516322021')" title="העתק ח.פ"><svg class="icon-copy" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="1" width="9" height="11" rx="2"/><rect x="1" y="4" width="9" height="11" rx="2" fill="var(--card-bg)"/></svg><svg class="icon-check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,8 6,12 14,4"/></svg><span class="copy-tip">הועתק!</span></button>
+              </div>
             </div>
           </div>
         </div>
@@ -1492,6 +1507,7 @@ const FUNDS = [
 ];
 
 const PORTALS = [
+  { name:'WhatsApp Web',    short:'WA', color:'#25d366', desc:'וואטסאפ ווב — מהשולחן',          url:'https://web.whatsapp.com'                                                                       },
   { name:'פורמלי',          short:'PF', color:'#1a237e', desc:'מערכת טפסים — שחם',              url:'https://tfasim.shaham.co.il/Login.aspx'                                                        },
   { name:'פולוייז',         short:'PW', color:'#0277bd', desc:'השוואת פוליסות',                 url:'https://www.polywizz.co.il/'                                                                    },
   { name:'מגדל',            short:'MG', color:'#1565c0', desc:'פורטל סוכנים',                   url:'https://apmaccess.migdal.co.il/my.policy'                                                       },
@@ -1695,7 +1711,7 @@ function renderCredentials(data) {
     const userCell = `<div class="copy-cell">
       <span class="copy-value">${esc(row.username)}</span>
       <button class="btn-copy" onclick="copyVal(this,'${esc(row.username).replace(/'/g,"&#39;")}')" title="העתק שם משתמש">
-        📋<span class="copy-tip">הועתק!</span>
+        <svg class="icon-copy" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="1" width="9" height="11" rx="2"/><rect x="1" y="4" width="9" height="11" rx="2" fill="var(--card-bg)"/></svg><svg class="icon-check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,8 6,12 14,4"/></svg><span class="copy-tip">הועתק!</span>
       </button>
     </div>`;
 
@@ -1705,7 +1721,7 @@ function renderCredentials(data) {
           <span class="password-display" id="pass-${i}">${shown ? esc(row.password) : '••••••••••'}</span>
           <button class="btn-eye" onclick="togglePwd(${i})">${shown ? '🙈' : '👁️'}</button>
           <button class="btn-copy" onclick="copyVal(this,'${esc(row.password).replace(/'/g,"&#39;")}')" title="העתק סיסמה">
-            📋<span class="copy-tip">הועתק!</span>
+            <svg class="icon-copy" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="1" width="9" height="11" rx="2"/><rect x="1" y="4" width="9" height="11" rx="2" fill="var(--card-bg)"/></svg><svg class="icon-check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,8 6,12 14,4"/></svg><span class="copy-tip">הועתק!</span>
           </button>
         </div>`;
 
@@ -1741,10 +1757,14 @@ function renderAgents(data) {
     noRes.style.display = 'block'; return;
   }
   noRes.style.display = 'none';
+  const copyIcon = `<svg class="icon-copy" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="1" width="9" height="11" rx="2"/><rect x="1" y="4" width="9" height="11" rx="2" fill="var(--card-bg)"/></svg><svg class="icon-check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,8 6,12 14,4"/></svg><span class="copy-tip">הועתק!</span>`;
   document.getElementById('agents-tbody').innerHTML = data.map(r => `
     <tr>
       <td style="font-weight:600">${esc(r.company)}</td>
-      <td><span style="font-family:'Courier New',monospace;font-size:15px;font-weight:800;color:var(--text-primary);letter-spacing:1px">${esc(r.number)}</span></td>
+      <td><div class="copy-cell">
+        <span style="font-family:'Courier New',monospace;font-size:15px;font-weight:800;color:var(--text-primary);letter-spacing:1px">${esc(r.number)}</span>
+        <button class="btn-copy" onclick="copyVal(this,'${esc(r.number)}')" title="העתק מספר סוכן">${copyIcon}</button>
+      </div></td>
       <td>${r.notes ? `<span class="tag tag-gold">${esc(r.notes)}</span>` : '<span style="color:var(--text-muted)">—</span>'}</td>
     </tr>`).join('');
 }
