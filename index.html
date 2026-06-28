@@ -1307,7 +1307,6 @@
               <tr>
                 <th>שם / תפקיד</th>
                 <th>טלפון</th>
-                <th>שלוחה</th>
                 <th>מייל</th>
                 <th>הערות</th>
               </tr>
@@ -2292,15 +2291,14 @@ function copyField(el, val) {
   });
 }
 
-function contactRow(r, colspan) {
-  const cols = colspan || 5;
+function contactRow(r) {
+  const extInline = r.ext
+    ? `<span style="display:inline-flex;align-items:center;gap:3px;margin-right:6px;font-size:12px;color:var(--gold);font-weight:600">[שלוחה: ${esc(r.ext)}<span onclick="copyField(this,'${r.ext}');event.stopPropagation()" title="העתק שלוחה" style="cursor:pointer">${COPY_FIELD_SVG}</span>]</span>`
+    : '';
+  const nameHtml = `<span style="font-weight:600">${esc(r.name)}</span>${extInline}`;
   const phoneHtml = r.phone
     ? `<a href="tel:${esc(r.phone.replace(/[-\s]/g,''))}" style="color:var(--blue);text-decoration:none;font-weight:700">${esc(r.phone)}</a>
        <span onclick="copyField(this,'${r.phone.replace(/'/g,"\\'")}');event.stopPropagation()" title="העתק">${COPY_FIELD_SVG}</span>`
-    : `<span style="color:var(--text-muted)">—</span>`;
-  const extHtml = r.ext
-    ? `<span style="font-family:'Courier New',monospace;font-weight:700;color:var(--gold)">${esc(r.ext)}</span>
-       <span onclick="copyField(this,'${r.ext}');event.stopPropagation()" title="העתק">${COPY_FIELD_SVG}</span>`
     : `<span style="color:var(--text-muted)">—</span>`;
   const emailHtml = r.email
     ? `<a href="mailto:${esc(r.email)}" style="color:var(--text-secondary);text-decoration:none">${esc(r.email)}</a>
@@ -2310,9 +2308,8 @@ function contactRow(r, colspan) {
     ? `<span style="font-size:13px;color:var(--text-muted)">${esc(r.notes)}</span>`
     : `<span style="color:var(--text-muted)">—</span>`;
   return `<tr>
-    <td style="font-weight:600">${esc(r.name)}</td>
+    <td>${nameHtml}</td>
     <td>${phoneHtml}</td>
-    <td>${extHtml}</td>
     <td>${emailHtml}</td>
     <td>${notesHtml}</td>
   </tr>`;
@@ -2328,8 +2325,8 @@ function renderAllContacts(q) {
     : INTERNAL_CONTACTS;
   if (intRows.length) {
     total += intRows.length;
-    html += `<tr class="divider-row"><td colspan="5">🏢 אנשי צוות וסוכנות שחם</td></tr>`;
-    html += intRows.map(r => contactRow(r, 5)).join('');
+    html += `<tr class="divider-row"><td colspan="4">🏢 אנשי צוות וסוכנות שחם</td></tr>`;
+    html += intRows.map(r => contactRow(r)).join('');
   }
 
   // External groups
@@ -2340,7 +2337,7 @@ function renderAllContacts(q) {
     if (!rows.length) return;
     total += rows.length;
     html += `<tr class="contact-group-header">
-      <td colspan="5">
+      <td colspan="4">
         <span class="group-label">
           <span class="group-dot" style="background:${group.color}"></span>
           ${esc(group.company)}
