@@ -601,6 +601,148 @@
     }
     .portals-section-label:first-of-type { margin-top: 0; }
 
+    /* ══ TASK BOARD ══ */
+    .task-form-card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg); padding: 28px 32px;
+      box-shadow: var(--card-shadow); margin-bottom: 24px;
+    }
+    .task-form-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px;
+    }
+    .task-form-grid .full { grid-column: 1 / -1; }
+    .task-field label {
+      display: block; font-size: 13px; font-weight: 700;
+      color: var(--text-secondary); margin-bottom: 6px;
+    }
+    .task-field input,
+    .task-field textarea,
+    .task-field select {
+      width: 100%; background: #f8fafc; border: 1.5px solid var(--card-border);
+      border-radius: var(--radius); padding: 10px 13px; font-size: 14px;
+      color: var(--text-primary); outline: none;
+      font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .task-field input:focus,
+    .task-field textarea:focus,
+    .task-field select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,.1); background:#fff; }
+    .task-field textarea { resize: vertical; min-height: 72px; }
+
+    .btn-add-task {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--sidebar-bg); color: #fff; border: none;
+      border-radius: var(--radius); padding: 11px 24px;
+      font-size: 14px; font-weight: 700; cursor: pointer;
+      font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
+      transition: background .15s, transform .1s;
+      box-shadow: 0 2px 8px rgba(15,28,51,.2);
+    }
+    .btn-add-task:hover { background: #1a3a6e; transform: translateY(-1px); }
+
+    /* Task cards */
+    .tasks-list { display: flex; flex-direction: column; gap: 12px; }
+    .task-card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg); padding: 18px 20px;
+      box-shadow: var(--card-shadow);
+      transition: box-shadow .2s;
+      border-right: 4px solid transparent;
+    }
+    .task-card:hover { box-shadow: var(--card-shadow-lg); }
+    .task-card.priority-urgent { border-right-color: #dc2626; }
+    .task-card.priority-normal { border-right-color: #f59e0b; }
+    .task-card.priority-free   { border-right-color: #94a3b8; }
+
+    .task-card-header {
+      display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px;
+    }
+    .task-title {
+      flex: 1; font-size: 15px; font-weight: 700; color: var(--text-primary); line-height: 1.4;
+    }
+    .task-meta {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 8px;
+    }
+    .task-assignee {
+      font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 4px;
+    }
+    .task-date { font-size: 11px; color: var(--text-muted); }
+
+    /* Priority tags */
+    .tag-priority {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 800; padding: 3px 10px;
+      border-radius: 20px; white-space: nowrap;
+    }
+    .tag-priority.urgent { background: #fee2e2; color: #b91c1c; }
+    .tag-priority.normal { background: #fef3c7; color: #92400e; }
+    .tag-priority.free   { background: #f1f5f9; color: #475569; }
+
+    /* Status toggle */
+    .tag-status {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 700; padding: 4px 12px;
+      border-radius: 20px; cursor: pointer; border: none;
+      font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
+      transition: opacity .15s, transform .1s; white-space: nowrap;
+    }
+    .tag-status:hover { opacity: .82; transform: scale(1.04); }
+    .tag-status.todo       { background: #fee2e2; color: #b91c1c; }
+    .tag-status.inprogress { background: #fef3c7; color: #92400e; }
+    .tag-status.done       { background: #d1fae5; color: #065f46; }
+
+    /* Description / notes block */
+    .task-desc {
+      font-size: 13px; color: var(--text-secondary); line-height: 1.65;
+      background: #f8fafc; border-radius: 8px; padding: 10px 14px;
+      margin-top: 10px; white-space: pre-wrap;
+    }
+    .task-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .btn-task-delete {
+      background: none; border: 1px solid var(--card-border); border-radius: 6px;
+      color: var(--text-muted); cursor: pointer; padding: 5px 7px; line-height: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: color .15s, border-color .15s, background .15s;
+    }
+    .btn-task-delete:hover { color: var(--danger); border-color: var(--danger); background: #fee2e2; }
+    .btn-task-delete svg { width: 14px; height: 14px; }
+
+    /* Empty state */
+    .tasks-empty {
+      text-align: center; padding: 56px 24px;
+      background: var(--card-bg); border: 1.5px dashed var(--card-border);
+      border-radius: var(--radius-lg);
+    }
+    .tasks-empty .em-icon { font-size: 44px; margin-bottom: 14px; opacity: .35; }
+    .tasks-empty h3 { font-size: 17px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+    .tasks-empty p  { font-size: 13px; color: var(--text-muted); }
+
+    /* Filter strip */
+    .task-filter-strip {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 18px;
+    }
+    .filter-chip {
+      padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--card-border);
+      background: var(--card-bg); font-size: 12px; font-weight: 700;
+      color: var(--text-muted); cursor: pointer;
+      font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
+      transition: all .15s;
+    }
+    .filter-chip:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+    .filter-chip.active { background: var(--sidebar-bg); color: #fff; border-color: var(--sidebar-bg); }
+
+    .task-count-badge {
+      background: #f1f5f9; color: var(--text-secondary);
+      font-size: 11px; font-weight: 800; padding: 2px 8px;
+      border-radius: 20px; margin-right: 4px;
+    }
+
+    @media (max-width: 768px) {
+      .task-form-grid { grid-template-columns: 1fr !important; }
+      .task-form-grid .full { grid-column: 1 !important; }
+      .task-form-card { padding: 18px 16px; }
+    }
+
     /* ══ MOBILE OVERLAY ══ */
     .sidebar-overlay {
       display: none; position: fixed; inset: 0;
@@ -826,6 +968,10 @@
         </div>
         <div class="nav-item" onclick="showPage('elementary',this)">
           <span class="nav-icon">🛡️</span> ביטוח אלמנטרי
+        </div>
+        <div class="nav-section-label">צוות</div>
+        <div class="nav-item" onclick="showPage('tasks',this)">
+          <span class="nav-icon">✅</span> לוח משימות
         </div>
       </nav>
 
@@ -1303,6 +1449,80 @@
         </div>
       </div>
 
+      <!-- ══ 10. TASK BOARD ══ -->
+      <div class="page" id="page-tasks">
+        <div class="page-header">
+          <div class="breadcrumb">ברוכי HQ ← <span>לוח משימות</span></div>
+          <h1>✅ לוח משימות</h1>
+          <p>ניהול ומעקב משימות צוות — מאורגן לפי עדיפות ומשוייך לכל חבר צוות</p>
+        </div>
+
+        <div class="tabs-wrap">
+          <button class="tab-btn active" onclick="switchTab('tasks','mine',this)">📋 המשימות שלי</button>
+          <button class="tab-btn" onclick="switchTab('tasks','all',this)">👥 כל המשימות</button>
+          <button class="tab-btn" onclick="switchTab('tasks','create',this)">➕ יצירת משימה</button>
+        </div>
+
+        <!-- Tab: My Tasks -->
+        <div class="tab-panel active" id="tasks-tab-mine">
+          <div class="task-filter-strip">
+            <button class="filter-chip active" onclick="setTaskFilter('mine','all',this)">הכל <span class="task-count-badge" id="mine-count-all">0</span></button>
+            <button class="filter-chip" onclick="setTaskFilter('mine','todo',this)">לביצוע 🔴</button>
+            <button class="filter-chip" onclick="setTaskFilter('mine','inprogress',this)">בטיפול 🟡</button>
+            <button class="filter-chip" onclick="setTaskFilter('mine','done',this)">הושלם 🟢</button>
+          </div>
+          <div class="tasks-list" id="tasks-mine-list"></div>
+        </div>
+
+        <!-- Tab: All Tasks -->
+        <div class="tab-panel" id="tasks-tab-all">
+          <div class="task-filter-strip">
+            <button class="filter-chip active" onclick="setTaskFilter('all','all',this)">הכל <span class="task-count-badge" id="all-count-all">0</span></button>
+            <button class="filter-chip" onclick="setTaskFilter('all','todo',this)">לביצוע 🔴</button>
+            <button class="filter-chip" onclick="setTaskFilter('all','inprogress',this)">בטיפול 🟡</button>
+            <button class="filter-chip" onclick="setTaskFilter('all','done',this)">הושלם 🟢</button>
+          </div>
+          <div class="tasks-list" id="tasks-all-list"></div>
+        </div>
+
+        <!-- Tab: Create Task -->
+        <div class="tab-panel" id="tasks-tab-create">
+          <div class="task-form-card">
+            <div style="font-size:16px;font-weight:800;color:var(--text-primary);margin-bottom:20px">יצירת משימה חדשה לצוות</div>
+            <div class="task-form-grid">
+              <div class="task-field full">
+                <label for="task-title">כותרת המשימה *</label>
+                <input type="text" id="task-title" placeholder="לדוגמה: לעדכן פרטי לקוח בכלל..." />
+              </div>
+              <div class="task-field full">
+                <label for="task-desc-input">תיאור והערות</label>
+                <textarea id="task-desc-input" placeholder="פרטים נוספים, הוראות, קישורים..."></textarea>
+              </div>
+              <div class="task-field">
+                <label for="task-priority">עדיפות</label>
+                <select id="task-priority">
+                  <option value="urgent">⚡ דחוף ביותר</option>
+                  <option value="normal" selected>🔥 חשוב / רגיל</option>
+                  <option value="free">⏳ בזמנך החופשי</option>
+                </select>
+              </div>
+              <div class="task-field">
+                <label for="task-assignee">שיוך לחבר צוות</label>
+                <select id="task-assignee">
+                  <option value="oren">אורן</option>
+                  <option value="asher">אשר</option>
+                  <option value="yehonatan">יהונתן</option>
+                  <option value="riki">ריקי</option>
+                  <option value="heidi">היידי</option>
+                  <option value="chaya">חיה שרה</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn-add-task" onclick="createTask()">➕ הוסף משימה</button>
+          </div>
+        </div>
+      </div>
+
       <!-- ══ 9. ELEMENTARY INSURANCE ══ -->
       <div class="page" id="page-elementary">
         <div class="page-header">
@@ -1590,6 +1810,7 @@ function logout() {
 }
 
 function launchApp(username) {
+  currentUser = username;
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   document.getElementById('user-name-display').textContent = username;
@@ -1603,6 +1824,7 @@ function launchApp(username) {
   renderPortals();
   renderForms();
   renderDashboard(username);
+  renderAllTaskViews();
   // Boot to dashboard
   showPage('dashboard', document.getElementById('nav-dashboard'));
   // On mobile, start with sidebar hidden
@@ -1664,6 +1886,7 @@ const PAGE_MAP = {
   'forms':        'page-forms',
   'mortgage':     'page-mortgage',
   'elementary':   'page-elementary',
+  'tasks':        'page-tasks',
 };
 
 function showPage(key, el) {
@@ -2276,6 +2499,170 @@ function printProposal() {
   // Wait for Google Fonts to load before printing
   setTimeout(() => { win.print(); }, 900);
 }
+
+/* ══════════════════════════════════════
+   TASK BOARD
+══════════════════════════════════════ */
+const TASKS_KEY = 'bq_tasks';
+const PRIORITY_ORDER = { urgent: 0, normal: 1, free: 2 };
+const DISPLAY_NAMES = { oren:'אורן', asher:'אשר', yehonatan:'יהונתן', riki:'ריקי', heidi:'היידי', chaya:'חיה שרה' };
+
+let taskFilters = { mine: 'all', all: 'all' };
+
+function loadTasks() {
+  try { return JSON.parse(localStorage.getItem(TASKS_KEY)) || []; } catch(e) { return []; }
+}
+function saveTasks(tasks) {
+  localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));
+}
+
+function createTask() {
+  const title    = document.getElementById('task-title').value.trim();
+  const desc     = document.getElementById('task-desc-input').value.trim();
+  const priority = document.getElementById('task-priority').value;
+  const assignee = document.getElementById('task-assignee').value;
+  if (!title) { document.getElementById('task-title').focus(); return; }
+
+  const tasks = loadTasks();
+  tasks.push({
+    id:        Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+    title,
+    desc,
+    priority,
+    assignee,
+    status:    'todo',
+    createdBy: currentUser || '',
+    createdAt: Date.now(),
+  });
+  saveTasks(tasks);
+
+  document.getElementById('task-title').value      = '';
+  document.getElementById('task-desc-input').value = '';
+  document.getElementById('task-priority').value   = 'normal';
+
+  renderAllTaskViews();
+  // Switch to My Tasks or All Tasks after creation
+  const targetTab = assignee === currentUser ? 'mine' : 'all';
+  const btn = document.querySelector(`#tasks-tab-create`)
+    ?.closest('.page')
+    ?.querySelector(`.tab-btn[onclick*="'${targetTab}'"]`);
+  switchTab('tasks', targetTab, btn || document.querySelector('#page-tasks .tab-btn'));
+}
+
+function cycleStatus(id) {
+  const tasks = loadTasks();
+  const t = tasks.find(t => t.id === id);
+  if (!t) return;
+  const cycle = { todo: 'inprogress', inprogress: 'done', done: 'todo' };
+  t.status = cycle[t.status] || 'todo';
+  saveTasks(tasks);
+  renderAllTaskViews();
+}
+
+function deleteTask(id) {
+  if (!confirm('למחוק משימה זו?')) return;
+  saveTasks(loadTasks().filter(t => t.id !== id));
+  renderAllTaskViews();
+}
+
+function setTaskFilter(view, filter, btn) {
+  taskFilters[view] = filter;
+  const strip = btn.closest('.task-filter-strip');
+  strip.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  renderTaskList(view);
+}
+
+function sortTasks(tasks) {
+  return [...tasks].sort((a, b) => {
+    const pd = PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority];
+    return pd !== 0 ? pd : b.createdAt - a.createdAt;
+  });
+}
+
+function priorityTag(p) {
+  const map = {
+    urgent: ['urgent', '⚡', 'דחוף ביותר'],
+    normal: ['normal', '🔥', 'חשוב / רגיל'],
+    free:   ['free',   '⏳', 'בזמנך החופשי'],
+  };
+  const [cls, icon, label] = map[p] || map.normal;
+  return `<span class="tag-priority ${cls}">${icon} ${label}</span>`;
+}
+
+function statusTag(t) {
+  const map = {
+    todo:       ['todo',       '🔴', 'לביצוע'],
+    inprogress: ['inprogress', '🟡', 'בטיפול'],
+    done:       ['done',       '🟢', 'הושלם'],
+  };
+  const [cls, dot, label] = map[t.status] || map.todo;
+  return `<button class="tag-status ${cls}" onclick="cycleStatus('${t.id}')" title="לחץ לשינוי סטטוס">${dot} ${label}</button>`;
+}
+
+const COPY_SVG = `<svg class="icon-copy" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="1" width="9" height="11" rx="2"/><rect x="1" y="4" width="9" height="11" rx="2" fill="var(--card-bg)"/></svg><svg class="icon-check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,8 6,12 14,4"/></svg><span class="copy-tip">הועתק!</span>`;
+
+function taskCard(t) {
+  const assigneeName = DISPLAY_NAMES[t.assignee] || t.assignee;
+  const creatorName  = DISPLAY_NAMES[t.createdBy] || t.createdBy;
+  const dateStr      = new Date(t.createdAt).toLocaleDateString('he-IL', { day:'numeric', month:'short' });
+  const copyText     = t.title + (t.desc ? '\n' + t.desc : '');
+  const escapedCopy  = copyText.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,'\\n');
+
+  return `<div class="task-card priority-${t.priority}" id="task-card-${t.id}">
+    <div class="task-card-header">
+      <div class="task-title">${esc(t.title)}</div>
+      <div class="task-actions">
+        <button class="btn-copy" onclick="copyVal(this,'${escapedCopy}')" title="העתק למשימה / וואטסאפ">${COPY_SVG}</button>
+        <button class="btn-task-delete" onclick="deleteTask('${t.id}')" title="מחק משימה">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <polyline points="2,4 14,4"/><path d="M6,4V2h4v2"/><path d="M5,4l.7,9h4.6l.7-9"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    ${t.desc ? `<div class="task-desc">${esc(t.desc)}</div>` : ''}
+    <div class="task-meta" style="margin-top:12px">
+      ${priorityTag(t.priority)}
+      ${statusTag(t)}
+      <span class="task-assignee">👤 ${esc(assigneeName)}</span>
+      ${t.createdBy && t.createdBy !== t.assignee ? `<span class="task-date">נוצר ע"י ${esc(creatorName)}</span>` : ''}
+      <span class="task-date" style="margin-right:auto">${dateStr}</span>
+    </div>
+  </div>`;
+}
+
+function renderTaskList(view) {
+  const listEl  = document.getElementById(`tasks-${view}-list`);
+  if (!listEl) return;
+  let tasks = loadTasks();
+  if (view === 'mine') tasks = tasks.filter(t => t.assignee === currentUser);
+  const filter = taskFilters[view] || 'all';
+  if (filter !== 'all') tasks = tasks.filter(t => t.status === filter);
+  tasks = sortTasks(tasks);
+
+  // update count badge on "הכל" chip
+  const allTasks = view === 'mine'
+    ? loadTasks().filter(t => t.assignee === currentUser)
+    : loadTasks();
+  const countEl = document.getElementById(`${view}-count-all`);
+  if (countEl) countEl.textContent = allTasks.length;
+
+  if (!tasks.length) {
+    const msg = view === 'mine' ? 'אין משימות משויכות אליך כרגע 🎉' : 'אין משימות במערכת עדיין';
+    listEl.innerHTML = `<div class="tasks-empty"><div class="em-icon">📭</div><h3>${filter !== 'all' ? 'אין משימות בסטטוס זה' : msg}</h3><p>${filter !== 'all' ? 'נסה לבחור סינון אחר' : 'לחץ על "יצירת משימה" כדי להתחיל'}</p></div>`;
+    return;
+  }
+  listEl.innerHTML = tasks.map(taskCard).join('');
+}
+
+function renderAllTaskViews() {
+  renderTaskList('mine');
+  renderTaskList('all');
+}
+
+// expose currentUser for task logic
+let currentUser = '';
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') attemptLogin();
