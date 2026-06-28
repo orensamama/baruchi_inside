@@ -329,9 +329,8 @@
     /* ══ COLLAPSIBLE SIDEBAR ══ */
     .sidebar {
       transition: width .28s cubic-bezier(.4,0,.2,1);
-      overflow: hidden;
     }
-    .sidebar.collapsed { width: 0; border: none; }
+    .sidebar.collapsed { width: 0; border: none; overflow: hidden; }
     .main-content { transition: margin-right .28s cubic-bezier(.4,0,.2,1); }
     .main-content.expanded { margin-right: 0; }
 
@@ -737,10 +736,101 @@
       border-radius: 20px; margin-right: 4px;
     }
 
+    /* Task insured name chip */
+    .task-insured {
+      font-size: 13px; font-weight: 800; color: var(--sidebar-bg);
+      background: var(--blue-light); border: 1px solid var(--blue-border);
+      border-radius: 8px; padding: 3px 10px; display: inline-flex; align-items: center; gap: 5px;
+    }
+
+    /* Advanced filter panel */
+    .task-advanced-filters {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg); padding: 16px 20px;
+      margin-bottom: 16px; box-shadow: var(--card-shadow);
+    }
+    .filter-row {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;
+    }
+    .filter-row:last-child { margin-bottom: 0; }
+    .filter-row-label {
+      font-size: 11px; font-weight: 800; color: var(--text-muted);
+      letter-spacing: .7px; text-transform: uppercase; min-width: 60px;
+    }
+    .filter-checkbox-label {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 600; color: var(--text-secondary);
+      cursor: pointer; padding: 5px 12px; border-radius: 20px;
+      border: 1.5px solid var(--card-border); background: #f8fafc;
+      transition: all .15s; user-select: none;
+    }
+    .filter-checkbox-label:has(input:checked) { background: var(--sidebar-bg); color: #fff; border-color: var(--sidebar-bg); }
+    .filter-checkbox-label input { display: none; }
+
+    /* Task search bar */
+    .task-search-wrap { position: relative; margin-bottom: 14px; }
+    .task-search-wrap .search-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }
+    .task-search-wrap input {
+      width: 100%; background: var(--card-bg); border: 1.5px solid var(--card-border);
+      border-radius: var(--radius); padding: 11px 42px 11px 16px;
+      font-size: 14px; color: var(--text-primary); outline: none;
+      font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
+      box-shadow: var(--card-shadow); transition: border-color .2s, box-shadow .2s;
+    }
+    .task-search-wrap input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,.12); }
+
+    /* Dashboard tasks preview */
+    .dash-tasks-section { margin-top: 28px; }
+    .dash-task-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px; background: var(--card-bg);
+      border: 1px solid var(--card-border); border-radius: var(--radius);
+      margin-bottom: 8px; border-right: 4px solid transparent;
+      transition: box-shadow .15s;
+    }
+    .dash-task-row:hover { box-shadow: var(--card-shadow); }
+    .dash-task-row.priority-urgent { border-right-color: #dc2626; }
+    .dash-task-row.priority-normal { border-right-color: #f59e0b; }
+    .dash-task-row.priority-free   { border-right-color: #94a3b8; }
+    .dash-task-title { flex: 1; font-size: 13px; font-weight: 700; color: var(--text-primary); }
+    .dash-task-insured { font-size: 11px; color: var(--blue); font-weight: 700; }
+
+    /* File upload field */
+    .file-upload-label {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; border: 1.5px dashed var(--card-border);
+      border-radius: var(--radius); background: #f8fafc; cursor: pointer;
+      font-size: 13px; color: var(--text-muted); transition: border-color .2s, background .2s;
+    }
+    .file-upload-label:hover { border-color: var(--blue); background: var(--blue-light); color: var(--blue); }
+    .file-upload-label input[type="file"] { display: none; }
+    .file-upload-name { font-size: 12px; font-weight: 600; color: var(--blue); margin-top: 5px; }
+
+    /* File link on card */
+    .task-file-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 700; color: var(--blue);
+      background: var(--blue-light); border: 1px solid var(--blue-border);
+      border-radius: 8px; padding: 4px 12px; cursor: pointer;
+      text-decoration: none; transition: background .15s;
+    }
+    .task-file-link:hover { background: #dbeafe; }
+
+    /* Admin badge */
+    .admin-tab-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10px; font-weight: 800; background: var(--gold-light);
+      color: #92650a; border-radius: 10px; padding: 1px 6px; margin-right: 4px;
+    }
+
+    /* Admin-only tabs hidden by default */
+    .tab-btn.admin-only { display: none; }
+
     @media (max-width: 768px) {
       .task-form-grid { grid-template-columns: 1fr !important; }
       .task-form-grid .full { grid-column: 1 !important; }
       .task-form-card { padding: 18px 16px; }
+      .task-advanced-filters { padding: 12px 14px; }
     }
 
     /* ══ MOBILE OVERLAY ══ */
@@ -1019,6 +1109,15 @@
         <!-- Quick nav tiles -->
         <div class="section-label">ניווט מהיר</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:32px" id="dash-nav-tiles"></div>
+
+        <!-- Task preview -->
+        <div class="dash-tasks-section" id="dash-tasks-section">
+          <div class="section-label" style="display:flex;align-items:center;justify-content:space-between">
+            <span>המשימות שלי הפתוחות</span>
+            <button onclick="navTo('tasks')" style="font-size:12px;font-weight:700;background:none;border:none;color:var(--blue);cursor:pointer;padding:0">כל המשימות ←</button>
+          </div>
+          <div id="dash-tasks-list"></div>
+        </div>
 
         <!-- Top contacts -->
         <div class="section-label">אנשי קשר מהירים</div>
@@ -1457,32 +1556,83 @@
           <p>ניהול ומעקב משימות צוות — מאורגן לפי עדיפות ומשוייך לכל חבר צוות</p>
         </div>
 
-        <div class="tabs-wrap">
+        <div class="tabs-wrap" id="tasks-tabs-wrap">
           <button class="tab-btn active" onclick="switchTab('tasks','mine',this)">📋 המשימות שלי</button>
-          <button class="tab-btn" onclick="switchTab('tasks','all',this)">👥 כל המשימות</button>
+          <button class="tab-btn admin-only" id="tab-btn-all"   onclick="switchTab('tasks','all',this)">👥 כל משימות המשרד <span class="admin-tab-badge">מנהל</span></button>
+          <button class="tab-btn admin-only" id="tab-btn-given" onclick="switchTab('tasks','given',this)">📨 משימות שנתתי <span class="admin-tab-badge">מנהל</span></button>
           <button class="tab-btn" onclick="switchTab('tasks','create',this)">➕ יצירת משימה</button>
         </div>
 
         <!-- Tab: My Tasks -->
         <div class="tab-panel active" id="tasks-tab-mine">
-          <div class="task-filter-strip">
-            <button class="filter-chip active" onclick="setTaskFilter('mine','all',this)">הכל <span class="task-count-badge" id="mine-count-all">0</span></button>
-            <button class="filter-chip" onclick="setTaskFilter('mine','todo',this)">לביצוע 🔴</button>
-            <button class="filter-chip" onclick="setTaskFilter('mine','inprogress',this)">בטיפול 🟡</button>
-            <button class="filter-chip" onclick="setTaskFilter('mine','done',this)">הושלם 🟢</button>
+          <div class="task-search-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="tasks-mine-search" placeholder="חיפוש לפי שם מבוטח, כותרת או הערות..." oninput="renderTaskList('mine')" />
           </div>
+          <div class="task-advanced-filters">
+            <div class="filter-row" data-filter="priority">
+              <span class="filter-row-label">עדיפות</span>
+              <label class="filter-checkbox-label"><input type="checkbox" value="urgent" onchange="renderTaskList('mine')" checked> ⚡ דחוף ביותר</label>
+              <label class="filter-checkbox-label"><input type="checkbox" value="normal" onchange="renderTaskList('mine')" checked> 🔥 חשוב / רגיל</label>
+              <label class="filter-checkbox-label"><input type="checkbox" value="free"   onchange="renderTaskList('mine')" checked> ⏳ בזמנך החופשי</label>
+            </div>
+            <div class="filter-row" data-filter="status">
+              <span class="filter-row-label">סטטוס</span>
+              <label class="filter-checkbox-label"><input type="checkbox" value="todo"       onchange="renderTaskList('mine')" checked> 🔴 לביצוע</label>
+              <label class="filter-checkbox-label"><input type="checkbox" value="inprogress" onchange="renderTaskList('mine')" checked> 🟡 בטיפול</label>
+              <label class="filter-checkbox-label"><input type="checkbox" value="done"       onchange="renderTaskList('mine')" checked> 🟢 הושלם</label>
+            </div>
+          </div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">מציג <strong id="mine-count-visible">0</strong> משימות מתוך <strong id="mine-count-all">0</strong></div>
           <div class="tasks-list" id="tasks-mine-list"></div>
         </div>
 
-        <!-- Tab: All Tasks -->
+        <!-- Tab: All Tasks (Admin) -->
         <div class="tab-panel" id="tasks-tab-all">
-          <div class="task-filter-strip">
-            <button class="filter-chip active" onclick="setTaskFilter('all','all',this)">הכל <span class="task-count-badge" id="all-count-all">0</span></button>
-            <button class="filter-chip" onclick="setTaskFilter('all','todo',this)">לביצוע 🔴</button>
-            <button class="filter-chip" onclick="setTaskFilter('all','inprogress',this)">בטיפול 🟡</button>
-            <button class="filter-chip" onclick="setTaskFilter('all','done',this)">הושלם 🟢</button>
+          <div class="task-search-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="tasks-all-search" placeholder="חיפוש לפי שם מבוטח, כותרת או הערות..." oninput="renderTaskList('all')" />
           </div>
+          <div class="task-advanced-filters">
+            <div class="filter-row" data-filter="priority">
+              <span class="filter-row-label">עדיפות</span>
+              <label class="filter-checkbox-label"><input type="checkbox" value="urgent" onchange="renderTaskList('all')" checked> ⚡ דחוף ביותר</label>
+              <label class="filter-checkbox-label"><input type="checkbox" value="normal" onchange="renderTaskList('all')" checked> 🔥 חשוב / רגיל</label>
+              <label class="filter-checkbox-label"><input type="checkbox" value="free"   onchange="renderTaskList('all')" checked> ⏳ בזמנך החופשי</label>
+            </div>
+            <div class="filter-row" data-filter="status">
+              <span class="filter-row-label">סטטוס</span>
+              <label class="filter-checkbox-label"><input type="checkbox" value="todo"       onchange="renderTaskList('all')" checked> 🔴 לביצוע</label>
+              <label class="filter-checkbox-label"><input type="checkbox" value="inprogress" onchange="renderTaskList('all')" checked> 🟡 בטיפול</label>
+              <label class="filter-checkbox-label"><input type="checkbox" value="done"       onchange="renderTaskList('all')" checked> 🟢 הושלם</label>
+            </div>
+          </div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">מציג <strong id="all-count-visible">0</strong> משימות מתוך <strong id="all-count-all">0</strong></div>
           <div class="tasks-list" id="tasks-all-list"></div>
+        </div>
+
+        <!-- Tab: Given Tasks (Admin) -->
+        <div class="tab-panel" id="tasks-tab-given">
+          <div class="task-search-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="tasks-given-search" placeholder="חיפוש לפי שם מבוטח, כותרת או הערות..." oninput="renderTaskList('given')" />
+          </div>
+          <div class="task-advanced-filters">
+            <div class="filter-row" data-filter="priority">
+              <span class="filter-row-label">עדיפות</span>
+              <label class="filter-checkbox-label"><input type="checkbox" value="urgent" onchange="renderTaskList('given')" checked> ⚡ דחוף ביותר</label>
+              <label class="filter-checkbox-label"><input type="checkbox" value="normal" onchange="renderTaskList('given')" checked> 🔥 חשוב / רגיל</label>
+              <label class="filter-checkbox-label"><input type="checkbox" value="free"   onchange="renderTaskList('given')" checked> ⏳ בזמנך החופשי</label>
+            </div>
+            <div class="filter-row" data-filter="status">
+              <span class="filter-row-label">סטטוס</span>
+              <label class="filter-checkbox-label"><input type="checkbox" value="todo"       onchange="renderTaskList('given')" checked> 🔴 לביצוע</label>
+              <label class="filter-checkbox-label"><input type="checkbox" value="inprogress" onchange="renderTaskList('given')" checked> 🟡 בטיפול</label>
+              <label class="filter-checkbox-label"><input type="checkbox" value="done"       onchange="renderTaskList('given')" checked> 🟢 הושלם</label>
+            </div>
+          </div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">מציג <strong id="given-count-visible">0</strong> משימות מתוך <strong id="given-count-all">0</strong></div>
+          <div class="tasks-list" id="tasks-given-list"></div>
         </div>
 
         <!-- Tab: Create Task -->
@@ -1490,7 +1640,11 @@
           <div class="task-form-card">
             <div style="font-size:16px;font-weight:800;color:var(--text-primary);margin-bottom:20px">יצירת משימה חדשה לצוות</div>
             <div class="task-form-grid">
-              <div class="task-field full">
+              <div class="task-field">
+                <label for="task-insured">שם המבוטח *</label>
+                <input type="text" id="task-insured" placeholder="שם הלקוח / המבוטח..." />
+              </div>
+              <div class="task-field">
                 <label for="task-title">כותרת המשימה *</label>
                 <input type="text" id="task-title" placeholder="לדוגמה: לעדכן פרטי לקוח בכלל..." />
               </div>
@@ -1516,6 +1670,15 @@
                   <option value="heidi">היידי</option>
                   <option value="chaya">חיה שרה</option>
                 </select>
+              </div>
+              <div class="task-field full">
+                <label>הוספת קובץ מצורף (תמונה / PDF)</label>
+                <label class="file-upload-label" for="task-file">
+                  <span>📎</span>
+                  <span>לחץ לבחירת קובץ — תמונה או PDF</span>
+                  <input type="file" id="task-file" accept="image/*,.pdf" onchange="updateFileLabel(this)" />
+                </label>
+                <div class="file-upload-name" id="task-file-name" style="display:none"></div>
               </div>
             </div>
             <button class="btn-add-task" onclick="createTask()">➕ הוסף משימה</button>
@@ -1824,6 +1987,7 @@ function launchApp(username) {
   renderPortals();
   renderForms();
   renderDashboard(username);
+  applyTaskRoles();
   renderAllTaskViews();
   // Boot to dashboard
   showPage('dashboard', document.getElementById('nav-dashboard'));
@@ -1857,6 +2021,26 @@ function renderDashboard(username) {
       <div style="font-size:24px;margin-bottom:8px">${t.icon}</div>
       <div style="font-size:13px;font-weight:700;color:var(--text-primary)">${t.label}</div>
     </div>`).join('');
+
+  // Task preview — my open tasks (non-done)
+  const myOpenTasks = sortTasks(
+    loadTasks().filter(t => t.assignee === username && t.status !== 'done')
+  ).slice(0, 5);
+  const dashTasksList = document.getElementById('dash-tasks-list');
+  if (dashTasksList) {
+    if (!myOpenTasks.length) {
+      dashTasksList.innerHTML = `<div style="text-align:center;padding:28px 16px;color:var(--text-muted);font-size:13px;background:var(--card-bg);border:1.5px dashed var(--card-border);border-radius:var(--radius-lg)">✅ אין משימות פתוחות — עבודה מצוינת!</div>`;
+    } else {
+      dashTasksList.innerHTML = myOpenTasks.map(t => {
+        const statusDot = { todo:'🔴', inprogress:'🟡', done:'🟢' }[t.status] || '🔴';
+        const insured   = t.insured ? `<span class="dash-task-insured">${esc(t.insured)}</span>` : '';
+        return `<div class="dash-task-row priority-${t.priority}" onclick="navTo('tasks')" style="cursor:pointer">
+          ${insured ? `<div style="display:flex;flex-direction:column;flex:1;min-width:0;gap:2px">${insured}<span class="dash-task-title">${esc(t.title)}</span></div>` : `<span class="dash-task-title">${esc(t.title)}</span>`}
+          <span style="font-size:13px">${statusDot}</span>
+        </div>`;
+      }).join('');
+    }
+  }
 
   // Top 5 internal contacts
   const top = INTERNAL_CONTACTS.slice(0, 5);
@@ -2503,50 +2687,86 @@ function printProposal() {
 /* ══════════════════════════════════════
    TASK BOARD
 ══════════════════════════════════════ */
-const TASKS_KEY = 'bq_tasks';
+const TASKS_KEY      = 'bq_tasks';
 const PRIORITY_ORDER = { urgent: 0, normal: 1, free: 2 };
-const DISPLAY_NAMES = { oren:'אורן', asher:'אשר', yehonatan:'יהונתן', riki:'ריקי', heidi:'היידי', chaya:'חיה שרה' };
+const DISPLAY_NAMES  = { oren:'אורן', asher:'אשר', yehonatan:'יהונתן', riki:'ריקי', heidi:'היידי', chaya:'חיה שרה' };
+const ADMINS         = ['oren', 'yehonatan'];
 
-let taskFilters = { mine: 'all', all: 'all' };
+function isAdmin() { return ADMINS.includes(currentUser); }
 
 function loadTasks() {
   try { return JSON.parse(localStorage.getItem(TASKS_KEY)) || []; } catch(e) { return []; }
 }
-function saveTasks(tasks) {
-  localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));
+function saveTasks(arr) { localStorage.setItem(TASKS_KEY, JSON.stringify(arr)); }
+
+/* Show/hide admin tabs after login */
+function applyTaskRoles() {
+  document.querySelectorAll('.tab-btn.admin-only').forEach(btn => {
+    btn.style.display = isAdmin() ? '' : 'none';
+  });
+}
+
+/* File label preview */
+function updateFileLabel(input) {
+  const nameEl = document.getElementById('task-file-name');
+  if (input.files && input.files[0]) {
+    nameEl.textContent = '📎 ' + input.files[0].name;
+    nameEl.style.display = 'block';
+  } else {
+    nameEl.style.display = 'none';
+  }
 }
 
 function createTask() {
+  const insured  = document.getElementById('task-insured').value.trim();
   const title    = document.getElementById('task-title').value.trim();
   const desc     = document.getElementById('task-desc-input').value.trim();
   const priority = document.getElementById('task-priority').value;
   const assignee = document.getElementById('task-assignee').value;
-  if (!title) { document.getElementById('task-title').focus(); return; }
+  if (!insured) { document.getElementById('task-insured').focus(); return; }
+  if (!title)   { document.getElementById('task-title').focus();   return; }
 
-  const tasks = loadTasks();
-  tasks.push({
+  const fileInput = document.getElementById('task-file');
+  const file      = fileInput && fileInput.files[0];
+
+  const newTask = {
     id:        Date.now().toString(36) + Math.random().toString(36).slice(2,6),
-    title,
-    desc,
-    priority,
-    assignee,
+    insured, title, desc, priority, assignee,
     status:    'todo',
     createdBy: currentUser || '',
     createdAt: Date.now(),
-  });
-  saveTasks(tasks);
+  };
 
-  document.getElementById('task-title').value      = '';
-  document.getElementById('task-desc-input').value = '';
-  document.getElementById('task-priority').value   = 'normal';
+  function finalize(task) {
+    const tasks = loadTasks();
+    tasks.push(task);
+    saveTasks(tasks);
+    document.getElementById('task-insured').value    = '';
+    document.getElementById('task-title').value      = '';
+    document.getElementById('task-desc-input').value = '';
+    document.getElementById('task-priority').value   = 'normal';
+    if (fileInput) { fileInput.value = ''; }
+    const nameEl = document.getElementById('task-file-name');
+    if (nameEl) nameEl.style.display = 'none';
+    renderAllTaskViews();
+    renderDashboard(currentUser);
+    const targetTab = assignee === currentUser ? 'mine' : (isAdmin() ? 'all' : 'mine');
+    const btn = document.querySelector(`#page-tasks .tab-btn[onclick*="'${targetTab}'"]`);
+    switchTab('tasks', targetTab, btn || document.querySelector('#page-tasks .tab-btn'));
+  }
 
-  renderAllTaskViews();
-  // Switch to My Tasks or All Tasks after creation
-  const targetTab = assignee === currentUser ? 'mine' : 'all';
-  const btn = document.querySelector(`#tasks-tab-create`)
-    ?.closest('.page')
-    ?.querySelector(`.tab-btn[onclick*="'${targetTab}'"]`);
-  switchTab('tasks', targetTab, btn || document.querySelector('#page-tasks .tab-btn'));
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      newTask.fileData = e.target.result;
+      newTask.fileName = file.name;
+      newTask.fileType = file.type;
+      finalize(newTask);
+    };
+    reader.readAsDataURL(file);
+  } else {
+    finalize(newTask);
+  }
 }
 
 function cycleStatus(id) {
@@ -2565,12 +2785,12 @@ function deleteTask(id) {
   renderAllTaskViews();
 }
 
-function setTaskFilter(view, filter, btn) {
-  taskFilters[view] = filter;
-  const strip = btn.closest('.task-filter-strip');
-  strip.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-  btn.classList.add('active');
-  renderTaskList(view);
+function openTaskFile(dataUrl, fileName) {
+  const a = document.createElement('a');
+  a.href = dataUrl;
+  a.target = '_blank';
+  a.download = fileName || 'קובץ_מצורף';
+  a.click();
 }
 
 function sortTasks(tasks) {
@@ -2606,12 +2826,24 @@ function taskCard(t) {
   const assigneeName = DISPLAY_NAMES[t.assignee] || t.assignee;
   const creatorName  = DISPLAY_NAMES[t.createdBy] || t.createdBy;
   const dateStr      = new Date(t.createdAt).toLocaleDateString('he-IL', { day:'numeric', month:'short' });
-  const copyText     = t.title + (t.desc ? '\n' + t.desc : '');
+  const insuredName  = t.insured || '';
+  const copyText     = (insuredName ? 'מבוטח: ' + insuredName + '\n' : '') + t.title + (t.desc ? '\n' + t.desc : '');
   const escapedCopy  = copyText.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,'\\n');
+
+  const fileBtn = t.fileData
+    ? `<button class="task-file-link" onclick="openTaskFile('${t.fileData.substring(0,30)}...'.length > 33 ? openTaskFile_real('${t.id}') : void 0)" onclick="openTaskFile_real('${t.id}')" title="פתח קובץ מצורף">📎 ${esc(t.fileName || 'קובץ מצורף')}</button>`
+    : '';
+
+  const fileHtml = t.fileData
+    ? `<div style="margin-top:10px"><button class="task-file-link" onclick="openTaskFileById('${t.id}')" title="צפה בקובץ המצורף">📎 צפה בקובץ מצורף — ${esc(t.fileName || 'קובץ')}</button></div>`
+    : '';
 
   return `<div class="task-card priority-${t.priority}" id="task-card-${t.id}">
     <div class="task-card-header">
-      <div class="task-title">${esc(t.title)}</div>
+      <div style="flex:1;min-width:0">
+        ${insuredName ? `<div style="margin-bottom:7px"><span class="task-insured">👤 ${esc(insuredName)}</span></div>` : ''}
+        <div class="task-title">${esc(t.title)}</div>
+      </div>
       <div class="task-actions">
         <button class="btn-copy" onclick="copyVal(this,'${escapedCopy}')" title="העתק למשימה / וואטסאפ">${COPY_SVG}</button>
         <button class="btn-task-delete" onclick="deleteTask('${t.id}')" title="מחק משימה">
@@ -2622,35 +2854,64 @@ function taskCard(t) {
       </div>
     </div>
     ${t.desc ? `<div class="task-desc">${esc(t.desc)}</div>` : ''}
+    ${fileHtml}
     <div class="task-meta" style="margin-top:12px">
       ${priorityTag(t.priority)}
       ${statusTag(t)}
-      <span class="task-assignee">👤 ${esc(assigneeName)}</span>
+      <span class="task-assignee">✉️ ${esc(assigneeName)}</span>
       ${t.createdBy && t.createdBy !== t.assignee ? `<span class="task-date">נוצר ע"י ${esc(creatorName)}</span>` : ''}
       <span class="task-date" style="margin-right:auto">${dateStr}</span>
     </div>
   </div>`;
 }
 
+function openTaskFileById(id) {
+  const task = loadTasks().find(t => t.id === id);
+  if (task && task.fileData) openTaskFile(task.fileData, task.fileName);
+}
+
+function getTabFilters(panel) {
+  const priorities = [...panel.querySelectorAll('[data-filter="priority"] input:checked')].map(i => i.value);
+  const statuses   = [...panel.querySelectorAll('[data-filter="status"] input:checked')].map(i => i.value);
+  const search     = (panel.querySelector('input[type="text"]')?.value || '').trim().toLowerCase();
+  return { priorities, statuses, search };
+}
+
 function renderTaskList(view) {
-  const listEl  = document.getElementById(`tasks-${view}-list`);
+  const listEl = document.getElementById(`tasks-${view}-list`);
   if (!listEl) return;
-  let tasks = loadTasks();
-  if (view === 'mine') tasks = tasks.filter(t => t.assignee === currentUser);
-  const filter = taskFilters[view] || 'all';
-  if (filter !== 'all') tasks = tasks.filter(t => t.status === filter);
+
+  const panel = listEl.closest('.tab-panel');
+  const { priorities, statuses, search } = panel ? getTabFilters(panel) : { priorities:[], statuses:[], search:'' };
+
+  let allPool = loadTasks();
+
+  // Role-based pool
+  if (view === 'mine')  allPool = allPool.filter(t => t.assignee === currentUser);
+  if (view === 'given') allPool = allPool.filter(t => t.createdBy === currentUser && t.assignee !== currentUser);
+  // view === 'all' → all tasks (admin only, no pool filter)
+
+  const countAllEl = document.getElementById(`${view}-count-all`);
+  if (countAllEl) countAllEl.textContent = allPool.length;
+
+  let tasks = [...allPool];
+  if (priorities.length) tasks = tasks.filter(t => priorities.includes(t.priority));
+  if (statuses.length)   tasks = tasks.filter(t => statuses.includes(t.status));
+  if (search) tasks = tasks.filter(t =>
+    (t.insured||'').toLowerCase().includes(search) ||
+    (t.title||'').toLowerCase().includes(search)   ||
+    (t.desc||'').toLowerCase().includes(search)
+  );
+
   tasks = sortTasks(tasks);
 
-  // update count badge on "הכל" chip
-  const allTasks = view === 'mine'
-    ? loadTasks().filter(t => t.assignee === currentUser)
-    : loadTasks();
-  const countEl = document.getElementById(`${view}-count-all`);
-  if (countEl) countEl.textContent = allTasks.length;
+  const countVisEl = document.getElementById(`${view}-count-visible`);
+  if (countVisEl) countVisEl.textContent = tasks.length;
 
   if (!tasks.length) {
-    const msg = view === 'mine' ? 'אין משימות משויכות אליך כרגע 🎉' : 'אין משימות במערכת עדיין';
-    listEl.innerHTML = `<div class="tasks-empty"><div class="em-icon">📭</div><h3>${filter !== 'all' ? 'אין משימות בסטטוס זה' : msg}</h3><p>${filter !== 'all' ? 'נסה לבחור סינון אחר' : 'לחץ על "יצירת משימה" כדי להתחיל'}</p></div>`;
+    const emptyMsg = view === 'mine' ? 'אין משימות משויכות אליך כרגע 🎉' :
+                     view === 'given'? 'לא נתת משימות לאחרים עדיין' : 'אין משימות במערכת עדיין';
+    listEl.innerHTML = `<div class="tasks-empty"><div class="em-icon">📭</div><h3>${emptyMsg}</h3><p>לחץ על "יצירת משימה" כדי להתחיל</p></div>`;
     return;
   }
   listEl.innerHTML = tasks.map(taskCard).join('');
@@ -2658,7 +2919,10 @@ function renderTaskList(view) {
 
 function renderAllTaskViews() {
   renderTaskList('mine');
-  renderTaskList('all');
+  if (isAdmin()) {
+    renderTaskList('all');
+    renderTaskList('given');
+  }
 }
 
 // expose currentUser for task logic
