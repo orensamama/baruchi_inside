@@ -1300,48 +1300,22 @@
           <input type="text" id="contacts-search" placeholder="חיפוש לפי שם, תפקיד, טלפון, מייל או הערה..." oninput="filterContacts()" />
         </div>
 
-        <div class="tabs-wrap">
-          <button class="tab-btn active" onclick="switchTab('contacts','internal',this)">🏢 טלפונים פנימיים וסוכנות שחם</button>
-          <button class="tab-btn" onclick="switchTab('contacts','external',this)">🏦 מספרי חברות הביטוח</button>
-        </div>
-
-        <!-- Section A: Internal -->
-        <div class="tab-panel active" id="contacts-tab-internal">
-          <div class="table-card">
-            <table class="data-table" id="internal-table">
-              <thead>
-                <tr>
-                  <th>שם / תפקיד</th>
-                  <th>מספר טלפון</th>
-                  <th>כתובת מייל</th>
-                  <th>הערות</th>
-                </tr>
-              </thead>
-              <tbody id="internal-tbody"></tbody>
-            </table>
-            <div class="no-results" id="internal-no-results" style="display:none;">
-              <div class="no-results-icon">🔎</div><div>לא נמצאו תוצאות</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Section B: External -->
-        <div class="tab-panel" id="contacts-tab-external">
-          <div class="table-card">
-            <table class="data-table" id="external-table">
-              <thead>
-                <tr>
-                  <th>שם / תפקיד</th>
-                  <th>מספר טלפון</th>
-                  <th>כתובת מייל</th>
-                  <th>הערות</th>
-                </tr>
-              </thead>
-              <tbody id="external-tbody"></tbody>
-            </table>
-            <div class="no-results" id="external-no-results" style="display:none;">
-              <div class="no-results-icon">🔎</div><div>לא נמצאו תוצאות</div>
-            </div>
+        <!-- Master contacts table -->
+        <div class="table-card">
+          <table class="data-table" id="master-contacts-table">
+            <thead>
+              <tr>
+                <th>שם / תפקיד</th>
+                <th>טלפון</th>
+                <th>שלוחה</th>
+                <th>מייל</th>
+                <th>הערות</th>
+              </tr>
+            </thead>
+            <tbody id="master-contacts-tbody"></tbody>
+          </table>
+          <div class="no-results" id="contacts-no-results" style="display:none;">
+            <div class="no-results-icon">🔎</div><div>לא נמצאו תוצאות</div>
           </div>
         </div>
       </div>
@@ -1797,6 +1771,10 @@
                   <option value="chaya">חיה</option>
                 </select>
               </div>
+              <div class="task-field">
+                <label for="task-deadline">📅 תאריך יעד / דד-ליין (אופציונלי)</label>
+                <input type="date" id="task-deadline" style="padding:8px 12px;border:1.5px solid var(--blue-border);border-radius:8px;font-family:inherit;font-size:14px;background:var(--card-bg);color:var(--text-primary);width:100%" />
+              </div>
               <div class="task-field full">
                 <label>הוספת קובץ מצורף (תמונה / PDF)</label>
                 <label class="file-upload-label" for="task-file">
@@ -1860,22 +1838,17 @@ const CREDENTIALS = [
 ];
 
 const INTERNAL_CONTACTS = [
-  // אנשי צוות
-  { name:'אשר ברוכי',               phone:'054-4289164',  email:'asherb@shaham-orlan.co.il',          notes:'סוכן, מנהל המשרד' },
-  { name:'יהונתן ברוכי',            phone:'054-391-3343', email:'yehonatanb@shaham-orlan.co.il',       notes:'סוכן' },
-  { name:'וואצאפ משרד',             phone:'054-911-1656', email:'',                                    notes:'' },
-  { name:'היידי ברוכי',             phone:'054-4289162',  email:'tviot.asher@shaham-orlan.co.il',      notes:'אחראית תחום תביעות' },
-  { name:'אורן טל סממה',            phone:'054-2008230',  email:'officeasher@shaham.co.il',            notes:'יועץ משכנתאות' },
-  { name:'משה — מחשוב שחם',        phone:'054-6667625',  email:'',                                    notes:'אחראי מחשוב' },
-  { name:'תמיכה טכנית — שחם אורלן', phone:'03-9206777',  email:'',                                    notes:'' },
-  { name:'שחם ביט — ארכיב',        phone:'',             email:'ShahamArchive@shaham.co.il',          notes:'כתובת ארכיב שחם ביט' },
-  // שלוחות
-  { name:'אילנה קבסה',              phone:'שלוחה 6691',   email:'ilana@shaham-orlan.co.il',            notes:'רפרנטית תפעול וקשרי חברות (סוכנות שחם) – מנהלת ממשקי עבודה ופתרון פניות' },
-  { name:'ריקי',                    phone:'שלוחה 6652',   email:'office.baruchi@shaham-orlan.co.il',   notes:'אחראית תיקי לקוחות' },
-  { name:'יהונתן / אשר',           phone:'שלוחה 6656',   email:'',                                    notes:'' },
-  { name:'אורן',                    phone:'שלוחה 6619',   email:'',                                    notes:'' },
-  { name:'משה גוזגל',               phone:'שלוחה 6696',   email:'',                                    notes:'אחראי מחשוב' },
-  { name:'חיה',                     phone:'שלוחה 6610',   email:'baruchi-el@shaham-orlan.co.il',       notes:'אחראית תחום אלמנטרי' },
+  { name:'אשר ברוכי',                phone:'054-4289164',  ext:'6656', email:'asherb@shaham-orlan.co.il',          notes:'סוכן, מנהל המשרד' },
+  { name:'יהונתן ברוכי',             phone:'054-391-3343', ext:'6656', email:'yehonatanb@shaham-orlan.co.il',       notes:'סוכן' },
+  { name:'היידי ברוכי',              phone:'054-4289162',  ext:'',     email:'tviot.asher@shaham-orlan.co.il',      notes:'אחראית תחום תביעות' },
+  { name:'אורן טל סממה',             phone:'054-2008230',  ext:'6619', email:'officeasher@shaham.co.il',            notes:'יועץ משכנתאות' },
+  { name:'ריקי',                     phone:'',             ext:'6652', email:'office.baruchi@shaham-orlan.co.il',   notes:'אחראית תיקי לקוחות' },
+  { name:'חיה',                      phone:'',             ext:'6610', email:'baruchi-el@shaham-orlan.co.il',       notes:'אחראית תחום אלמנטרי' },
+  { name:'אילנה קבסה',               phone:'',             ext:'6691', email:'ilana@shaham-orlan.co.il',            notes:'רפרנטית תפעול וקשרי חברות — שחם אורלן' },
+  { name:'משה גוזגל',                phone:'054-6667625',  ext:'6696', email:'',                                    notes:'אחראי מחשוב' },
+  { name:'וואצאפ משרד',              phone:'054-911-1656', ext:'',     email:'',                                    notes:'ערוץ וואטסאפ כללי של המשרד' },
+  { name:'תמיכה טכנית — שחם אורלן', phone:'03-9206777',   ext:'',     email:'',                                    notes:'תמיכה טכנית' },
+  { name:'שחם ביט — ארכיב',         phone:'',             ext:'',     email:'ShahamArchive@shaham.co.il',          notes:'כתובת ארכיב שחם ביט' },
 ];
 
 // External contacts grouped by company
@@ -2107,8 +2080,7 @@ function launchApp(username) {
   document.getElementById('user-avatar').textContent = username.charAt(0).toUpperCase();
   renderCredentials(CREDENTIALS);
   renderAgents(AGENT_NUMBERS);
-  renderInternalContacts('');
-  renderExternalContacts('');
+  renderAllContacts('');
   renderPricing(PRICING);
   renderFundsAccordion(FUNDS);
   renderPortals();
@@ -2311,82 +2283,85 @@ function filterAgents() {
 /* ══════════════════════════
    CONTACTS
 ══════════════════════════ */
-function contactRow(r) {
-  const phone = r.phone.startsWith('שלוחה')
-    ? `<span style="font-family:'Courier New',monospace;font-weight:700;color:var(--text-secondary)">${esc(r.phone)}</span>`
-    : `<a href="tel:${esc(r.phone.replace(/[-\s]/g,''))}" style="color:var(--blue);text-decoration:none;font-weight:700">${esc(r.phone)}</a>`;
-  const email = r.email
-    ? `<a href="mailto:${esc(r.email)}" style="color:var(--text-secondary);text-decoration:none">${esc(r.email)}</a>`
+const COPY_FIELD_SVG = `<svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;opacity:0.55;cursor:pointer"><rect x="5" y="1" width="9" height="11" rx="2"/><rect x="1" y="4" width="9" height="11" rx="2" fill="var(--card-bg)"/></svg>`;
+
+function copyField(el, val) {
+  navigator.clipboard.writeText(val).then(() => {
+    el.style.opacity = '1';
+    setTimeout(() => { el.style.opacity = '0.55'; }, 1000);
+  });
+}
+
+function contactRow(r, colspan) {
+  const cols = colspan || 5;
+  const phoneHtml = r.phone
+    ? `<a href="tel:${esc(r.phone.replace(/[-\s]/g,''))}" style="color:var(--blue);text-decoration:none;font-weight:700">${esc(r.phone)}</a>
+       <span onclick="copyField(this,'${r.phone.replace(/'/g,"\\'")}');event.stopPropagation()" title="העתק">${COPY_FIELD_SVG}</span>`
     : `<span style="color:var(--text-muted)">—</span>`;
-  const notes = r.notes
+  const extHtml = r.ext
+    ? `<span style="font-family:'Courier New',monospace;font-weight:700;color:var(--gold)">${esc(r.ext)}</span>
+       <span onclick="copyField(this,'${r.ext}');event.stopPropagation()" title="העתק">${COPY_FIELD_SVG}</span>`
+    : `<span style="color:var(--text-muted)">—</span>`;
+  const emailHtml = r.email
+    ? `<a href="mailto:${esc(r.email)}" style="color:var(--text-secondary);text-decoration:none">${esc(r.email)}</a>
+       <span onclick="copyField(this,'${r.email.replace(/'/g,"\\'")}');event.stopPropagation()" title="העתק">${COPY_FIELD_SVG}</span>`
+    : `<span style="color:var(--text-muted)">—</span>`;
+  const notesHtml = r.notes
     ? `<span style="font-size:13px;color:var(--text-muted)">${esc(r.notes)}</span>`
     : `<span style="color:var(--text-muted)">—</span>`;
   return `<tr>
     <td style="font-weight:600">${esc(r.name)}</td>
-    <td>${phone}</td>
-    <td>${email}</td>
-    <td>${notes}</td>
+    <td>${phoneHtml}</td>
+    <td>${extHtml}</td>
+    <td>${emailHtml}</td>
+    <td>${notesHtml}</td>
   </tr>`;
 }
 
-function renderInternalContacts(q) {
-  const staff = INTERNAL_CONTACTS.slice(0, 7);   // rows 0-6 = staff / shaham
-  const exts  = INTERNAL_CONTACTS.slice(7);       // rows 7-12 = extensions
-  const match = arr => q ? arr.filter(r => [r.name,r.phone,r.email,r.notes].some(v => v.toLowerCase().includes(q))) : arr;
-  const ms = match(staff), me = match(exts);
-  const noRes = document.getElementById('internal-no-results');
+function renderAllContacts(q) {
+  const noRes = document.getElementById('contacts-no-results');
+  let html = '', total = 0;
 
-  if (!ms.length && !me.length) {
-    document.getElementById('internal-tbody').innerHTML = '';
-    noRes.style.display = 'block'; return;
+  // Internal group
+  const intRows = q
+    ? INTERNAL_CONTACTS.filter(r => [r.name,r.phone,r.ext,r.email,r.notes].some(v => (v||'').toLowerCase().includes(q)))
+    : INTERNAL_CONTACTS;
+  if (intRows.length) {
+    total += intRows.length;
+    html += `<tr class="divider-row"><td colspan="5">🏢 אנשי צוות וסוכנות שחם</td></tr>`;
+    html += intRows.map(r => contactRow(r, 5)).join('');
   }
-  noRes.style.display = 'none';
 
-  let html = '';
-  if (ms.length) {
-    html += `<tr class="divider-row"><td colspan="4">אנשי צוות ושחם</td></tr>`;
-    html += ms.map(contactRow).join('');
-  }
-  if (me.length) {
-    html += `<tr class="divider-row"><td colspan="4">שלוחות טלפוניות משרדיות</td></tr>`;
-    html += me.map(contactRow).join('');
-  }
-  document.getElementById('internal-tbody').innerHTML = html;
-}
-
-function renderExternalContacts(q) {
-  const noRes = document.getElementById('external-no-results');
-  let html = '', totalVisible = 0;
-
+  // External groups
   EXTERNAL_CONTACTS_GROUPS.forEach(group => {
     const rows = q
-      ? group.rows.filter(r => [r.name, r.phone, r.email, r.notes, group.company].some(v => v.toLowerCase().includes(q)))
+      ? group.rows.filter(r => [r.name,r.phone,r.email,r.notes,group.company].some(v => (v||'').toLowerCase().includes(q)))
       : group.rows;
     if (!rows.length) return;
-    totalVisible += rows.length;
+    total += rows.length;
     html += `<tr class="contact-group-header">
-      <td colspan="4">
+      <td colspan="5">
         <span class="group-label">
           <span class="group-dot" style="background:${group.color}"></span>
           ${esc(group.company)}
         </span>
       </td>
     </tr>`;
-    html += rows.map(contactRow).join('');
+    // external contacts have no ext field — pass ext:'' so column renders dash
+    html += rows.map(r => contactRow({...r, ext: r.ext || ''}, 5)).join('');
   });
 
-  if (!totalVisible) {
-    document.getElementById('external-tbody').innerHTML = '';
+  if (!total) {
+    document.getElementById('master-contacts-tbody').innerHTML = '';
     noRes.style.display = 'block'; return;
   }
   noRes.style.display = 'none';
-  document.getElementById('external-tbody').innerHTML = html;
+  document.getElementById('master-contacts-tbody').innerHTML = html;
 }
 
 function filterContacts() {
   const q = document.getElementById('contacts-search').value.trim().toLowerCase();
-  renderInternalContacts(q);
-  renderExternalContacts(q);
+  renderAllContacts(q);
 }
 
 /* ══════════════════════════
@@ -2878,9 +2853,12 @@ function createTask() {
   const fileInput = document.getElementById('task-file');
   const file      = fileInput && fileInput.files[0];
 
+  const deadlineEl = document.getElementById('task-deadline');
+  const deadline   = deadlineEl ? deadlineEl.value : '';
+
   const newTask = {
     id:        Date.now().toString(36) + Math.random().toString(36).slice(2,6),
-    insured, title, desc, priority, assignee, category,
+    insured, title, desc, priority, assignee, category, deadline,
     status:    'todo',
     createdBy: currentUser || '',
     createdAt: Date.now(),
@@ -2898,6 +2876,8 @@ function createTask() {
     if (catOther) { catOther.value = ''; }
     const catWrap = document.getElementById('task-cat-other-wrap');
     if (catWrap) catWrap.style.display = 'none';
+    const deadlineInput = document.getElementById('task-deadline');
+    if (deadlineInput) deadlineInput.value = '';
     if (fileInput) { fileInput.value = ''; }
     const nameEl = document.getElementById('task-file-name');
     if (nameEl) nameEl.style.display = 'none';
@@ -2986,6 +2966,14 @@ function taskCard(t) {
   const copyText     = (insuredName ? 'מבוטח: ' + insuredName + '\n' : '') + t.title + (t.desc ? '\n' + t.desc : '');
   const escapedCopy  = copyText.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,'\\n');
 
+  const today        = new Date().toISOString().split('T')[0];
+  const isToday      = t.deadline && t.deadline === today;
+  const deadlineHtml = t.deadline
+    ? (isToday
+        ? `<span style="display:inline-flex;align-items:center;gap:4px;background:#ef4444;color:#fff;font-size:11px;font-weight:700;border-radius:6px;padding:2px 8px">📅 היום!</span>`
+        : `<span style="display:inline-flex;align-items:center;gap:4px;background:var(--blue-light);color:var(--blue);font-size:11px;font-weight:600;border-radius:6px;padding:2px 8px;border:1px solid var(--blue-border)">📅 ${esc(new Date(t.deadline + 'T00:00:00').toLocaleDateString('he-IL',{day:'numeric',month:'short'}))}</span>`)
+    : '';
+
   const fileHtml = t.fileData
     ? `<button class="task-file-link" onclick="openTaskFileById('${t.id}');event.stopPropagation()" style="margin-bottom:8px">📎 ${esc(t.fileName || 'קובץ מצורף')}</button>`
     : '';
@@ -3000,6 +2988,7 @@ function taskCard(t) {
     <span class="task-row-chevron">▼</span>
     ${insuredName ? `<span class="task-insured-sm">${esc(insuredName)}</span>` : ''}
     ${t.category ? catBadge(t.category) : ''}
+    ${deadlineHtml}
     <span class="task-row-title">${esc(t.title)}</span>
     <div class="task-actions" onclick="event.stopPropagation()">
       ${prioritySelectHtml(t)}
