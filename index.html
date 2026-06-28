@@ -1009,6 +1009,7 @@
     }
     .price-breakdown-row .strike { text-decoration: line-through; color: var(--text-muted); }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
 <body>
 
@@ -2120,7 +2121,7 @@ function logout() {
   document.getElementById('password').value = '';
 }
 
-function launchApp(username) {
+async function launchApp(username) {
   currentUser = username;
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
@@ -2135,6 +2136,8 @@ function launchApp(username) {
   renderForms();
   renderDashboard(username);
   applyTaskRoles();
+  initSupabase();
+  await dbLoadTasks();
   renderAllTaskViews();
   // Boot to dashboard
   showPage('dashboard', document.getElementById('nav-dashboard'));
@@ -2865,10 +2868,113 @@ const ADMINS         = ['oren', 'yehonatan'];
 
 function isAdmin() { return ADMINS.includes(currentUser); }
 
-function loadTasks() {
-  try { return JSON.parse(localStorage.getItem(TASKS_KEY)) || []; } catch(e) { return []; }
+/* ── Supabase client ── */
+const SUPABASE_URL      = 'https://fqgvwyydogobaiisefltg.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_rpUEHN0L8xtNIMVnqE7GZA_xjHloqNk';
+let _sb       = null;   // Supabase client instance
+let _dbReady  = false;  // true once connection confirmed
+let _tasks    = [];     // in-memory cache — all reads are synchronous against this
+
+function initSupabase() {
+  try {
+    _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    _dbReady = true;
+  } catch(e) {
+    console.warn('[Baruchi HQ] Supabase init failed — using localStorage fallback', e);
+  }
 }
-function saveTasks(arr) { localStorage.setItem(TASKS_KEY, JSON.stringify(arr)); }
+
+/* camelCase JS task ↔ snake_case Supabase row */
+function taskToRow(t) {
+  return {
+    id:          t.id,
+    insured:     t.insured    || '',
+    title:       t.title      || '',
+    description: t.desc       || '',
+    priority:    t.priority   || 'normal',
+    assignee:    t.assignee   || '',
+    category:    t.category   || '',
+    deadline:    t.deadline   || '',
+    status:      t.status     || 'todo',
+    created_by:  t.createdBy  || '',
+    created_at:  t.createdAt  || Date.now(),
+    file_name:   t.fileName   || '',
+    file_data:   t.fileData   || '',
+    file_type:   t.fileType   || '',
+  };
+}
+function rowToTask(r) {
+  return {
+    id:        r.id,
+    insured:   r.insured,
+    title:     r.title,
+    desc:      r.description,
+    priority:  r.priority,
+    assignee:  r.assignee,
+    category:  r.category,
+    deadline:  r.deadline,
+    status:    r.status,
+    createdBy: r.created_by,
+    createdAt: r.created_at,
+    fileName:  r.file_name,
+    fileData:  r.file_data,
+    fileType:  r.file_type,
+  };
+}
+
+/* DB column name map for field updates */
+const FIELD_COL = {
+  desc:'description', createdBy:'created_by', createdAt:'created_at',
+  fileName:'file_name', fileData:'file_data', fileType:'file_type',
+};
+function toCol(field) { return FIELD_COL[field] || field; }
+
+/* Load all tasks from Supabase → populate _tasks cache */
+async function dbLoadTasks() {
+  if (!_dbReady) {
+    try { _tasks = JSON.parse(localStorage.getItem(TASKS_KEY)) || []; } catch(e) { _tasks = []; }
+    return;
+  }
+  const { data, error } = await _sb.from('tasks').select('*').order('created_at', { ascending: false });
+  if (error) {
+    console.warn('[Baruchi HQ] Supabase load failed — localStorage fallback', error);
+    try { _tasks = JSON.parse(localStorage.getItem(TASKS_KEY)) || []; } catch(e) { _tasks = []; }
+  } else {
+    _tasks = (data || []).map(rowToTask);
+    localStorage.setItem(TASKS_KEY, JSON.stringify(_tasks)); // offline mirror
+  }
+}
+
+/* Upsert one task to Supabase + mirror to localStorage */
+async function dbSaveTask(task) {
+  if (_dbReady) {
+    const { error } = await _sb.from('tasks').upsert(taskToRow(task), { onConflict: 'id' });
+    if (error) console.warn('[Baruchi HQ] Supabase upsert failed', error);
+  }
+  localStorage.setItem(TASKS_KEY, JSON.stringify(_tasks));
+}
+
+/* Delete one task from Supabase */
+async function dbDeleteTask(id) {
+  if (_dbReady) {
+    const { error } = await _sb.from('tasks').delete().eq('id', id);
+    if (error) console.warn('[Baruchi HQ] Supabase delete failed', error);
+  }
+  localStorage.setItem(TASKS_KEY, JSON.stringify(_tasks));
+}
+
+/* Update a single field on one task in Supabase */
+async function dbUpdateField(id, field, value) {
+  if (_dbReady) {
+    const { error } = await _sb.from('tasks').update({ [toCol(field)]: value }).eq('id', id);
+    if (error) console.warn('[Baruchi HQ] Supabase update failed', error);
+  }
+  localStorage.setItem(TASKS_KEY, JSON.stringify(_tasks));
+}
+
+/* Synchronous helpers — read/write the in-memory cache only */
+function loadTasks() { return _tasks; }
+function saveTasks(arr) { _tasks = arr; localStorage.setItem(TASKS_KEY, JSON.stringify(arr)); }
 
 const CATEGORIES = ['סיכונים','פנסיוני','פיננסי','אלמנטרי','תביעות','גבייה','משכנתאות','אחר'];
 
@@ -2934,9 +3040,8 @@ function createTask() {
   };
 
   function finalize(task) {
-    const tasks = loadTasks();
-    tasks.push(task);
-    saveTasks(tasks);
+    _tasks.push(task);
+    dbSaveTask(task);
     document.getElementById('task-insured').value    = '';
     document.getElementById('task-title').value      = '';
     document.getElementById('task-desc-input').value = '';
@@ -2972,18 +3077,20 @@ function createTask() {
 }
 
 function cycleStatus(id) {
-  const tasks = loadTasks();
-  const t = tasks.find(t => t.id === id);
+  const t = _tasks.find(t => t.id === id);
   if (!t) return;
+  if (!isAdmin() && t.assignee !== currentUser) return;
   const cycle = { todo: 'inprogress', inprogress: 'done', done: 'todo' };
   t.status = cycle[t.status] || 'todo';
-  saveTasks(tasks);
+  dbUpdateField(id, 'status', t.status);
   renderAllTaskViews();
 }
 
 function deleteTask(id) {
+  if (!isAdmin()) { alert('רק מנהלים יכולים למחוק משימות'); return; }
   if (!confirm('למחוק משימה זו?')) return;
-  saveTasks(loadTasks().filter(t => t.id !== id));
+  _tasks = _tasks.filter(t => t.id !== id);
+  dbDeleteTask(id);
   renderAllTaskViews();
 }
 
@@ -3081,11 +3188,11 @@ function toggleTaskRow(id, rowEl) {
 }
 
 function updateTaskField(id, field, value, selectEl) {
-  const tasks = loadTasks();
-  const t = tasks.find(t => t.id === id);
+  const t = _tasks.find(t => t.id === id);
   if (!t) return;
+  if (!isAdmin() && t.assignee !== currentUser) return;
   t[field] = value;
-  saveTasks(tasks);
+  dbUpdateField(id, field, value);
 
   /* Update select colour class without full re-render */
   const cls = field === 'priority'
@@ -3112,7 +3219,7 @@ function updateTaskField(id, field, value, selectEl) {
 }
 
 function openTaskFileById(id) {
-  const task = loadTasks().find(t => t.id === id);
+  const task = _tasks.find(t => t.id === id);
   if (task && task.fileData) openTaskFile(task.fileData, task.fileName);
 }
 
