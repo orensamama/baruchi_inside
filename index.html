@@ -639,145 +639,161 @@
     }
     .btn-add-task:hover { background: #1a3a6e; transform: translateY(-1px); }
 
-    /* Task cards */
-    .tasks-list { display: flex; flex-direction: column; gap: 12px; }
-    .task-card {
+    /* ══ COMPACT ACCORDION TASK LIST ══ */
+    .tasks-list {
+      display: flex; flex-direction: column;
       background: var(--card-bg); border: 1px solid var(--card-border);
-      border-radius: var(--radius-lg); padding: 18px 20px;
-      box-shadow: var(--card-shadow);
-      transition: box-shadow .2s;
-      border-right: 4px solid transparent;
+      border-radius: var(--radius-lg); box-shadow: var(--card-shadow);
+      overflow: hidden;
     }
-    .task-card:hover { box-shadow: var(--card-shadow-lg); }
-    .task-card.priority-urgent { border-right-color: #dc2626; }
-    .task-card.priority-normal { border-right-color: #f59e0b; }
-    .task-card.priority-free   { border-right-color: #94a3b8; }
 
-    .task-card-header {
-      display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px;
+    /* Each row = the collapsed header */
+    .task-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px;
+      border-bottom: 1px solid #f1f5f9;
+      cursor: pointer;
+      transition: background .12s;
+      border-right: 3px solid transparent;
+      user-select: none;
+      min-height: 46px;
     }
-    .task-title {
-      flex: 1; font-size: 15px; font-weight: 700; color: var(--text-primary); line-height: 1.4;
-    }
-    .task-meta {
-      display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 8px;
-    }
-    .task-assignee {
-      font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 4px;
-    }
-    .task-date { font-size: 11px; color: var(--text-muted); }
+    .task-row:last-of-type { border-bottom: none; }
+    .task-row:hover { background: #f8fafc; }
+    .task-row.priority-urgent { border-right-color: #dc2626; }
+    .task-row.priority-normal { border-right-color: #f59e0b; }
+    .task-row.priority-free   { border-right-color: #94a3b8; }
+    .task-row.expanded        { background: #f8fafc; border-bottom: none; }
 
-    /* Priority tags */
-    .tag-priority {
-      display: inline-flex; align-items: center; gap: 4px;
-      font-size: 11px; font-weight: 800; padding: 3px 10px;
-      border-radius: 20px; white-space: nowrap;
+    /* Chevron */
+    .task-row-chevron {
+      font-size: 10px; color: var(--text-muted); flex-shrink: 0;
+      transition: transform .2s; line-height: 1;
     }
-    .tag-priority.urgent { background: #fee2e2; color: #b91c1c; }
-    .tag-priority.normal { background: #fef3c7; color: #92400e; }
-    .tag-priority.free   { background: #f1f5f9; color: #475569; }
+    .task-row.expanded .task-row-chevron { transform: rotate(180deg); }
 
-    /* Status toggle */
-    .tag-status {
-      display: inline-flex; align-items: center; gap: 5px;
-      font-size: 11px; font-weight: 700; padding: 4px 12px;
-      border-radius: 20px; cursor: pointer; border: none;
+    /* Insured chip — compact */
+    .task-insured-sm {
+      font-size: 11px; font-weight: 800; color: var(--blue);
+      background: var(--blue-light); border-radius: 6px;
+      padding: 2px 8px; white-space: nowrap; flex-shrink: 0;
+    }
+
+    /* Title in row */
+    .task-row-title {
+      flex: 1; font-size: 13px; font-weight: 600;
+      color: var(--text-primary); line-height: 1.35;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+
+    /* Inline select dropdowns — priority & status */
+    .task-select {
+      appearance: none; -webkit-appearance: none;
+      border: 1px solid var(--card-border); border-radius: 6px;
+      padding: 3px 22px 3px 7px; font-size: 11px; font-weight: 700;
       font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
-      transition: opacity .15s, transform .1s; white-space: nowrap;
+      cursor: pointer; outline: none; flex-shrink: 0;
+      background-repeat: no-repeat;
+      background-position: left 6px center;
+      background-size: 10px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238aa0b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      transition: border-color .15s, box-shadow .15s;
     }
-    .tag-status:hover { opacity: .82; transform: scale(1.04); }
-    .tag-status.todo       { background: #fee2e2; color: #b91c1c; }
-    .tag-status.inprogress { background: #fef3c7; color: #92400e; }
-    .tag-status.done       { background: #d1fae5; color: #065f46; }
+    .task-select:focus { border-color: var(--blue); box-shadow: 0 0 0 2px rgba(37,99,235,.1); }
+    .task-select:hover { border-color: #94a3b8; }
 
-    /* Description / notes block */
+    .task-select.sel-urgent    { background-color: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
+    .task-select.sel-normal    { background-color: #fef3c7; color: #92400e; border-color: #fcd34d; }
+    .task-select.sel-free      { background-color: #f1f5f9; color: #475569; border-color: #cbd5e1; }
+    .task-select.sel-todo      { background-color: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
+    .task-select.sel-inprogress{ background-color: #fef3c7; color: #92400e; border-color: #fcd34d; }
+    .task-select.sel-done      { background-color: #d1fae5; color: #065f46; border-color: #6ee7b7; }
+
+    /* Expanded body */
+    .task-body {
+      display: none; padding: 10px 14px 14px 14px;
+      border-bottom: 1px solid #f1f5f9;
+      background: #f8fafc; animation: fadeBody .15s ease;
+    }
+    .task-body.open { display: block; }
+    @keyframes fadeBody { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
     .task-desc {
       font-size: 13px; color: var(--text-secondary); line-height: 1.65;
-      background: #f8fafc; border-radius: 8px; padding: 10px 14px;
-      margin-top: 10px; white-space: pre-wrap;
+      background: #fff; border: 1px solid var(--card-border); border-radius: 8px;
+      padding: 9px 13px; white-space: pre-wrap; margin-bottom: 10px;
     }
-    .task-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+    .task-body-meta {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      font-size: 11px; color: var(--text-muted);
+    }
+
+    .task-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
     .btn-task-delete {
       background: none; border: 1px solid var(--card-border); border-radius: 6px;
-      color: var(--text-muted); cursor: pointer; padding: 5px 7px; line-height: 0;
+      color: var(--text-muted); cursor: pointer; padding: 4px 6px; line-height: 0;
       display: inline-flex; align-items: center; justify-content: center;
       transition: color .15s, border-color .15s, background .15s;
     }
     .btn-task-delete:hover { color: var(--danger); border-color: var(--danger); background: #fee2e2; }
-    .btn-task-delete svg { width: 14px; height: 14px; }
+    .btn-task-delete svg { width: 13px; height: 13px; }
 
     /* Empty state */
     .tasks-empty {
-      text-align: center; padding: 56px 24px;
+      text-align: center; padding: 48px 24px;
       background: var(--card-bg); border: 1.5px dashed var(--card-border);
       border-radius: var(--radius-lg);
     }
-    .tasks-empty .em-icon { font-size: 44px; margin-bottom: 14px; opacity: .35; }
-    .tasks-empty h3 { font-size: 17px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+    .tasks-empty .em-icon { font-size: 40px; margin-bottom: 12px; opacity: .3; }
+    .tasks-empty h3 { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 5px; }
     .tasks-empty p  { font-size: 13px; color: var(--text-muted); }
 
-    /* Filter strip */
-    .task-filter-strip {
-      display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 18px;
-    }
-    .filter-chip {
-      padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--card-border);
-      background: var(--card-bg); font-size: 12px; font-weight: 700;
-      color: var(--text-muted); cursor: pointer;
-      font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
-      transition: all .15s;
-    }
-    .filter-chip:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
-    .filter-chip.active { background: var(--sidebar-bg); color: #fff; border-color: var(--sidebar-bg); }
-
-    .task-count-badge {
-      background: #f1f5f9; color: var(--text-secondary);
-      font-size: 11px; font-weight: 800; padding: 2px 8px;
-      border-radius: 20px; margin-right: 4px;
-    }
-
-    /* Task insured name chip */
-    .task-insured {
-      font-size: 13px; font-weight: 800; color: var(--sidebar-bg);
-      background: var(--blue-light); border: 1px solid var(--blue-border);
-      border-radius: 8px; padding: 3px 10px; display: inline-flex; align-items: center; gap: 5px;
-    }
-
-    /* Advanced filter panel */
-    .task-advanced-filters {
+    /* ══ COMPACT FILTER BAR ══ */
+    .task-filter-bar {
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+      margin-bottom: 10px; padding: 8px 12px;
       background: var(--card-bg); border: 1px solid var(--card-border);
-      border-radius: var(--radius-lg); padding: 16px 20px;
-      margin-bottom: 16px; box-shadow: var(--card-shadow);
+      border-radius: var(--radius); box-shadow: var(--card-shadow);
     }
-    .filter-row {
-      display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;
+    .task-filter-bar .fbr-label {
+      font-size: 10px; font-weight: 800; color: var(--text-muted);
+      letter-spacing: .6px; text-transform: uppercase; padding-left: 4px;
     }
-    .filter-row:last-child { margin-bottom: 0; }
-    .filter-row-label {
-      font-size: 11px; font-weight: 800; color: var(--text-muted);
-      letter-spacing: .7px; text-transform: uppercase; min-width: 60px;
+    .task-filter-bar .fbr-sep {
+      width: 1px; height: 16px; background: var(--card-border); flex-shrink: 0;
     }
-    .filter-checkbox-label {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 12px; font-weight: 600; color: var(--text-secondary);
-      cursor: pointer; padding: 5px 12px; border-radius: 20px;
-      border: 1.5px solid var(--card-border); background: #f8fafc;
-      transition: all .15s; user-select: none;
-    }
-    .filter-checkbox-label:has(input:checked) { background: var(--sidebar-bg); color: #fff; border-color: var(--sidebar-bg); }
-    .filter-checkbox-label input { display: none; }
-
-    /* Task search bar */
-    .task-search-wrap { position: relative; margin-bottom: 14px; }
-    .task-search-wrap .search-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }
-    .task-search-wrap input {
-      width: 100%; background: var(--card-bg); border: 1.5px solid var(--card-border);
-      border-radius: var(--radius); padding: 11px 42px 11px 16px;
-      font-size: 14px; color: var(--text-primary); outline: none;
+    .fbr-chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 11px; font-weight: 600; padding: 3px 9px;
+      border-radius: 12px; border: 1px solid var(--card-border);
+      background: #f8fafc; color: var(--text-muted);
+      cursor: pointer; user-select: none; transition: all .12s;
       font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
-      box-shadow: var(--card-shadow); transition: border-color .2s, box-shadow .2s;
     }
-    .task-search-wrap input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,.12); }
+    .fbr-chip:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+    .fbr-chip input { display: none; }
+    .fbr-chip:has(input:checked) {
+      background: var(--sidebar-bg); color: #fff;
+      border-color: var(--sidebar-bg);
+    }
+
+    /* Compact search */
+    .task-search-wrap { position: relative; margin-bottom: 8px; }
+    .task-search-wrap .search-icon { position: absolute; right: 11px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; font-size: 13px; }
+    .task-search-wrap input {
+      width: 100%; background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: var(--radius); padding: 8px 36px 8px 12px;
+      font-size: 13px; color: var(--text-primary); outline: none;
+      font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .task-search-wrap input:focus { border-color: var(--blue); box-shadow: 0 0 0 2px rgba(37,99,235,.1); }
+
+    /* Legacy aliases so old CSS doesn't break anything else */
+    .task-insured { font-size: 12px; font-weight: 800; color: var(--sidebar-bg); background: var(--blue-light); border: 1px solid var(--blue-border); border-radius: 8px; padding: 3px 10px; display: inline-flex; align-items: center; gap: 5px; }
+    .filter-chip { display: none; }
+    .task-count-badge { background: #f1f5f9; color: var(--text-secondary); font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 20px; }
 
     /* Dashboard tasks preview */
     .dash-tasks-section { margin-top: 28px; }
@@ -1567,23 +1583,20 @@
         <div class="tab-panel active" id="tasks-tab-mine">
           <div class="task-search-wrap">
             <span class="search-icon">🔍</span>
-            <input type="text" id="tasks-mine-search" placeholder="חיפוש לפי שם מבוטח, כותרת או הערות..." oninput="renderTaskList('mine')" />
+            <input type="text" id="tasks-mine-search" placeholder="חיפוש: שם מבוטח, כותרת, הערות..." oninput="renderTaskList('mine')" />
           </div>
-          <div class="task-advanced-filters">
-            <div class="filter-row" data-filter="priority">
-              <span class="filter-row-label">עדיפות</span>
-              <label class="filter-checkbox-label"><input type="checkbox" value="urgent" onchange="renderTaskList('mine')" checked> ⚡ דחוף ביותר</label>
-              <label class="filter-checkbox-label"><input type="checkbox" value="normal" onchange="renderTaskList('mine')" checked> 🔥 חשוב / רגיל</label>
-              <label class="filter-checkbox-label"><input type="checkbox" value="free"   onchange="renderTaskList('mine')" checked> ⏳ בזמנך החופשי</label>
-            </div>
-            <div class="filter-row" data-filter="status">
-              <span class="filter-row-label">סטטוס</span>
-              <label class="filter-checkbox-label"><input type="checkbox" value="todo"       onchange="renderTaskList('mine')" checked> 🔴 לביצוע</label>
-              <label class="filter-checkbox-label"><input type="checkbox" value="inprogress" onchange="renderTaskList('mine')" checked> 🟡 בטיפול</label>
-              <label class="filter-checkbox-label"><input type="checkbox" value="done"       onchange="renderTaskList('mine')" checked> 🟢 הושלם</label>
-            </div>
+          <div class="task-filter-bar">
+            <span class="fbr-label">עדיפות</span>
+            <label class="fbr-chip"><input type="checkbox" value="urgent" onchange="renderTaskList('mine')" checked>⚡ דחוף</label>
+            <label class="fbr-chip"><input type="checkbox" value="normal" onchange="renderTaskList('mine')" checked>🔥 רגיל</label>
+            <label class="fbr-chip"><input type="checkbox" value="free"   onchange="renderTaskList('mine')" checked>⏳ פנוי</label>
+            <span class="fbr-sep"></span>
+            <span class="fbr-label">סטטוס</span>
+            <label class="fbr-chip"><input type="checkbox" value="todo"       onchange="renderTaskList('mine')" checked>🔴 לביצוע</label>
+            <label class="fbr-chip"><input type="checkbox" value="inprogress" onchange="renderTaskList('mine')" checked>🟡 בטיפול</label>
+            <label class="fbr-chip"><input type="checkbox" value="done"       onchange="renderTaskList('mine')" checked>🟢 הושלם</label>
+            <span style="margin-right:auto;font-size:11px;color:var(--text-muted)"><strong id="mine-count-visible">0</strong>/<strong id="mine-count-all">0</strong></span>
           </div>
-          <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">מציג <strong id="mine-count-visible">0</strong> משימות מתוך <strong id="mine-count-all">0</strong></div>
           <div class="tasks-list" id="tasks-mine-list"></div>
         </div>
 
@@ -1591,23 +1604,20 @@
         <div class="tab-panel" id="tasks-tab-all">
           <div class="task-search-wrap">
             <span class="search-icon">🔍</span>
-            <input type="text" id="tasks-all-search" placeholder="חיפוש לפי שם מבוטח, כותרת או הערות..." oninput="renderTaskList('all')" />
+            <input type="text" id="tasks-all-search" placeholder="חיפוש: שם מבוטח, כותרת, הערות..." oninput="renderTaskList('all')" />
           </div>
-          <div class="task-advanced-filters">
-            <div class="filter-row" data-filter="priority">
-              <span class="filter-row-label">עדיפות</span>
-              <label class="filter-checkbox-label"><input type="checkbox" value="urgent" onchange="renderTaskList('all')" checked> ⚡ דחוף ביותר</label>
-              <label class="filter-checkbox-label"><input type="checkbox" value="normal" onchange="renderTaskList('all')" checked> 🔥 חשוב / רגיל</label>
-              <label class="filter-checkbox-label"><input type="checkbox" value="free"   onchange="renderTaskList('all')" checked> ⏳ בזמנך החופשי</label>
-            </div>
-            <div class="filter-row" data-filter="status">
-              <span class="filter-row-label">סטטוס</span>
-              <label class="filter-checkbox-label"><input type="checkbox" value="todo"       onchange="renderTaskList('all')" checked> 🔴 לביצוע</label>
-              <label class="filter-checkbox-label"><input type="checkbox" value="inprogress" onchange="renderTaskList('all')" checked> 🟡 בטיפול</label>
-              <label class="filter-checkbox-label"><input type="checkbox" value="done"       onchange="renderTaskList('all')" checked> 🟢 הושלם</label>
-            </div>
+          <div class="task-filter-bar">
+            <span class="fbr-label">עדיפות</span>
+            <label class="fbr-chip"><input type="checkbox" value="urgent" onchange="renderTaskList('all')" checked>⚡ דחוף</label>
+            <label class="fbr-chip"><input type="checkbox" value="normal" onchange="renderTaskList('all')" checked>🔥 רגיל</label>
+            <label class="fbr-chip"><input type="checkbox" value="free"   onchange="renderTaskList('all')" checked>⏳ פנוי</label>
+            <span class="fbr-sep"></span>
+            <span class="fbr-label">סטטוס</span>
+            <label class="fbr-chip"><input type="checkbox" value="todo"       onchange="renderTaskList('all')" checked>🔴 לביצוע</label>
+            <label class="fbr-chip"><input type="checkbox" value="inprogress" onchange="renderTaskList('all')" checked>🟡 בטיפול</label>
+            <label class="fbr-chip"><input type="checkbox" value="done"       onchange="renderTaskList('all')" checked>🟢 הושלם</label>
+            <span style="margin-right:auto;font-size:11px;color:var(--text-muted)"><strong id="all-count-visible">0</strong>/<strong id="all-count-all">0</strong></span>
           </div>
-          <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">מציג <strong id="all-count-visible">0</strong> משימות מתוך <strong id="all-count-all">0</strong></div>
           <div class="tasks-list" id="tasks-all-list"></div>
         </div>
 
@@ -1615,23 +1625,20 @@
         <div class="tab-panel" id="tasks-tab-given">
           <div class="task-search-wrap">
             <span class="search-icon">🔍</span>
-            <input type="text" id="tasks-given-search" placeholder="חיפוש לפי שם מבוטח, כותרת או הערות..." oninput="renderTaskList('given')" />
+            <input type="text" id="tasks-given-search" placeholder="חיפוש: שם מבוטח, כותרת, הערות..." oninput="renderTaskList('given')" />
           </div>
-          <div class="task-advanced-filters">
-            <div class="filter-row" data-filter="priority">
-              <span class="filter-row-label">עדיפות</span>
-              <label class="filter-checkbox-label"><input type="checkbox" value="urgent" onchange="renderTaskList('given')" checked> ⚡ דחוף ביותר</label>
-              <label class="filter-checkbox-label"><input type="checkbox" value="normal" onchange="renderTaskList('given')" checked> 🔥 חשוב / רגיל</label>
-              <label class="filter-checkbox-label"><input type="checkbox" value="free"   onchange="renderTaskList('given')" checked> ⏳ בזמנך החופשי</label>
-            </div>
-            <div class="filter-row" data-filter="status">
-              <span class="filter-row-label">סטטוס</span>
-              <label class="filter-checkbox-label"><input type="checkbox" value="todo"       onchange="renderTaskList('given')" checked> 🔴 לביצוע</label>
-              <label class="filter-checkbox-label"><input type="checkbox" value="inprogress" onchange="renderTaskList('given')" checked> 🟡 בטיפול</label>
-              <label class="filter-checkbox-label"><input type="checkbox" value="done"       onchange="renderTaskList('given')" checked> 🟢 הושלם</label>
-            </div>
+          <div class="task-filter-bar">
+            <span class="fbr-label">עדיפות</span>
+            <label class="fbr-chip"><input type="checkbox" value="urgent" onchange="renderTaskList('given')" checked>⚡ דחוף</label>
+            <label class="fbr-chip"><input type="checkbox" value="normal" onchange="renderTaskList('given')" checked>🔥 רגיל</label>
+            <label class="fbr-chip"><input type="checkbox" value="free"   onchange="renderTaskList('given')" checked>⏳ פנוי</label>
+            <span class="fbr-sep"></span>
+            <span class="fbr-label">סטטוס</span>
+            <label class="fbr-chip"><input type="checkbox" value="todo"       onchange="renderTaskList('given')" checked>🔴 לביצוע</label>
+            <label class="fbr-chip"><input type="checkbox" value="inprogress" onchange="renderTaskList('given')" checked>🟡 בטיפול</label>
+            <label class="fbr-chip"><input type="checkbox" value="done"       onchange="renderTaskList('given')" checked>🟢 הושלם</label>
+            <span style="margin-right:auto;font-size:11px;color:var(--text-muted)"><strong id="given-count-visible">0</strong>/<strong id="given-count-all">0</strong></span>
           </div>
-          <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px">מציג <strong id="given-count-visible">0</strong> משימות מתוך <strong id="given-count-all">0</strong></div>
           <div class="tasks-list" id="tasks-given-list"></div>
         </div>
 
@@ -1668,7 +1675,7 @@
                   <option value="yehonatan">יהונתן</option>
                   <option value="riki">ריקי</option>
                   <option value="heidi">היידי</option>
-                  <option value="chaya">חיה שרה</option>
+                  <option value="chaya">חיה</option>
                 </select>
               </div>
               <div class="task-field full">
@@ -1748,7 +1755,7 @@ const INTERNAL_CONTACTS = [
   { name:'יהונתן / אשר',           phone:'שלוחה 6656',   email:'', notes:'' },
   { name:'אורן',                    phone:'שלוחה 6619',   email:'', notes:'' },
   { name:'משה גוזגל',               phone:'שלוחה 6696',   email:'', notes:'אחראי מחשוב' },
-  { name:'חיה שרה',                 phone:'שלוחה 6610',   email:'', notes:'אחראית תחום אלמנטרי' },
+  { name:'חיה',                 phone:'שלוחה 6610',   email:'', notes:'אחראית תחום אלמנטרי' },
 ];
 
 // External contacts grouped by company
@@ -1996,7 +2003,7 @@ function launchApp(username) {
 }
 
 function renderDashboard(username) {
-  const names = { oren:'אורן', asher:'אשר', yehonatan:'יהונתן', riki:'ריקי', heidi:'היידי', chaya:'חיה שרה' };
+  const names = { oren:'אורן', asher:'אשר', yehonatan:'יהונתן', riki:'ריקי', heidi:'היידי', chaya:'חיה' };
   document.getElementById('dash-welcome').textContent = 'שלום, ' + (names[username] || username) + ' 👋';
 
   // Quick nav tiles
@@ -2689,7 +2696,7 @@ function printProposal() {
 ══════════════════════════════════════ */
 const TASKS_KEY      = 'bq_tasks';
 const PRIORITY_ORDER = { urgent: 0, normal: 1, free: 2 };
-const DISPLAY_NAMES  = { oren:'אורן', asher:'אשר', yehonatan:'יהונתן', riki:'ריקי', heidi:'היידי', chaya:'חיה שרה' };
+const DISPLAY_NAMES  = { oren:'אורן', asher:'אשר', yehonatan:'יהונתן', riki:'ריקי', heidi:'היידי', chaya:'חיה' };
 const ADMINS         = ['oren', 'yehonatan'];
 
 function isAdmin() { return ADMINS.includes(currentUser); }
@@ -2800,28 +2807,31 @@ function sortTasks(tasks) {
   });
 }
 
-function priorityTag(p) {
-  const map = {
-    urgent: ['urgent', '⚡', 'דחוף ביותר'],
-    normal: ['normal', '🔥', 'חשוב / רגיל'],
-    free:   ['free',   '⏳', 'בזמנך החופשי'],
-  };
-  const [cls, icon, label] = map[p] || map.normal;
-  return `<span class="tag-priority ${cls}">${icon} ${label}</span>`;
-}
-
-function statusTag(t) {
-  const map = {
-    todo:       ['todo',       '🔴', 'לביצוע'],
-    inprogress: ['inprogress', '🟡', 'בטיפול'],
-    done:       ['done',       '🟢', 'הושלם'],
-  };
-  const [cls, dot, label] = map[t.status] || map.todo;
-  return `<button class="tag-status ${cls}" onclick="cycleStatus('${t.id}')" title="לחץ לשינוי סטטוס">${dot} ${label}</button>`;
-}
-
 const COPY_SVG = `<svg class="icon-copy" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="1" width="9" height="11" rx="2"/><rect x="1" y="4" width="9" height="11" rx="2" fill="var(--card-bg)"/></svg><svg class="icon-check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,8 6,12 14,4"/></svg><span class="copy-tip">הועתק!</span>`;
+const DEL_SVG  = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="2,4 14,4"/><path d="M6,4V2h4v2"/><path d="M5,4l.7,9h4.6l.7-9"/></svg>`;
 
+/* Inline select helpers */
+function prioritySelectHtml(t) {
+  const opts = [
+    ['urgent','⚡ דחוף ביותר'],
+    ['normal','🔥 חשוב / רגיל'],
+    ['free',  '⏳ בזמנך החופשי'],
+  ];
+  const o = opts.map(([v,l]) => `<option value="${v}"${t.priority===v?' selected':''}>${l}</option>`).join('');
+  return `<select class="task-select sel-${t.priority}" onchange="updateTaskField('${t.id}','priority',this.value,this)" onclick="event.stopPropagation()">${o}</select>`;
+}
+
+function statusSelectHtml(t) {
+  const opts = [
+    ['todo',       '🔴 לביצוע'],
+    ['inprogress', '🟡 בטיפול'],
+    ['done',       '🟢 הושלם'],
+  ];
+  const o = opts.map(([v,l]) => `<option value="${v}"${t.status===v?' selected':''}>${l}</option>`).join('');
+  return `<select class="task-select sel-${t.status}" onchange="updateTaskField('${t.id}','status',this.value,this)" onclick="event.stopPropagation()">${o}</select>`;
+}
+
+/* Accordion row renderer */
 function taskCard(t) {
   const assigneeName = DISPLAY_NAMES[t.assignee] || t.assignee;
   const creatorName  = DISPLAY_NAMES[t.createdBy] || t.createdBy;
@@ -2830,39 +2840,70 @@ function taskCard(t) {
   const copyText     = (insuredName ? 'מבוטח: ' + insuredName + '\n' : '') + t.title + (t.desc ? '\n' + t.desc : '');
   const escapedCopy  = copyText.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\n/g,'\\n');
 
-  const fileBtn = t.fileData
-    ? `<button class="task-file-link" onclick="openTaskFile('${t.fileData.substring(0,30)}...'.length > 33 ? openTaskFile_real('${t.id}') : void 0)" onclick="openTaskFile_real('${t.id}')" title="פתח קובץ מצורף">📎 ${esc(t.fileName || 'קובץ מצורף')}</button>`
-    : '';
-
   const fileHtml = t.fileData
-    ? `<div style="margin-top:10px"><button class="task-file-link" onclick="openTaskFileById('${t.id}')" title="צפה בקובץ המצורף">📎 צפה בקובץ מצורף — ${esc(t.fileName || 'קובץ')}</button></div>`
+    ? `<button class="task-file-link" onclick="openTaskFileById('${t.id}');event.stopPropagation()" style="margin-bottom:8px">📎 ${esc(t.fileName || 'קובץ מצורף')}</button>`
     : '';
 
-  return `<div class="task-card priority-${t.priority}" id="task-card-${t.id}">
-    <div class="task-card-header">
-      <div style="flex:1;min-width:0">
-        ${insuredName ? `<div style="margin-bottom:7px"><span class="task-insured">👤 ${esc(insuredName)}</span></div>` : ''}
-        <div class="task-title">${esc(t.title)}</div>
-      </div>
-      <div class="task-actions">
-        <button class="btn-copy" onclick="copyVal(this,'${escapedCopy}')" title="העתק למשימה / וואטסאפ">${COPY_SVG}</button>
-        <button class="btn-task-delete" onclick="deleteTask('${t.id}')" title="מחק משימה">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-            <polyline points="2,4 14,4"/><path d="M6,4V2h4v2"/><path d="M5,4l.7,9h4.6l.7-9"/>
-          </svg>
-        </button>
-      </div>
+  const bodyMeta = [
+    `<span>✉️ ${esc(assigneeName)}</span>`,
+    t.createdBy && t.createdBy !== t.assignee ? `<span>נוצר ע"י ${esc(creatorName)}</span>` : '',
+    `<span>${dateStr}</span>`,
+  ].filter(Boolean).join('<span style="color:#e2e8f0">·</span>');
+
+  return `<div class="task-row priority-${t.priority}" id="task-row-${t.id}" onclick="toggleTaskRow('${t.id}',this)">
+    <span class="task-row-chevron">▼</span>
+    ${insuredName ? `<span class="task-insured-sm">${esc(insuredName)}</span>` : ''}
+    <span class="task-row-title">${esc(t.title)}</span>
+    <div class="task-actions" onclick="event.stopPropagation()">
+      ${prioritySelectHtml(t)}
+      ${statusSelectHtml(t)}
+      <button class="btn-copy" onclick="copyVal(this,'${escapedCopy}')" title="העתק לוואטסאפ">${COPY_SVG}</button>
+      <button class="btn-task-delete" onclick="deleteTask('${t.id}')" title="מחק">${DEL_SVG}</button>
     </div>
+  </div>
+  <div class="task-body" id="task-body-${t.id}">
     ${t.desc ? `<div class="task-desc">${esc(t.desc)}</div>` : ''}
     ${fileHtml}
-    <div class="task-meta" style="margin-top:12px">
-      ${priorityTag(t.priority)}
-      ${statusTag(t)}
-      <span class="task-assignee">✉️ ${esc(assigneeName)}</span>
-      ${t.createdBy && t.createdBy !== t.assignee ? `<span class="task-date">נוצר ע"י ${esc(creatorName)}</span>` : ''}
-      <span class="task-date" style="margin-right:auto">${dateStr}</span>
-    </div>
+    <div class="task-body-meta">${bodyMeta}</div>
   </div>`;
+}
+
+function toggleTaskRow(id, rowEl) {
+  const body = document.getElementById('task-body-' + id);
+  if (!body) return;
+  const open = body.classList.toggle('open');
+  rowEl.classList.toggle('expanded', open);
+}
+
+function updateTaskField(id, field, value, selectEl) {
+  const tasks = loadTasks();
+  const t = tasks.find(t => t.id === id);
+  if (!t) return;
+  t[field] = value;
+  saveTasks(tasks);
+
+  /* Update select colour class without full re-render */
+  const cls = field === 'priority'
+    ? ['sel-urgent','sel-normal','sel-free']
+    : ['sel-todo','sel-inprogress','sel-done'];
+  selectEl.classList.remove(...cls);
+  selectEl.classList.add('sel-' + value);
+
+  /* Re-sort: swap the row's priority border */
+  const row = document.getElementById('task-row-' + id);
+  if (row && field === 'priority') {
+    row.classList.remove('priority-urgent','priority-normal','priority-free');
+    row.classList.add('priority-' + value);
+  }
+
+  /* Rebuild list so sort order stays correct */
+  renderAllTaskViews();
+
+  /* Reopen the body after re-render */
+  const newBody = document.getElementById('task-body-' + id);
+  if (newBody) { newBody.classList.add('open'); }
+  const newRow  = document.getElementById('task-row-' + id);
+  if (newRow)  { newRow.classList.add('expanded'); }
 }
 
 function openTaskFileById(id) {
@@ -2871,8 +2912,12 @@ function openTaskFileById(id) {
 }
 
 function getTabFilters(panel) {
-  const priorities = [...panel.querySelectorAll('[data-filter="priority"] input:checked')].map(i => i.value);
-  const statuses   = [...panel.querySelectorAll('[data-filter="status"] input:checked')].map(i => i.value);
+  /* Works with both .fbr-chip and legacy [data-filter] panels */
+  const allChecked = [...panel.querySelectorAll('input[type="checkbox"]:checked')];
+  const pVals = ['urgent','normal','free'];
+  const sVals = ['todo','inprogress','done'];
+  const priorities = allChecked.filter(i => pVals.includes(i.value)).map(i => i.value);
+  const statuses   = allChecked.filter(i => sVals.includes(i.value)).map(i => i.value);
   const search     = (panel.querySelector('input[type="text"]')?.value || '').trim().toLowerCase();
   return { priorities, statuses, search };
 }
