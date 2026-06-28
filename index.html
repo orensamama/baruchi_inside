@@ -2141,7 +2141,7 @@ function renderDashboard(username) {
   }
 
   // Top 5 internal contacts
-  const top = INTERNAL_CONTACTS.slice(0, 5);
+  const top = INTERNAL_CONTACTS.filter(r => r.name !== 'ריקי').slice(0, 5);
   document.getElementById('dash-contacts-tbody').innerHTML = top.map(r => {
     const phone = r.phone.startsWith('שלוחה')
       ? `<span style="font-family:'Courier New',monospace;font-weight:700">${esc(r.phone)}</span>`
@@ -2292,10 +2292,6 @@ function copyField(el, val) {
 }
 
 function contactRow(r) {
-  const extInline = r.ext
-    ? `<span style="display:inline-flex;align-items:center;gap:3px;margin-right:6px;font-size:12px;color:var(--gold);font-weight:600">[שלוחה: ${esc(r.ext)}<span onclick="copyField(this,'${r.ext}');event.stopPropagation()" title="העתק שלוחה" style="cursor:pointer">${COPY_FIELD_SVG}</span>]</span>`
-    : '';
-  const nameHtml = `<span style="font-weight:600">${esc(r.name)}</span>${extInline}`;
   const phoneHtml = r.phone
     ? `<a href="tel:${esc(r.phone.replace(/[-\s]/g,''))}" style="color:var(--blue);text-decoration:none;font-weight:700">${esc(r.phone)}</a>
        <span onclick="copyField(this,'${r.phone.replace(/'/g,"\\'")}');event.stopPropagation()" title="העתק">${COPY_FIELD_SVG}</span>`
@@ -2304,11 +2300,14 @@ function contactRow(r) {
     ? `<a href="mailto:${esc(r.email)}" style="color:var(--text-secondary);text-decoration:none">${esc(r.email)}</a>
        <span onclick="copyField(this,'${r.email.replace(/'/g,"\\'")}');event.stopPropagation()" title="העתק">${COPY_FIELD_SVG}</span>`
     : `<span style="color:var(--text-muted)">—</span>`;
+  const extTag = r.ext
+    ? ` <span style="display:inline-flex;align-items:center;gap:2px;font-size:12px;color:var(--gold);font-weight:600">[שלוחה: ${esc(r.ext)}<span onclick="copyField(this,'${r.ext}');event.stopPropagation()" title="העתק שלוחה" style="cursor:pointer">${COPY_FIELD_SVG}</span>]</span>`
+    : '';
   const notesHtml = r.notes
-    ? `<span style="font-size:13px;color:var(--text-muted)">${esc(r.notes)}</span>`
-    : `<span style="color:var(--text-muted)">—</span>`;
+    ? `<span style="font-size:13px;color:var(--text-muted)">${esc(r.notes)}</span>${extTag}`
+    : (extTag ? extTag : `<span style="color:var(--text-muted)">—</span>`);
   return `<tr>
-    <td>${nameHtml}</td>
+    <td style="font-weight:600">${esc(r.name)}</td>
     <td>${phoneHtml}</td>
     <td>${emailHtml}</td>
     <td>${notesHtml}</td>
