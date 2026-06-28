@@ -749,46 +749,69 @@
     .tasks-empty h3 { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 5px; }
     .tasks-empty p  { font-size: 13px; color: var(--text-muted); }
 
-    /* ══ COMPACT FILTER BAR ══ */
-    .task-filter-bar {
-      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
-      margin-bottom: 10px; padding: 8px 12px;
-      background: var(--card-bg); border: 1px solid var(--card-border);
-      border-radius: var(--radius); box-shadow: var(--card-shadow);
+    /* ══ TASK CONTROL BAR (search + filter dropdowns) ══ */
+    .task-ctrl-bar {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 10px; flex-wrap: wrap;
     }
-    .task-filter-bar .fbr-label {
-      font-size: 10px; font-weight: 800; color: var(--text-muted);
-      letter-spacing: .6px; text-transform: uppercase; padding-left: 4px;
+    .task-search-wrap {
+      position: relative; flex: 1; min-width: 160px;
     }
-    .task-filter-bar .fbr-sep {
-      width: 1px; height: 16px; background: var(--card-border); flex-shrink: 0;
+    .task-search-wrap .search-icon {
+      position: absolute; right: 11px; top: 50%; transform: translateY(-50%);
+      color: var(--text-muted); pointer-events: none; font-size: 13px;
     }
-    .fbr-chip {
-      display: inline-flex; align-items: center; gap: 4px;
-      font-size: 11px; font-weight: 600; padding: 3px 9px;
-      border-radius: 12px; border: 1px solid var(--card-border);
-      background: #f8fafc; color: var(--text-muted);
-      cursor: pointer; user-select: none; transition: all .12s;
-      font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
-    }
-    .fbr-chip:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
-    .fbr-chip input { display: none; }
-    .fbr-chip:has(input:checked) {
-      background: var(--sidebar-bg); color: #fff;
-      border-color: var(--sidebar-bg);
-    }
-
-    /* Compact search */
-    .task-search-wrap { position: relative; margin-bottom: 8px; }
-    .task-search-wrap .search-icon { position: absolute; right: 11px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; font-size: 13px; }
     .task-search-wrap input {
       width: 100%; background: var(--card-bg); border: 1px solid var(--card-border);
-      border-radius: var(--radius); padding: 8px 36px 8px 12px;
+      border-radius: var(--radius); padding: 7px 34px 7px 10px;
       font-size: 13px; color: var(--text-primary); outline: none;
       font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
       transition: border-color .2s, box-shadow .2s;
     }
     .task-search-wrap input:focus { border-color: var(--blue); box-shadow: 0 0 0 2px rgba(37,99,235,.1); }
+
+    /* Filter <details> dropdown */
+    .fdd { position: relative; display: inline-block; }
+    .fdd > summary {
+      list-style: none; cursor: pointer; user-select: none;
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 6px 11px; border: 1px solid var(--card-border);
+      border-radius: var(--radius); font-size: 12px; font-weight: 600;
+      color: var(--text-secondary); background: var(--card-bg);
+      white-space: nowrap; transition: border-color .15s, color .15s, background .15s;
+      box-shadow: var(--card-shadow);
+    }
+    .fdd > summary::-webkit-details-marker { display: none; }
+    .fdd[open] > summary { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+    .fdd-arrow { font-size: 9px; opacity: .55; display: inline-block; transition: transform .2s; }
+    .fdd[open] .fdd-arrow { transform: rotate(180deg); }
+
+    .fdd-panel {
+      position: absolute; top: calc(100% + 5px); right: 0; z-index: 400;
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 10px; box-shadow: 0 4px 24px rgba(15,28,51,.13);
+      padding: 6px 4px; min-width: 175px;
+    }
+    .fdd-item {
+      display: flex; align-items: center; gap: 9px;
+      padding: 7px 14px; font-size: 13px;
+      border-radius: 6px; color: var(--text-primary);
+      transition: background .1s; white-space: nowrap; cursor: pointer;
+      font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
+    }
+    .fdd-item:hover { background: #f1f5f9; }
+    .fdd-item input[type="checkbox"] {
+      accent-color: var(--blue); width: 14px; height: 14px; flex-shrink: 0; cursor: pointer;
+    }
+
+    .task-count-info {
+      font-size: 11px; color: var(--text-muted); white-space: nowrap; flex-shrink: 0;
+    }
+
+    /* Legacy stubs so nothing breaks */
+    .task-filter-bar { display: none !important; }
+    .filter-chip { display: none; }
+    .task-count-badge { background: #f1f5f9; color: var(--text-secondary); font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 20px; }
 
     /* ── Category badge ── */
     .task-cat-badge {
@@ -1599,93 +1622,123 @@
 
         <!-- Tab: My Tasks -->
         <div class="tab-panel active" id="tasks-tab-mine">
-          <div class="task-search-wrap">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="tasks-mine-search" placeholder="חיפוש: שם מבוטח, כותרת, הערות..." oninput="renderTaskList('mine')" />
-          </div>
-          <div class="task-filter-bar">
-            <span class="fbr-label">עדיפות</span>
-            <label class="fbr-chip"><input type="checkbox" value="urgent" onchange="renderTaskList('mine')" checked>⚡ דחוף</label>
-            <label class="fbr-chip"><input type="checkbox" value="normal" onchange="renderTaskList('mine')" checked>🔥 רגיל</label>
-            <label class="fbr-chip"><input type="checkbox" value="free"   onchange="renderTaskList('mine')" checked>⏳ פנוי</label>
-            <span class="fbr-sep"></span>
-            <span class="fbr-label">סטטוס</span>
-            <label class="fbr-chip"><input type="checkbox" value="todo"       onchange="renderTaskList('mine')" checked>🔴 לביצוע</label>
-            <label class="fbr-chip"><input type="checkbox" value="inprogress" onchange="renderTaskList('mine')" checked>🟡 בטיפול</label>
-            <label class="fbr-chip"><input type="checkbox" value="done"       onchange="renderTaskList('mine')" checked>🟢 הושלם</label>
-            <span class="fbr-sep"></span>
-            <span class="fbr-label">סיווג</span>
-            <label class="fbr-chip"><input type="checkbox" value="cat:סיכונים"   onchange="renderTaskList('mine')" checked>סיכונים</label>
-            <label class="fbr-chip"><input type="checkbox" value="cat:פנסיוני"   onchange="renderTaskList('mine')" checked>פנסיוני</label>
-            <label class="fbr-chip"><input type="checkbox" value="cat:פיננסי"    onchange="renderTaskList('mine')" checked>פיננסי</label>
-            <label class="fbr-chip"><input type="checkbox" value="cat:אלמנטרי"  onchange="renderTaskList('mine')" checked>אלמנטרי</label>
-            <label class="fbr-chip"><input type="checkbox" value="cat:תביעות"   onchange="renderTaskList('mine')" checked>תביעות</label>
-            <label class="fbr-chip"><input type="checkbox" value="cat:גבייה"     onchange="renderTaskList('mine')" checked>גבייה</label>
-            <label class="fbr-chip"><input type="checkbox" value="cat:משכנתאות" onchange="renderTaskList('mine')" checked>משכנתאות</label>
-            <label class="fbr-chip"><input type="checkbox" value="cat:אחר"       onchange="renderTaskList('mine')" checked>אחר</label>
-            <span style="margin-right:auto;font-size:11px;color:var(--text-muted)"><strong id="mine-count-visible">0</strong>/<strong id="mine-count-all">0</strong></span>
+          <div class="task-ctrl-bar">
+            <div class="task-search-wrap">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="tasks-mine-search" placeholder="חיפוש: שם מבוטח, כותרת, הערות..." oninput="renderTaskList('mine')" />
+            </div>
+            <details class="fdd" id="fdd-mine-p">
+              <summary>דחיפות <span class="fdd-arrow">▼</span></summary>
+              <div class="fdd-panel">
+                <label class="fdd-item"><input type="checkbox" value="urgent" onchange="renderTaskList('mine')" checked> ⚡ דחוף ביותר</label>
+                <label class="fdd-item"><input type="checkbox" value="normal" onchange="renderTaskList('mine')" checked> 🔥 חשוב / רגיל</label>
+                <label class="fdd-item"><input type="checkbox" value="free"   onchange="renderTaskList('mine')" checked> ⏳ בזמנך החופשי</label>
+              </div>
+            </details>
+            <details class="fdd" id="fdd-mine-s">
+              <summary>סטטוס <span class="fdd-arrow">▼</span></summary>
+              <div class="fdd-panel">
+                <label class="fdd-item"><input type="checkbox" value="todo"       onchange="renderTaskList('mine')" checked> 🔴 לביצוע</label>
+                <label class="fdd-item"><input type="checkbox" value="inprogress" onchange="renderTaskList('mine')" checked> 🟡 בטיפול</label>
+                <label class="fdd-item"><input type="checkbox" value="done"       onchange="renderTaskList('mine')" checked> 🟢 הושלם</label>
+              </div>
+            </details>
+            <details class="fdd" id="fdd-mine-c">
+              <summary>סיווג <span class="fdd-arrow">▼</span></summary>
+              <div class="fdd-panel">
+                <label class="fdd-item"><input type="checkbox" value="cat:סיכונים"   onchange="renderTaskList('mine')" checked> סיכונים</label>
+                <label class="fdd-item"><input type="checkbox" value="cat:פנסיוני"   onchange="renderTaskList('mine')" checked> פנסיוני</label>
+                <label class="fdd-item"><input type="checkbox" value="cat:פיננסי"    onchange="renderTaskList('mine')" checked> פיננסי</label>
+                <label class="fdd-item"><input type="checkbox" value="cat:אלמנטרי"  onchange="renderTaskList('mine')" checked> אלמנטרי</label>
+                <label class="fdd-item"><input type="checkbox" value="cat:תביעות"   onchange="renderTaskList('mine')" checked> תביעות</label>
+                <label class="fdd-item"><input type="checkbox" value="cat:גבייה"     onchange="renderTaskList('mine')" checked> גבייה</label>
+                <label class="fdd-item"><input type="checkbox" value="cat:משכנתאות" onchange="renderTaskList('mine')" checked> משכנתאות</label>
+                <label class="fdd-item"><input type="checkbox" value="cat:אחר"       onchange="renderTaskList('mine')" checked> אחר</label>
+              </div>
+            </details>
+            <span class="task-count-info"><strong id="mine-count-visible">0</strong>/<strong id="mine-count-all">0</strong></span>
           </div>
           <div class="tasks-list" id="tasks-mine-list"></div>
         </div>
 
         <!-- Tab: All Tasks (Admin) -->
         <div class="tab-panel" id="tasks-tab-all">
-          <div class="task-search-wrap">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="tasks-all-search" placeholder="חיפוש: שם מבוטח, כותרת, הערות..." oninput="renderTaskList('all')" />
-          </div>
-          <div class="task-filter-bar">
-            <span class="fbr-label">עדיפות</span>
-            <label class="fbr-chip"><input type="checkbox" value="urgent" onchange="renderTaskList('all')" checked>⚡ דחוף</label>
-            <label class="fbr-chip"><input type="checkbox" value="normal" onchange="renderTaskList('all')" checked>🔥 רגיל</label>
-            <label class="fbr-chip"><input type="checkbox" value="free"   onchange="renderTaskList('all')" checked>⏳ פנוי</label>
-            <span class="fbr-sep"></span>
-            <span class="fbr-label">סטטוס</span>
-            <label class="fbr-chip"><input type="checkbox" value="todo"       onchange="renderTaskList('all')" checked>🔴 לביצוע</label>
-            <label class="fbr-chip"><input type="checkbox" value="inprogress" onchange="renderTaskList('all')" checked>🟡 בטיפול</label>
-            <label class="fbr-chip"><input type="checkbox" value="done"       onchange="renderTaskList('all')" checked>🟢 הושלם</label>
-            <span class="fbr-sep"></span>
-            <span class="fbr-label">סיווג</span>
-            <label class="fbr-chip"><input type="checkbox" value="cat:סיכונים"   onchange="renderTaskList('all')" checked>סיכונים</label>
-            <label class="fbr-chip"><input type="checkbox" value="cat:פנסיוני"   onchange="renderTaskList('all')" checked>פנסיוני</label>
-            <label class="fbr-chip"><input type="checkbox" value="cat:פיננסי"    onchange="renderTaskList('all')" checked>פיננסי</label>
-            <label class="fbr-chip"><input type="checkbox" value="cat:אלמנטרי"  onchange="renderTaskList('all')" checked>אלמנטרי</label>
-            <label class="fbr-chip"><input type="checkbox" value="cat:תביעות"   onchange="renderTaskList('all')" checked>תביעות</label>
-            <label class="fbr-chip"><input type="checkbox" value="cat:גבייה"     onchange="renderTaskList('all')" checked>גבייה</label>
-            <label class="fbr-chip"><input type="checkbox" value="cat:משכנתאות" onchange="renderTaskList('all')" checked>משכנתאות</label>
-            <label class="fbr-chip"><input type="checkbox" value="cat:אחר"       onchange="renderTaskList('all')" checked>אחר</label>
-            <span style="margin-right:auto;font-size:11px;color:var(--text-muted)"><strong id="all-count-visible">0</strong>/<strong id="all-count-all">0</strong></span>
+          <div class="task-ctrl-bar">
+            <div class="task-search-wrap">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="tasks-all-search" placeholder="חיפוש: שם מבוטח, כותרת, הערות..." oninput="renderTaskList('all')" />
+            </div>
+            <details class="fdd" id="fdd-all-p">
+              <summary>דחיפות <span class="fdd-arrow">▼</span></summary>
+              <div class="fdd-panel">
+                <label class="fdd-item"><input type="checkbox" value="urgent" onchange="renderTaskList('all')" checked> ⚡ דחוף ביותר</label>
+                <label class="fdd-item"><input type="checkbox" value="normal" onchange="renderTaskList('all')" checked> 🔥 חשוב / רגיל</label>
+                <label class="fdd-item"><input type="checkbox" value="free"   onchange="renderTaskList('all')" checked> ⏳ בזמנך החופשי</label>
+              </div>
+            </details>
+            <details class="fdd" id="fdd-all-s">
+              <summary>סטטוס <span class="fdd-arrow">▼</span></summary>
+              <div class="fdd-panel">
+                <label class="fdd-item"><input type="checkbox" value="todo"       onchange="renderTaskList('all')" checked> 🔴 לביצוע</label>
+                <label class="fdd-item"><input type="checkbox" value="inprogress" onchange="renderTaskList('all')" checked> 🟡 בטיפול</label>
+                <label class="fdd-item"><input type="checkbox" value="done"       onchange="renderTaskList('all')" checked> 🟢 הושלם</label>
+              </div>
+            </details>
+            <details class="fdd" id="fdd-all-c">
+              <summary>סיווג <span class="fdd-arrow">▼</span></summary>
+              <div class="fdd-panel">
+                <label class="fdd-item"><input type="checkbox" value="cat:סיכונים"   onchange="renderTaskList('all')" checked> סיכונים</label>
+                <label class="fdd-item"><input type="checkbox" value="cat:פנסיוני"   onchange="renderTaskList('all')" checked> פנסיוני</label>
+                <label class="fdd-item"><input type="checkbox" value="cat:פיננסי"    onchange="renderTaskList('all')" checked> פיננסי</label>
+                <label class="fdd-item"><input type="checkbox" value="cat:אלמנטרי"  onchange="renderTaskList('all')" checked> אלמנטרי</label>
+                <label class="fdd-item"><input type="checkbox" value="cat:תביעות"   onchange="renderTaskList('all')" checked> תביעות</label>
+                <label class="fdd-item"><input type="checkbox" value="cat:גבייה"     onchange="renderTaskList('all')" checked> גבייה</label>
+                <label class="fdd-item"><input type="checkbox" value="cat:משכנתאות" onchange="renderTaskList('all')" checked> משכנתאות</label>
+                <label class="fdd-item"><input type="checkbox" value="cat:אחר"       onchange="renderTaskList('all')" checked> אחר</label>
+              </div>
+            </details>
+            <span class="task-count-info"><strong id="all-count-visible">0</strong>/<strong id="all-count-all">0</strong></span>
           </div>
           <div class="tasks-list" id="tasks-all-list"></div>
         </div>
 
         <!-- Tab: Given Tasks (Admin) -->
         <div class="tab-panel" id="tasks-tab-given">
-          <div class="task-search-wrap">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="tasks-given-search" placeholder="חיפוש: שם מבוטח, כותרת, הערות..." oninput="renderTaskList('given')" />
-          </div>
-          <div class="task-filter-bar">
-            <span class="fbr-label">עדיפות</span>
-            <label class="fbr-chip"><input type="checkbox" value="urgent" onchange="renderTaskList('given')" checked>⚡ דחוף</label>
-            <label class="fbr-chip"><input type="checkbox" value="normal" onchange="renderTaskList('given')" checked>🔥 רגיל</label>
-            <label class="fbr-chip"><input type="checkbox" value="free"   onchange="renderTaskList('given')" checked>⏳ פנוי</label>
-            <span class="fbr-sep"></span>
-            <span class="fbr-label">סטטוס</span>
-            <label class="fbr-chip"><input type="checkbox" value="todo"       onchange="renderTaskList('given')" checked>🔴 לביצוע</label>
-            <label class="fbr-chip"><input type="checkbox" value="inprogress" onchange="renderTaskList('given')" checked>🟡 בטיפול</label>
-            <label class="fbr-chip"><input type="checkbox" value="done"       onchange="renderTaskList('given')" checked>🟢 הושלם</label>
-            <span class="fbr-sep"></span>
-            <span class="fbr-label">סיווג</span>
-            <label class="fbr-chip"><input type="checkbox" value="cat:סיכונים"   onchange="renderTaskList('given')" checked>סיכונים</label>
-            <label class="fbr-chip"><input type="checkbox" value="cat:פנסיוני"   onchange="renderTaskList('given')" checked>פנסיוני</label>
-            <label class="fbr-chip"><input type="checkbox" value="cat:פיננסי"    onchange="renderTaskList('given')" checked>פיננסי</label>
-            <label class="fbr-chip"><input type="checkbox" value="cat:אלמנטרי"  onchange="renderTaskList('given')" checked>אלמנטרי</label>
-            <label class="fbr-chip"><input type="checkbox" value="cat:תביעות"   onchange="renderTaskList('given')" checked>תביעות</label>
-            <label class="fbr-chip"><input type="checkbox" value="cat:גבייה"     onchange="renderTaskList('given')" checked>גבייה</label>
-            <label class="fbr-chip"><input type="checkbox" value="cat:משכנתאות" onchange="renderTaskList('given')" checked>משכנתאות</label>
-            <label class="fbr-chip"><input type="checkbox" value="cat:אחר"       onchange="renderTaskList('given')" checked>אחר</label>
-            <span style="margin-right:auto;font-size:11px;color:var(--text-muted)"><strong id="given-count-visible">0</strong>/<strong id="given-count-all">0</strong></span>
+          <div class="task-ctrl-bar">
+            <div class="task-search-wrap">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="tasks-given-search" placeholder="חיפוש: שם מבוטח, כותרת, הערות..." oninput="renderTaskList('given')" />
+            </div>
+            <details class="fdd" id="fdd-given-p">
+              <summary>דחיפות <span class="fdd-arrow">▼</span></summary>
+              <div class="fdd-panel">
+                <label class="fdd-item"><input type="checkbox" value="urgent" onchange="renderTaskList('given')" checked> ⚡ דחוף ביותר</label>
+                <label class="fdd-item"><input type="checkbox" value="normal" onchange="renderTaskList('given')" checked> 🔥 חשוב / רגיל</label>
+                <label class="fdd-item"><input type="checkbox" value="free"   onchange="renderTaskList('given')" checked> ⏳ בזמנך החופשי</label>
+              </div>
+            </details>
+            <details class="fdd" id="fdd-given-s">
+              <summary>סטטוס <span class="fdd-arrow">▼</span></summary>
+              <div class="fdd-panel">
+                <label class="fdd-item"><input type="checkbox" value="todo"       onchange="renderTaskList('given')" checked> 🔴 לביצוע</label>
+                <label class="fdd-item"><input type="checkbox" value="inprogress" onchange="renderTaskList('given')" checked> 🟡 בטיפול</label>
+                <label class="fdd-item"><input type="checkbox" value="done"       onchange="renderTaskList('given')" checked> 🟢 הושלם</label>
+              </div>
+            </details>
+            <details class="fdd" id="fdd-given-c">
+              <summary>סיווג <span class="fdd-arrow">▼</span></summary>
+              <div class="fdd-panel">
+                <label class="fdd-item"><input type="checkbox" value="cat:סיכונים"   onchange="renderTaskList('given')" checked> סיכונים</label>
+                <label class="fdd-item"><input type="checkbox" value="cat:פנסיוני"   onchange="renderTaskList('given')" checked> פנסיוני</label>
+                <label class="fdd-item"><input type="checkbox" value="cat:פיננסי"    onchange="renderTaskList('given')" checked> פיננסי</label>
+                <label class="fdd-item"><input type="checkbox" value="cat:אלמנטרי"  onchange="renderTaskList('given')" checked> אלמנטרי</label>
+                <label class="fdd-item"><input type="checkbox" value="cat:תביעות"   onchange="renderTaskList('given')" checked> תביעות</label>
+                <label class="fdd-item"><input type="checkbox" value="cat:גבייה"     onchange="renderTaskList('given')" checked> גבייה</label>
+                <label class="fdd-item"><input type="checkbox" value="cat:משכנתאות" onchange="renderTaskList('given')" checked> משכנתאות</label>
+                <label class="fdd-item"><input type="checkbox" value="cat:אחר"       onchange="renderTaskList('given')" checked> אחר</label>
+              </div>
+            </details>
+            <span class="task-count-info"><strong id="given-count-visible">0</strong>/<strong id="given-count-all">0</strong></span>
           </div>
           <div class="tasks-list" id="tasks-given-list"></div>
         </div>
@@ -1808,20 +1861,21 @@ const CREDENTIALS = [
 
 const INTERNAL_CONTACTS = [
   // אנשי צוות
-  { name:'אשר ברוכי',               phone:'054-4289164',  email:'', notes:'סוכן, מנהל המשרד' },
-  { name:'יהונתן ברוכי',            phone:'054-391-3343', email:'', notes:'סוכן' },
-  { name:'וואצאפ משרד',             phone:'054-911-1656', email:'', notes:'' },
-  { name:'היידי ברוכי',             phone:'054-4289162',  email:'', notes:'אחראית תחום תביעות' },
-  { name:'אורן טל סממה',            phone:'054-2008230',  email:'', notes:'יועץ משכנתאות' },
-  { name:'משה — מחשוב שחם',        phone:'054-6667625',  email:'', notes:'אחראי מחשוב' },
-  { name:'תמיכה טכנית — שחם אורלן', phone:'03-9206777',  email:'', notes:'' },
+  { name:'אשר ברוכי',               phone:'054-4289164',  email:'asherb@shaham-orlan.co.il',          notes:'סוכן, מנהל המשרד' },
+  { name:'יהונתן ברוכי',            phone:'054-391-3343', email:'yehonatanb@shaham-orlan.co.il',       notes:'סוכן' },
+  { name:'וואצאפ משרד',             phone:'054-911-1656', email:'',                                    notes:'' },
+  { name:'היידי ברוכי',             phone:'054-4289162',  email:'tviot.asher@shaham-orlan.co.il',      notes:'אחראית תחום תביעות' },
+  { name:'אורן טל סממה',            phone:'054-2008230',  email:'officeasher@shaham.co.il',            notes:'יועץ משכנתאות' },
+  { name:'משה — מחשוב שחם',        phone:'054-6667625',  email:'',                                    notes:'אחראי מחשוב' },
+  { name:'תמיכה טכנית — שחם אורלן', phone:'03-9206777',  email:'',                                    notes:'' },
+  { name:'שחם ביט — ארכיב',        phone:'',             email:'ShahamArchive@shaham.co.il',          notes:'כתובת ארכיב שחם ביט' },
   // שלוחות
-  { name:'אילנה קבסה',              phone:'שלוחה 6691',   email:'', notes:'רפרנטית תפעול וקשרי חברות (סוכנות שחם) – מנהלת ממשקי עבודה ופתרון פניות' },
-  { name:'ריקי',                    phone:'שלוחה 6652',   email:'', notes:'אחראית תיקי לקוחות' },
-  { name:'יהונתן / אשר',           phone:'שלוחה 6656',   email:'', notes:'' },
-  { name:'אורן',                    phone:'שלוחה 6619',   email:'', notes:'' },
-  { name:'משה גוזגל',               phone:'שלוחה 6696',   email:'', notes:'אחראי מחשוב' },
-  { name:'חיה',                 phone:'שלוחה 6610',   email:'', notes:'אחראית תחום אלמנטרי' },
+  { name:'אילנה קבסה',              phone:'שלוחה 6691',   email:'ilana@shaham-orlan.co.il',            notes:'רפרנטית תפעול וקשרי חברות (סוכנות שחם) – מנהלת ממשקי עבודה ופתרון פניות' },
+  { name:'ריקי',                    phone:'שלוחה 6652',   email:'office.baruchi@shaham-orlan.co.il',   notes:'אחראית תיקי לקוחות' },
+  { name:'יהונתן / אשר',           phone:'שלוחה 6656',   email:'',                                    notes:'' },
+  { name:'אורן',                    phone:'שלוחה 6619',   email:'',                                    notes:'' },
+  { name:'משה גוזגל',               phone:'שלוחה 6696',   email:'',                                    notes:'אחראי מחשוב' },
+  { name:'חיה',                     phone:'שלוחה 6610',   email:'baruchi-el@shaham-orlan.co.il',       notes:'אחראית תחום אלמנטרי' },
 ];
 
 // External contacts grouped by company
@@ -1829,7 +1883,7 @@ const EXTERNAL_CONTACTS_GROUPS = [
   {
     company: 'מגדל', color: '#1565c0',
     rows: [
-      { name:'אפרת לוי — מפקחת מגדל',     phone:'054-798-1777', email:'', notes:'' },
+      { name:'אפרת לוי — מפקחת מגדל',     phone:'054-798-1777', email:'levief@migdal.co.il', notes:'' },
       { name:'כרמית לוי — מנהלת תיק מגדל', phone:'076-8867805',  email:'', notes:'' },
       { name:'צוות ניודים מגדל',           phone:'076-8865040',  email:'', notes:'' },
       { name:'מוקד משכנתא מגדל',           phone:'076-8865544',  email:'', notes:'' },
@@ -1838,7 +1892,7 @@ const EXTERNAL_CONTACTS_GROUPS = [
   {
     company: 'הראל', color: '#b71c1c',
     rows: [
-      { name:'עידן קלאוורה — מפקח הראל',  phone:'052-3452392', email:'', notes:'' },
+      { name:'עידן קלאוורה — מפקח הראל',  phone:'052-3452392', email:'idankal@harel-ins.co.il', notes:'' },
       { name:'צחי — אחראי פנסיה הראל',    phone:'050-6866038', email:'', notes:'' },
       { name:'מוקד הראל',                  phone:'*9254',        email:'', notes:'' },
       { name:'הראל סוכנים',               phone:'03-7473491',   email:'', notes:'' },
@@ -1854,7 +1908,7 @@ const EXTERNAL_CONTACTS_GROUPS = [
   {
     company: 'מור', color: '#00695c',
     rows: [
-      { name:'מיכל — מפקחת מור',  phone:'050-2526272', email:'', notes:'' },
+      { name:'מיכל כרמי — מפקחת מור',  phone:'050-2526272', email:'Michal.Carmi@more.co.il', notes:'' },
       { name:'מור לוי',            phone:'076-8865924', email:'', notes:'' },
       { name:'מור לוי — אישי',    phone:'052-8008621', email:'', notes:'' },
       { name:'מור סוכנים',         phone:'074-7811201', email:'', notes:'' },
@@ -2784,7 +2838,7 @@ function catBadge(cat) {
 /* Show/hide "פרט סיווג אחר" field */
 function onCatChange(sel) {
   const wrap = document.getElementById('task-cat-other-wrap');
-  if (wrap) wrap.style.display = sel.value === 'אחר' ? '' : 'none';
+  if (wrap) wrap.style.display = sel.value === 'אחר' ? 'block' : 'none';
 }
 
 /* Show/hide admin tabs after login */
