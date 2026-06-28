@@ -790,6 +790,24 @@
     }
     .task-search-wrap input:focus { border-color: var(--blue); box-shadow: 0 0 0 2px rgba(37,99,235,.1); }
 
+    /* ── Category badge ── */
+    .task-cat-badge {
+      font-size: 10px; font-weight: 800; padding: 2px 7px;
+      border-radius: 6px; white-space: nowrap; flex-shrink: 0;
+      letter-spacing: .2px;
+    }
+    .cat-סיכונים    { background:#fce7f3; color:#9d174d; }
+    .cat-פנסיוני    { background:#ede9fe; color:#5b21b6; }
+    .cat-פיננסי     { background:#dbeafe; color:#1e40af; }
+    .cat-אלמנטרי   { background:#d1fae5; color:#065f46; }
+    .cat-תביעות    { background:#fee2e2; color:#991b1b; }
+    .cat-גבייה      { background:#fef3c7; color:#92400e; }
+    .cat-משכנתאות  { background:#e0f2fe; color:#075985; }
+    .cat-אחר        { background:#f1f5f9; color:#475569; }
+
+    /* Hidden "אחר" detail row */
+    #task-cat-other-wrap { display: none; }
+
     /* Legacy aliases so old CSS doesn't break anything else */
     .task-insured { font-size: 12px; font-weight: 800; color: var(--sidebar-bg); background: var(--blue-light); border: 1px solid var(--blue-border); border-radius: 8px; padding: 3px 10px; display: inline-flex; align-items: center; gap: 5px; }
     .filter-chip { display: none; }
@@ -1595,6 +1613,16 @@
             <label class="fbr-chip"><input type="checkbox" value="todo"       onchange="renderTaskList('mine')" checked>🔴 לביצוע</label>
             <label class="fbr-chip"><input type="checkbox" value="inprogress" onchange="renderTaskList('mine')" checked>🟡 בטיפול</label>
             <label class="fbr-chip"><input type="checkbox" value="done"       onchange="renderTaskList('mine')" checked>🟢 הושלם</label>
+            <span class="fbr-sep"></span>
+            <span class="fbr-label">סיווג</span>
+            <label class="fbr-chip"><input type="checkbox" value="cat:סיכונים"   onchange="renderTaskList('mine')" checked>סיכונים</label>
+            <label class="fbr-chip"><input type="checkbox" value="cat:פנסיוני"   onchange="renderTaskList('mine')" checked>פנסיוני</label>
+            <label class="fbr-chip"><input type="checkbox" value="cat:פיננסי"    onchange="renderTaskList('mine')" checked>פיננסי</label>
+            <label class="fbr-chip"><input type="checkbox" value="cat:אלמנטרי"  onchange="renderTaskList('mine')" checked>אלמנטרי</label>
+            <label class="fbr-chip"><input type="checkbox" value="cat:תביעות"   onchange="renderTaskList('mine')" checked>תביעות</label>
+            <label class="fbr-chip"><input type="checkbox" value="cat:גבייה"     onchange="renderTaskList('mine')" checked>גבייה</label>
+            <label class="fbr-chip"><input type="checkbox" value="cat:משכנתאות" onchange="renderTaskList('mine')" checked>משכנתאות</label>
+            <label class="fbr-chip"><input type="checkbox" value="cat:אחר"       onchange="renderTaskList('mine')" checked>אחר</label>
             <span style="margin-right:auto;font-size:11px;color:var(--text-muted)"><strong id="mine-count-visible">0</strong>/<strong id="mine-count-all">0</strong></span>
           </div>
           <div class="tasks-list" id="tasks-mine-list"></div>
@@ -1616,6 +1644,16 @@
             <label class="fbr-chip"><input type="checkbox" value="todo"       onchange="renderTaskList('all')" checked>🔴 לביצוע</label>
             <label class="fbr-chip"><input type="checkbox" value="inprogress" onchange="renderTaskList('all')" checked>🟡 בטיפול</label>
             <label class="fbr-chip"><input type="checkbox" value="done"       onchange="renderTaskList('all')" checked>🟢 הושלם</label>
+            <span class="fbr-sep"></span>
+            <span class="fbr-label">סיווג</span>
+            <label class="fbr-chip"><input type="checkbox" value="cat:סיכונים"   onchange="renderTaskList('all')" checked>סיכונים</label>
+            <label class="fbr-chip"><input type="checkbox" value="cat:פנסיוני"   onchange="renderTaskList('all')" checked>פנסיוני</label>
+            <label class="fbr-chip"><input type="checkbox" value="cat:פיננסי"    onchange="renderTaskList('all')" checked>פיננסי</label>
+            <label class="fbr-chip"><input type="checkbox" value="cat:אלמנטרי"  onchange="renderTaskList('all')" checked>אלמנטרי</label>
+            <label class="fbr-chip"><input type="checkbox" value="cat:תביעות"   onchange="renderTaskList('all')" checked>תביעות</label>
+            <label class="fbr-chip"><input type="checkbox" value="cat:גבייה"     onchange="renderTaskList('all')" checked>גבייה</label>
+            <label class="fbr-chip"><input type="checkbox" value="cat:משכנתאות" onchange="renderTaskList('all')" checked>משכנתאות</label>
+            <label class="fbr-chip"><input type="checkbox" value="cat:אחר"       onchange="renderTaskList('all')" checked>אחר</label>
             <span style="margin-right:auto;font-size:11px;color:var(--text-muted)"><strong id="all-count-visible">0</strong>/<strong id="all-count-all">0</strong></span>
           </div>
           <div class="tasks-list" id="tasks-all-list"></div>
@@ -1637,6 +1675,16 @@
             <label class="fbr-chip"><input type="checkbox" value="todo"       onchange="renderTaskList('given')" checked>🔴 לביצוע</label>
             <label class="fbr-chip"><input type="checkbox" value="inprogress" onchange="renderTaskList('given')" checked>🟡 בטיפול</label>
             <label class="fbr-chip"><input type="checkbox" value="done"       onchange="renderTaskList('given')" checked>🟢 הושלם</label>
+            <span class="fbr-sep"></span>
+            <span class="fbr-label">סיווג</span>
+            <label class="fbr-chip"><input type="checkbox" value="cat:סיכונים"   onchange="renderTaskList('given')" checked>סיכונים</label>
+            <label class="fbr-chip"><input type="checkbox" value="cat:פנסיוני"   onchange="renderTaskList('given')" checked>פנסיוני</label>
+            <label class="fbr-chip"><input type="checkbox" value="cat:פיננסי"    onchange="renderTaskList('given')" checked>פיננסי</label>
+            <label class="fbr-chip"><input type="checkbox" value="cat:אלמנטרי"  onchange="renderTaskList('given')" checked>אלמנטרי</label>
+            <label class="fbr-chip"><input type="checkbox" value="cat:תביעות"   onchange="renderTaskList('given')" checked>תביעות</label>
+            <label class="fbr-chip"><input type="checkbox" value="cat:גבייה"     onchange="renderTaskList('given')" checked>גבייה</label>
+            <label class="fbr-chip"><input type="checkbox" value="cat:משכנתאות" onchange="renderTaskList('given')" checked>משכנתאות</label>
+            <label class="fbr-chip"><input type="checkbox" value="cat:אחר"       onchange="renderTaskList('given')" checked>אחר</label>
             <span style="margin-right:auto;font-size:11px;color:var(--text-muted)"><strong id="given-count-visible">0</strong>/<strong id="given-count-all">0</strong></span>
           </div>
           <div class="tasks-list" id="tasks-given-list"></div>
@@ -1658,6 +1706,24 @@
               <div class="task-field full">
                 <label for="task-desc-input">תיאור והערות</label>
                 <textarea id="task-desc-input" placeholder="פרטים נוספים, הוראות, קישורים..."></textarea>
+              </div>
+              <div class="task-field">
+                <label for="task-category">סיווג משימה *</label>
+                <select id="task-category" onchange="onCatChange(this)">
+                  <option value="">— בחר סיווג —</option>
+                  <option value="סיכונים">סיכונים</option>
+                  <option value="פנסיוני">פנסיוני</option>
+                  <option value="פיננסי">פיננסי</option>
+                  <option value="אלמנטרי">אלמנטרי</option>
+                  <option value="תביעות">תביעות</option>
+                  <option value="גבייה">גבייה</option>
+                  <option value="משכנתאות">משכנתאות</option>
+                  <option value="אחר">אחר</option>
+                </select>
+              </div>
+              <div class="task-field" id="task-cat-other-wrap">
+                <label for="task-cat-other">פרט סיווג אחר</label>
+                <input type="text" id="task-cat-other" placeholder="לדוגמה: ביטוח בריאות..." />
               </div>
               <div class="task-field">
                 <label for="task-priority">עדיפות</label>
@@ -2706,6 +2772,21 @@ function loadTasks() {
 }
 function saveTasks(arr) { localStorage.setItem(TASKS_KEY, JSON.stringify(arr)); }
 
+const CATEGORIES = ['סיכונים','פנסיוני','פיננסי','אלמנטרי','תביעות','גבייה','משכנתאות','אחר'];
+
+/* Category colour lookup (matches CSS class names) */
+function catBadge(cat) {
+  if (!cat) return '';
+  const known = CATEGORIES.includes(cat) ? cat : 'אחר';
+  return `<span class="task-cat-badge cat-${known}">${cat}</span>`;
+}
+
+/* Show/hide "פרט סיווג אחר" field */
+function onCatChange(sel) {
+  const wrap = document.getElementById('task-cat-other-wrap');
+  if (wrap) wrap.style.display = sel.value === 'אחר' ? '' : 'none';
+}
+
 /* Show/hide admin tabs after login */
 function applyTaskRoles() {
   document.querySelectorAll('.tab-btn.admin-only').forEach(btn => {
@@ -2733,12 +2814,19 @@ function createTask() {
   if (!insured) { document.getElementById('task-insured').focus(); return; }
   if (!title)   { document.getElementById('task-title').focus();   return; }
 
+  const catSel    = document.getElementById('task-category');
+  const catOther  = document.getElementById('task-cat-other');
+  let   category  = catSel ? catSel.value : '';
+  if (category === 'אחר' && catOther && catOther.value.trim()) {
+    category = catOther.value.trim();
+  }
+
   const fileInput = document.getElementById('task-file');
   const file      = fileInput && fileInput.files[0];
 
   const newTask = {
     id:        Date.now().toString(36) + Math.random().toString(36).slice(2,6),
-    insured, title, desc, priority, assignee,
+    insured, title, desc, priority, assignee, category,
     status:    'todo',
     createdBy: currentUser || '',
     createdAt: Date.now(),
@@ -2752,6 +2840,10 @@ function createTask() {
     document.getElementById('task-title').value      = '';
     document.getElementById('task-desc-input').value = '';
     document.getElementById('task-priority').value   = 'normal';
+    if (catSel)   { catSel.value = ''; }
+    if (catOther) { catOther.value = ''; }
+    const catWrap = document.getElementById('task-cat-other-wrap');
+    if (catWrap) catWrap.style.display = 'none';
     if (fileInput) { fileInput.value = ''; }
     const nameEl = document.getElementById('task-file-name');
     if (nameEl) nameEl.style.display = 'none';
@@ -2853,6 +2945,7 @@ function taskCard(t) {
   return `<div class="task-row priority-${t.priority}" id="task-row-${t.id}" onclick="toggleTaskRow('${t.id}',this)">
     <span class="task-row-chevron">▼</span>
     ${insuredName ? `<span class="task-insured-sm">${esc(insuredName)}</span>` : ''}
+    ${t.category ? catBadge(t.category) : ''}
     <span class="task-row-title">${esc(t.title)}</span>
     <div class="task-actions" onclick="event.stopPropagation()">
       ${prioritySelectHtml(t)}
@@ -2912,14 +3005,16 @@ function openTaskFileById(id) {
 }
 
 function getTabFilters(panel) {
-  /* Works with both .fbr-chip and legacy [data-filter] panels */
   const allChecked = [...panel.querySelectorAll('input[type="checkbox"]:checked')];
   const pVals = ['urgent','normal','free'];
   const sVals = ['todo','inprogress','done'];
-  const priorities = allChecked.filter(i => pVals.includes(i.value)).map(i => i.value);
-  const statuses   = allChecked.filter(i => sVals.includes(i.value)).map(i => i.value);
-  const search     = (panel.querySelector('input[type="text"]')?.value || '').trim().toLowerCase();
-  return { priorities, statuses, search };
+  const priorities  = allChecked.filter(i => pVals.includes(i.value)).map(i => i.value);
+  const statuses    = allChecked.filter(i => sVals.includes(i.value)).map(i => i.value);
+  const categories  = allChecked
+    .filter(i => i.value.startsWith('cat:'))
+    .map(i => i.value.slice(4));          // strip "cat:" prefix
+  const search      = (panel.querySelector('input[type="text"]')?.value || '').trim().toLowerCase();
+  return { priorities, statuses, categories, search };
 }
 
 function renderTaskList(view) {
@@ -2927,7 +3022,7 @@ function renderTaskList(view) {
   if (!listEl) return;
 
   const panel = listEl.closest('.tab-panel');
-  const { priorities, statuses, search } = panel ? getTabFilters(panel) : { priorities:[], statuses:[], search:'' };
+  const { priorities, statuses, categories, search } = panel ? getTabFilters(panel) : { priorities:[], statuses:[], categories:[], search:'' };
 
   let allPool = loadTasks();
 
@@ -2940,8 +3035,14 @@ function renderTaskList(view) {
   if (countAllEl) countAllEl.textContent = allPool.length;
 
   let tasks = [...allPool];
-  if (priorities.length) tasks = tasks.filter(t => priorities.includes(t.priority));
-  if (statuses.length)   tasks = tasks.filter(t => statuses.includes(t.status));
+  if (priorities.length)  tasks = tasks.filter(t => priorities.includes(t.priority));
+  if (statuses.length)    tasks = tasks.filter(t => statuses.includes(t.status));
+  if (categories.length)  tasks = tasks.filter(t => {
+    const c = t.category || '';
+    /* custom "אחר" values match the "אחר" chip */
+    const known = CATEGORIES.includes(c) ? c : 'אחר';
+    return categories.includes(known);
+  });
   if (search) tasks = tasks.filter(t =>
     (t.insured||'').toLowerCase().includes(search) ||
     (t.title||'').toLowerCase().includes(search)   ||
