@@ -468,6 +468,9 @@
       border-bottom: 1px solid var(--card-border);
     }
 
+    /* ── Page admin action bar (shared: contacts, credentials, agents) ── */
+    .page-action-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+
     /* ── Contacts admin action bar ── */
     .contacts-action-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
     .btn-add-contact {
@@ -1244,13 +1247,16 @@
             <div class="stat-sub">תוצאות</div>
           </div>
         </div>
-        <div class="search-bar-wrap">
-          <span class="search-icon">🔍</span>
-          <input type="text" id="creds-search" placeholder="חיפוש לפי שם חברה, שם משתמש או הערות..." oninput="filterCredentials()" />
+        <div class="page-action-bar">
+          <div class="search-bar-wrap" style="margin-bottom:0;flex:1;min-width:220px">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="creds-search" placeholder="חיפוש לפי שם חברה, שם משתמש או הערות..." oninput="filterCredentials()" />
+          </div>
+          <button class="btn-add-contact" id="btn-add-cred" onclick="openCredModal(null)" style="display:none">＋ הוספת חברה</button>
         </div>
         <div class="table-card">
           <table class="data-table">
-            <thead><tr><th>חברת ביטוח</th><th>שם משתמש</th><th>סיסמה</th><th>הערות</th></tr></thead>
+            <thead><tr><th>חברת ביטוח</th><th>שם משתמש</th><th>סיסמה</th><th>הערות</th><th id="creds-action-th" style="display:none;width:70px"></th></tr></thead>
             <tbody id="creds-tbody"></tbody>
           </table>
           <div class="no-results" id="creds-no-results" style="display:none;">
@@ -1301,10 +1307,13 @@
           </div>
         </div>
 
-        <!-- Search -->
-        <div class="search-bar-wrap" style="margin-bottom:20px">
-          <span class="search-icon">🔍</span>
-          <input type="text" id="agents-search" placeholder="חיפוש לפי שם חברה או מספר סוכן..." oninput="filterAgents()" />
+        <!-- Search + admin bar -->
+        <div class="page-action-bar">
+          <div class="search-bar-wrap" style="margin-bottom:0;flex:1;min-width:220px">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="agents-search" placeholder="חיפוש לפי שם חברה או מספר סוכן..." oninput="filterAgents()" />
+          </div>
+          <button class="btn-add-contact" id="btn-add-agent" onclick="openAgentModal(null)" style="display:none">＋ הוספת מספר סוכן</button>
         </div>
 
         <!-- Agent numbers table -->
@@ -1315,6 +1324,7 @@
                 <th>חברה / מוצר</th>
                 <th>מספר סוכן</th>
                 <th>הערות</th>
+                <th id="agents-action-th" style="display:none;width:70px"></th>
               </tr>
             </thead>
             <tbody id="agents-tbody"></tbody>
@@ -1410,6 +1420,10 @@
 
         <!-- Tab 1: Pricing -->
         <div class="tab-panel active" id="fees-tab-pricing">
+          <div class="page-action-bar" style="margin-bottom:14px">
+            <div></div>
+            <button class="btn-add-contact" id="btn-add-pricing" onclick="openPricingModal(null)" style="display:none">＋ הוספת מוצר</button>
+          </div>
           <div class="table-card">
             <table class="data-table">
               <thead>
@@ -1419,6 +1433,7 @@
                   <th>דמי ניהול מהפקדה</th>
                   <th>דמי ניהול מצבירה</th>
                   <th>הערות</th>
+                  <th id="pricing-action-th" style="display:none;width:70px"></th>
                 </tr>
               </thead>
               <tbody id="pricing-tbody"></tbody>
@@ -2163,22 +2178,24 @@ async function launchApp(username) {
   document.getElementById('app').style.display = 'block';
   document.getElementById('user-name-display').textContent = username;
   document.getElementById('user-avatar').textContent = username.charAt(0).toUpperCase();
-  renderCredentials(CREDENTIALS);
-  renderAgents(AGENT_NUMBERS);
-  renderAllContacts('');
+  // Render static scaffolding immediately so UI is not blank
   renderPricing(PRICING);
   renderFundsAccordion(FUNDS);
   renderPortals();
   renderForms();
   renderDashboard(username);
   applyTaskRoles();
-  initSupabase();
-  await Promise.all([dbLoadTasks(), dbLoadContacts()]);
-  renderAllTaskViews();
-  // Boot to dashboard
+  // Boot to dashboard first so user sees something
   showPage('dashboard', document.getElementById('nav-dashboard'));
-  // On mobile, start with sidebar hidden
   if (isMobile()) { sidebarOpen = false; }
+  // Connect to Supabase, load all live data in parallel, then re-render
+  initSupabase();
+  await Promise.all([dbLoadTasks(), dbLoadContacts(), dbLoadCredentials(), dbLoadAgents(), dbLoadPricing()]);
+  renderAllTaskViews();
+  renderAllContacts('');
+  renderCredentials(_credentials);
+  renderAgents(_agents);
+  renderPricing(_pricing);
 }
 
 function renderDashboard(username) {
@@ -2289,69 +2306,144 @@ function switchTab(pageKey, tabKey, btn) {
 }
 
 /* ══════════════════════════
+   CREDENTIALS DATA LAYER
+══════════════════════════ */
+let _credentials  = [];
+let _credRevealed = {};  // id → boolean
+
+async function dbLoadCredentials() {
+  if (!_dbReady) { _credentials = CREDENTIALS.map((c,i) => ({...c, id:'cred_'+i})); return; }
+  const { data, error } = await _sb.from('credentials').select('*').order('sort_order');
+  if (error || !data || !data.length) {
+    _credentials = CREDENTIALS.map((c,i) => ({...c, id:'cred_seed_'+i, sortOrder:i}));
+    if (_dbReady && (!data || !data.length)) {
+      await _sb.from('credentials').insert(_credentials.map(c => ({
+        id:c.id, company:c.company, username:c.username, password:c.password, notes:c.notes||'', sort_order:c.sortOrder||0
+      })));
+    }
+  } else {
+    _credentials = data.map(r => ({ id:r.id, company:r.company, username:r.username, password:r.password, notes:r.notes||'', sortOrder:r.sort_order }));
+  }
+}
+async function dbSaveCredential(c) {
+  if (!_dbReady) return;
+  await _sb.from('credentials').upsert({ id:c.id, company:c.company, username:c.username, password:c.password, notes:c.notes||'', sort_order:c.sortOrder||0 }, { onConflict:'id' });
+}
+async function dbDeleteCredential(id) {
+  if (_dbReady) await _sb.from('credentials').delete().eq('id', id);
+}
+
+/* ══════════════════════════
+   AGENT NUMBERS DATA LAYER
+══════════════════════════ */
+let _agents = [];
+
+async function dbLoadAgents() {
+  if (!_dbReady) { _agents = AGENT_NUMBERS.map((a,i) => ({...a, id:'ag_'+i})); return; }
+  const { data, error } = await _sb.from('agent_numbers').select('*').order('sort_order');
+  if (error || !data || !data.length) {
+    _agents = AGENT_NUMBERS.map((a,i) => ({...a, id:'ag_seed_'+i, sortOrder:i}));
+    if (_dbReady && (!data || !data.length)) {
+      await _sb.from('agent_numbers').insert(_agents.map(a => ({
+        id:a.id, company:a.company, number:a.number, notes:a.notes||'', sort_order:a.sortOrder||0
+      })));
+    }
+  } else {
+    _agents = data.map(r => ({ id:r.id, company:r.company, number:r.number, notes:r.notes||'', sortOrder:r.sort_order }));
+  }
+}
+async function dbSaveAgent(a) {
+  if (!_dbReady) return;
+  await _sb.from('agent_numbers').upsert({ id:a.id, company:a.company, number:a.number, notes:a.notes||'', sort_order:a.sortOrder||0 }, { onConflict:'id' });
+}
+async function dbDeleteAgent(id) {
+  if (_dbReady) await _sb.from('agent_numbers').delete().eq('id', id);
+}
+
+/* ══════════════════════════
    CREDENTIALS
 ══════════════════════════ */
 function renderCredentials(data) {
-  document.getElementById('stat-total').textContent    = CREDENTIALS.length;
+  const admin = isAdmin();
+  document.getElementById('stat-total').textContent    = _credentials.length;
   document.getElementById('stat-filtered').textContent = data.length;
+  const th  = document.getElementById('creds-action-th');
+  const btn = document.getElementById('btn-add-cred');
+  if (th)  th.style.display  = admin ? '' : 'none';
+  if (btn) btn.style.display = admin ? '' : 'none';
+
   const noRes = document.getElementById('creds-no-results');
   if (!data.length) { document.getElementById('creds-tbody').innerHTML = ''; noRes.style.display = 'block'; return; }
   noRes.style.display = 'none';
+
+  const COPY_SVG_INLINE = `<svg class="icon-copy" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="1" width="9" height="11" rx="2"/><rect x="1" y="4" width="9" height="11" rx="2" fill="var(--card-bg)"/></svg><svg class="icon-check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,8 6,12 14,4"/></svg><span class="copy-tip">הועתק!</span>`;
+
   document.getElementById('creds-tbody').innerHTML = data.map(row => {
-    const i = CREDENTIALS.indexOf(row);
-    const shown = !!revealed[i];
+    const safeId  = CSS.escape(row.id);
+    const shown   = !!_credRevealed[row.id];
     const hasPass = !!row.password;
 
-    const userCell = `<div class="copy-cell">
-      <span class="copy-value">${esc(row.username)}</span>
-      <button class="btn-copy" onclick="copyVal(this,'${esc(row.username).replace(/'/g,"&#39;")}')" title="העתק שם משתמש">
-        <svg class="icon-copy" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="1" width="9" height="11" rx="2"/><rect x="1" y="4" width="9" height="11" rx="2" fill="var(--card-bg)"/></svg><svg class="icon-check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,8 6,12 14,4"/></svg><span class="copy-tip">הועתק!</span>
-      </button>
-    </div>`;
+    const userCell = row.username
+      ? `<div class="copy-cell"><span class="copy-value">${esc(row.username)}</span>
+          <button class="btn-copy" onclick="copyVal(this,'${esc(row.username).replace(/'/g,"&#39;")}')" title="העתק שם משתמש">${COPY_SVG_INLINE}</button></div>`
+      : `<span style="color:var(--text-muted)">—</span>`;
 
     const passCell = !hasPass
       ? `<span style="color:var(--text-muted);font-size:15px">—</span>`
       : `<div class="password-cell">
-          <span class="password-display" id="pass-${i}">${shown ? esc(row.password) : '••••••••••'}</span>
-          <button class="btn-eye" onclick="togglePwd(${i})">${shown ? '🙈' : '👁️'}</button>
-          <button class="btn-copy" onclick="copyVal(this,'${esc(row.password).replace(/'/g,"&#39;")}')" title="העתק סיסמה">
-            <svg class="icon-copy" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="1" width="9" height="11" rx="2"/><rect x="1" y="4" width="9" height="11" rx="2" fill="var(--card-bg)"/></svg><svg class="icon-check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,8 6,12 14,4"/></svg><span class="copy-tip">הועתק!</span>
-          </button>
+          <span class="password-display" id="pass-${row.id}">${shown ? esc(row.password) : '••••••••••'}</span>
+          <button class="btn-eye" onclick="togglePwd('${row.id}')">${shown ? '🙈' : '👁️'}</button>
+          <button class="btn-copy" onclick="copyVal(this,'${esc(row.password).replace(/'/g,"&#39;")}')" title="העתק סיסמה">${COPY_SVG_INLINE}</button>
         </div>`;
+
+    const actions = admin
+      ? `<td style="white-space:nowrap;text-align:center">
+           <button class="btn-row-edit"   onclick="openCredModal('${row.id}')" title="עריכה">✏️</button>
+           <button class="btn-row-delete" onclick="deleteCredential('${row.id}')" title="מחיקה">🗑️</button>
+         </td>`
+      : '';
 
     return `<tr>
       <td><div class="company-cell"><div class="company-badge">${row.company.charAt(0)}</div><span class="company-name">${esc(row.company)}</span></div></td>
       <td>${userCell}</td>
       <td>${passCell}</td>
       <td style="font-size:13px;color:var(--text-muted)">${row.notes ? esc(row.notes) : '<span style="color:var(--text-muted)">—</span>'}</td>
+      ${actions}
     </tr>`;
   }).join('');
 }
 
-function togglePwd(i) {
-  revealed[i] = !revealed[i];
-  const span = document.getElementById('pass-'+i);
-  const btn  = span.parentElement.querySelector('.btn-eye');
-  span.textContent = revealed[i] ? CREDENTIALS[i].password : '••••••••••••';
-  btn.textContent  = revealed[i] ? '🙈' : '👁️';
+function togglePwd(id) {
+  _credRevealed[id] = !_credRevealed[id];
+  const cred = _credentials.find(c => c.id === id);
+  const span = document.getElementById('pass-' + id);
+  const btn  = span && span.parentElement.querySelector('.btn-eye');
+  if (span) span.textContent = _credRevealed[id] ? (cred ? cred.password : '') : '••••••••••';
+  if (btn)  btn.textContent  = _credRevealed[id] ? '🙈' : '👁️';
 }
 
 function filterCredentials() {
   const q = document.getElementById('creds-search').value.trim().toLowerCase();
-  renderCredentials(q ? CREDENTIALS.filter(r => [r.company, r.username, r.notes].some(v => v.toLowerCase().includes(q))) : CREDENTIALS);
+  const pool = q ? _credentials.filter(r => [r.company,r.username,r.notes].some(v => (v||'').toLowerCase().includes(q))) : _credentials;
+  renderCredentials(pool);
 }
 
 /* ══════════════════════════
    AGENT NUMBERS
 ══════════════════════════ */
 function renderAgents(data) {
+  const admin = isAdmin();
+  const th  = document.getElementById('agents-action-th');
+  const btn = document.getElementById('btn-add-agent');
+  if (th)  th.style.display  = admin ? '' : 'none';
+  if (btn) btn.style.display = admin ? '' : 'none';
+
   const noRes = document.getElementById('agents-no-results');
-  if (!data.length) {
-    document.getElementById('agents-tbody').innerHTML = '';
-    noRes.style.display = 'block'; return;
-  }
+  if (!data.length) { document.getElementById('agents-tbody').innerHTML = ''; noRes.style.display = 'block'; return; }
   noRes.style.display = 'none';
+
   const copyIcon = `<svg class="icon-copy" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="1" width="9" height="11" rx="2"/><rect x="1" y="4" width="9" height="11" rx="2" fill="var(--card-bg)"/></svg><svg class="icon-check" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,8 6,12 14,4"/></svg><span class="copy-tip">הועתק!</span>`;
+
   document.getElementById('agents-tbody').innerHTML = data.map(r => `
     <tr>
       <td style="font-weight:600">${esc(r.company)}</td>
@@ -2360,12 +2452,17 @@ function renderAgents(data) {
         <button class="btn-copy" onclick="copyVal(this,'${esc(r.number)}')" title="העתק מספר סוכן">${copyIcon}</button>
       </div></td>
       <td>${r.notes ? `<span class="tag tag-gold">${esc(r.notes)}</span>` : '<span style="color:var(--text-muted)">—</span>'}</td>
+      ${admin ? `<td style="white-space:nowrap;text-align:center">
+        <button class="btn-row-edit"   onclick="openAgentModal('${r.id}')" title="עריכה">✏️</button>
+        <button class="btn-row-delete" onclick="deleteAgent('${r.id}')" title="מחיקה">🗑️</button>
+      </td>` : ''}
     </tr>`).join('');
 }
 
 function filterAgents() {
   const q = document.getElementById('agents-search').value.trim().toLowerCase();
-  renderAgents(q ? AGENT_NUMBERS.filter(r => r.company.toLowerCase().includes(q) || r.number.includes(q)) : AGENT_NUMBERS);
+  const pool = q ? _agents.filter(r => r.company.toLowerCase().includes(q) || r.number.includes(q)) : _agents;
+  renderAgents(pool);
 }
 
 /* ══════════════════════════
@@ -2609,6 +2706,80 @@ function filterContacts() {
   renderAllContacts(q);
 }
 
+/* ── Credential modal ── */
+function openCredModal(id) {
+  if (!isAdmin()) return;
+  const c = id ? _credentials.find(x => x.id === id) : null;
+  document.getElementById('cred-modal-title').textContent = c ? 'עריכת פרטי חברה' : 'הוספת חברה';
+  document.getElementById('cm-cred-id').value       = c ? c.id       : '';
+  document.getElementById('cm-cred-company').value  = c ? c.company  : '';
+  document.getElementById('cm-cred-user').value     = c ? c.username : '';
+  document.getElementById('cm-cred-pass').value     = c ? c.password : '';
+  document.getElementById('cm-cred-notes').value    = c ? c.notes    : '';
+  document.getElementById('cred-modal-overlay').style.display = 'flex';
+}
+function closeCredModal() { document.getElementById('cred-modal-overlay').style.display = 'none'; }
+async function saveCredential() {
+  if (!isAdmin()) return;
+  const existingId = document.getElementById('cm-cred-id').value.trim();
+  const c = {
+    id:       existingId || ('cred_' + Date.now().toString(36)),
+    company:  document.getElementById('cm-cred-company').value.trim(),
+    username: document.getElementById('cm-cred-user').value.trim(),
+    password: document.getElementById('cm-cred-pass').value.trim(),
+    notes:    document.getElementById('cm-cred-notes').value.trim(),
+    sortOrder: existingId ? (_credentials.find(x=>x.id===existingId)?.sortOrder||0) : _credentials.length,
+  };
+  if (!c.company) { document.getElementById('cm-cred-company').focus(); return; }
+  if (existingId) { const i = _credentials.findIndex(x=>x.id===existingId); if(i!==-1) _credentials[i]=c; }
+  else _credentials.push(c);
+  closeCredModal();
+  renderCredentials(_credentials);
+  await dbSaveCredential(c);
+}
+async function deleteCredential(id) {
+  if (!isAdmin() || !confirm('למחוק חברה זו?')) return;
+  _credentials = _credentials.filter(c => c.id !== id);
+  renderCredentials(_credentials);
+  await dbDeleteCredential(id);
+}
+
+/* ── Agent modal ── */
+function openAgentModal(id) {
+  if (!isAdmin()) return;
+  const a = id ? _agents.find(x => x.id === id) : null;
+  document.getElementById('agent-modal-title').textContent = a ? 'עריכת מספר סוכן' : 'הוספת מספר סוכן';
+  document.getElementById('cm-agent-id').value      = a ? a.id      : '';
+  document.getElementById('cm-agent-company').value = a ? a.company : '';
+  document.getElementById('cm-agent-number').value  = a ? a.number  : '';
+  document.getElementById('cm-agent-notes').value   = a ? a.notes   : '';
+  document.getElementById('agent-modal-overlay').style.display = 'flex';
+}
+function closeAgentModal() { document.getElementById('agent-modal-overlay').style.display = 'none'; }
+async function saveAgent() {
+  if (!isAdmin()) return;
+  const existingId = document.getElementById('cm-agent-id').value.trim();
+  const a = {
+    id:       existingId || ('ag_' + Date.now().toString(36)),
+    company:  document.getElementById('cm-agent-company').value.trim(),
+    number:   document.getElementById('cm-agent-number').value.trim(),
+    notes:    document.getElementById('cm-agent-notes').value.trim(),
+    sortOrder: existingId ? (_agents.find(x=>x.id===existingId)?.sortOrder||0) : _agents.length,
+  };
+  if (!a.company) { document.getElementById('cm-agent-company').focus(); return; }
+  if (existingId) { const i = _agents.findIndex(x=>x.id===existingId); if(i!==-1) _agents[i]=a; }
+  else _agents.push(a);
+  closeAgentModal();
+  renderAgents(_agents);
+  await dbSaveAgent(a);
+}
+async function deleteAgent(id) {
+  if (!isAdmin() || !confirm('למחוק רשומה זו?')) return;
+  _agents = _agents.filter(a => a.id !== id);
+  renderAgents(_agents);
+  await dbDeleteAgent(id);
+}
+
 /* ── Contact modal ── */
 function updateContactModalFields() {
   const sec = document.getElementById('cm-section').value;
@@ -2679,17 +2850,97 @@ async function deleteContact(id) {
   await dbDeleteContact(id);
 }
 
+/* ── Pricing modal ── */
+function openPricingModal(id) {
+  if (!isAdmin()) return;
+  const p = id ? _pricing.find(x => x.id === id) : null;
+  document.getElementById('pricing-modal-title').textContent = p ? 'עריכת מוצר / דמי ניהול' : 'הוספת מוצר';
+  document.getElementById('cm-price-id').value          = p ? p.id           : '';
+  document.getElementById('cm-price-company').value     = p ? p.company      : '';
+  document.getElementById('cm-price-product').value     = p ? p.product      : '';
+  document.getElementById('cm-price-deposit').value     = p ? p.fromDeposit  : '';
+  document.getElementById('cm-price-balance').value     = p ? p.fromBalance  : '';
+  document.getElementById('cm-price-notes').value       = p ? p.notes        : '';
+  document.getElementById('pricing-modal-overlay').style.display = 'flex';
+}
+function closePricingModal() { document.getElementById('pricing-modal-overlay').style.display = 'none'; }
+async function savePricing() {
+  if (!isAdmin()) return;
+  const existingId = document.getElementById('cm-price-id').value.trim();
+  const p = {
+    id:          existingId || ('price_' + Date.now().toString(36)),
+    company:     document.getElementById('cm-price-company').value.trim(),
+    product:     document.getElementById('cm-price-product').value.trim(),
+    fromDeposit: document.getElementById('cm-price-deposit').value.trim(),
+    fromBalance: document.getElementById('cm-price-balance').value.trim(),
+    notes:       document.getElementById('cm-price-notes').value.trim(),
+    sortOrder:   existingId ? (_pricing.find(x=>x.id===existingId)?.sortOrder||0) : _pricing.length,
+  };
+  if (!p.company || !p.product) { document.getElementById('cm-price-company').focus(); return; }
+  if (existingId) { const i = _pricing.findIndex(x=>x.id===existingId); if(i!==-1) _pricing[i]=p; }
+  else _pricing.push(p);
+  closePricingModal();
+  renderPricing(_pricing);
+  await dbSavePricing(p);
+}
+async function deletePricing(id) {
+  if (!isAdmin() || !confirm('למחוק שורה זו?')) return;
+  _pricing = _pricing.filter(p => p.id !== id);
+  renderPricing(_pricing);
+  await dbDeletePricing(id);
+}
+
+/* ══════════════════════════
+   PRICING DATA LAYER
+══════════════════════════ */
+let _pricing = [];
+
+async function dbLoadPricing() {
+  if (!_dbReady) { _pricing = PRICING.map((p,i) => ({...p, id:'price_'+i, sortOrder:i})); return; }
+  const { data, error } = await _sb.from('pricing').select('*').order('sort_order');
+  if (error || !data || !data.length) {
+    _pricing = PRICING.map((p,i) => ({...p, id:'price_seed_'+i, sortOrder:i}));
+    if (_dbReady && (!data || !data.length)) {
+      await _sb.from('pricing').insert(_pricing.map(p => ({
+        id:p.id, company:p.company, product:p.product,
+        from_deposit:p.fromDeposit, from_balance:p.fromBalance,
+        notes:p.notes||'', sort_order:p.sortOrder
+      })));
+    }
+  } else {
+    _pricing = data.map(r => ({ id:r.id, company:r.company, product:r.product, fromDeposit:r.from_deposit, fromBalance:r.from_balance, notes:r.notes||'', sortOrder:r.sort_order }));
+  }
+}
+async function dbSavePricing(p) {
+  if (!_dbReady) return;
+  await _sb.from('pricing').upsert({ id:p.id, company:p.company, product:p.product, from_deposit:p.fromDeposit, from_balance:p.fromBalance, notes:p.notes||'', sort_order:p.sortOrder||0 }, { onConflict:'id' });
+}
+async function dbDeletePricing(id) {
+  if (_dbReady) await _sb.from('pricing').delete().eq('id', id);
+}
+
 /* ══════════════════════════
    PRICING TABLE
 ══════════════════════════ */
 function renderPricing(data) {
-  document.getElementById('pricing-tbody').innerHTML = data.map(r => `
+  const rows = Array.isArray(data) ? data : _pricing;
+  const admin = isAdmin();
+  const th  = document.getElementById('pricing-action-th');
+  const btn = document.getElementById('btn-add-pricing');
+  if (th)  th.style.display  = admin ? '' : 'none';
+  if (btn) btn.style.display = admin ? '' : 'none';
+
+  document.getElementById('pricing-tbody').innerHTML = rows.map(r => `
     <tr>
       <td><div class="company-cell"><div class="company-badge">${r.company.charAt(0)}</div><span class="company-name">${esc(r.company)}</span></div></td>
       <td>${esc(r.product)}</td>
       <td style="font-weight:700;color:var(--blue)">${esc(r.fromDeposit)}</td>
       <td style="font-weight:700;color:var(--success)">${esc(r.fromBalance)}</td>
       <td style="color:var(--text-muted);font-size:13px">${esc(r.notes)}</td>
+      ${admin && r.id ? `<td style="white-space:nowrap;text-align:center">
+        <button class="btn-row-edit"   onclick="openPricingModal('${r.id}')" title="עריכה">✏️</button>
+        <button class="btn-row-delete" onclick="deletePricing('${r.id}')" title="מחיקה">🗑️</button>
+      </td>` : (admin ? '<td></td>' : '')}
     </tr>`).join('');
 }
 
@@ -3548,6 +3799,63 @@ document.addEventListener('DOMContentLoaded', () => {
 
 checkAutoLogin();
 </script>
+
+<!-- ══ CREDENTIAL EDIT MODAL ══ -->
+<div id="cred-modal-overlay" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeCredModal()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="cred-modal-title">הוספת חברה</h3>
+      <button class="modal-close" onclick="closeCredModal()">✕</button>
+    </div>
+    <div class="modal-field"><label>חברת ביטוח</label><input type="text" id="cm-cred-company" placeholder="לדוגמה: מגדל" /></div>
+    <div class="modal-field"><label>שם משתמש</label><input type="text" id="cm-cred-user" placeholder="username" /></div>
+    <div class="modal-field"><label>סיסמה</label><input type="text" id="cm-cred-pass" placeholder="password" /></div>
+    <div class="modal-field"><label>הערות</label><input type="text" id="cm-cred-notes" placeholder="הערות אופציונליות..." /></div>
+    <input type="hidden" id="cm-cred-id" />
+    <div class="modal-footer">
+      <button class="modal-btn-save" onclick="saveCredential()">💾 שמור</button>
+      <button class="modal-btn-cancel" onclick="closeCredModal()">ביטול</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ AGENT NUMBER EDIT MODAL ══ -->
+<div id="agent-modal-overlay" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeAgentModal()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="agent-modal-title">הוספת מספר סוכן</h3>
+      <button class="modal-close" onclick="closeAgentModal()">✕</button>
+    </div>
+    <div class="modal-field"><label>חברה / מוצר</label><input type="text" id="cm-agent-company" placeholder="לדוגמה: הראל — פנסיה" /></div>
+    <div class="modal-field"><label>מספר סוכן</label><input type="text" id="cm-agent-number" placeholder="12345" /></div>
+    <div class="modal-field"><label>הערות</label><input type="text" id="cm-agent-notes" placeholder="הערות אופציונליות..." /></div>
+    <input type="hidden" id="cm-agent-id" />
+    <div class="modal-footer">
+      <button class="modal-btn-save" onclick="saveAgent()">💾 שמור</button>
+      <button class="modal-btn-cancel" onclick="closeAgentModal()">ביטול</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PRICING EDIT MODAL ══ -->
+<div id="pricing-modal-overlay" class="modal-overlay" style="display:none" onclick="if(event.target===this)closePricingModal()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="pricing-modal-title">הוספת מוצר</h3>
+      <button class="modal-close" onclick="closePricingModal()">✕</button>
+    </div>
+    <div class="modal-field"><label>חברה</label><input type="text" id="cm-price-company" placeholder="לדוגמה: הראל" /></div>
+    <div class="modal-field"><label>מוצר</label><input type="text" id="cm-price-product" placeholder="לדוגמה: קרן פנסיה מקיפה" /></div>
+    <div class="modal-field"><label>דמי ניהול מהפקדה</label><input type="text" id="cm-price-deposit" placeholder="1.49%" /></div>
+    <div class="modal-field"><label>דמי ניהול מצבירה</label><input type="text" id="cm-price-balance" placeholder="0.00%" /></div>
+    <div class="modal-field"><label>הערות</label><input type="text" id="cm-price-notes" placeholder="הערות אופציונליות..." /></div>
+    <input type="hidden" id="cm-price-id" />
+    <div class="modal-footer">
+      <button class="modal-btn-save" onclick="savePricing()">💾 שמור</button>
+      <button class="modal-btn-cancel" onclick="closePricingModal()">ביטול</button>
+    </div>
+  </div>
+</div>
 
 <!-- ══ CONTACT EDIT MODAL ══ -->
 <div id="contact-modal-overlay" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeContactModal()">
