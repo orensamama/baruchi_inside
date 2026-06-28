@@ -2141,7 +2141,8 @@ function renderDashboard(username) {
   }
 
   // Top 5 internal contacts
-  const top = INTERNAL_CONTACTS.filter(r => r.name !== 'ריקי').slice(0, 5);
+  const DASH_CONTACTS = ['אשר ברוכי','יהונתן ברוכי','היידי ברוכי','אורן טל סממה'];
+  const top = INTERNAL_CONTACTS.filter(r => DASH_CONTACTS.includes(r.name));
   document.getElementById('dash-contacts-tbody').innerHTML = top.map(r => {
     const phone = r.phone.startsWith('שלוחה')
       ? `<span style="font-family:'Courier New',monospace;font-weight:700">${esc(r.phone)}</span>`
