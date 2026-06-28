@@ -468,6 +468,16 @@
       border-bottom: 1px solid var(--card-border);
     }
 
+    /* ── Contacts three-section layout ── */
+    .contacts-section { margin-bottom: 28px; }
+    .contacts-section-title {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 14px; font-weight: 800; color: var(--text-secondary);
+      letter-spacing: .5px; text-transform: uppercase;
+      margin-bottom: 10px; padding: 0 4px;
+    }
+    .contacts-section-title span { font-size: 17px; }
+
     /* ══ MORTGAGE / PROPOSAL ══ */
     .proposal-form-card {
       background: var(--card-bg);
@@ -1300,21 +1310,45 @@
           <input type="text" id="contacts-search" placeholder="חיפוש לפי שם, תפקיד, טלפון, מייל או הערה..." oninput="filterContacts()" />
         </div>
 
-        <!-- Master contacts table -->
-        <div class="table-card">
-          <table class="data-table" id="master-contacts-table">
-            <thead>
-              <tr>
-                <th>שם / תפקיד</th>
-                <th>טלפון</th>
-                <th>מייל</th>
-                <th>הערות</th>
-              </tr>
-            </thead>
-            <tbody id="master-contacts-tbody"></tbody>
-          </table>
-          <div class="no-results" id="contacts-no-results" style="display:none;">
-            <div class="no-results-icon">🔎</div><div>לא נמצאו תוצאות</div>
+        <!-- Section A: Internal Team -->
+        <div class="contacts-section" id="contacts-sect-a">
+          <div class="contacts-section-title"><span>🏢</span> אנשי צוות וסוכנות שחם</div>
+          <div class="table-card">
+            <table class="data-table">
+              <thead><tr><th>שם / תפקיד</th><th>טלפון</th><th>מייל</th><th>הערות</th></tr></thead>
+              <tbody id="sect-a-tbody"></tbody>
+            </table>
+            <div class="no-results" id="sect-a-no-results" style="display:none;">
+              <div class="no-results-icon">🔎</div><div>לא נמצאו תוצאות</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section B: External Supervisors -->
+        <div class="contacts-section" id="contacts-sect-b">
+          <div class="contacts-section-title"><span>🏦</span> מפקחים ושותפים עסקיים</div>
+          <div class="table-card">
+            <table class="data-table">
+              <thead><tr><th>שם המפקח / תפקיד</th><th>טלפון</th><th>מייל</th><th>הערות</th></tr></thead>
+              <tbody id="sect-b-tbody"></tbody>
+            </table>
+            <div class="no-results" id="sect-b-no-results" style="display:none;">
+              <div class="no-results-icon">🔎</div><div>לא נמצאו תוצאות</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section C: Operational Emails Only -->
+        <div class="contacts-section" id="contacts-sect-c">
+          <div class="contacts-section-title"><span>📧</span> מיילים תפעוליים וכתובות לשיעבודים</div>
+          <div class="table-card">
+            <table class="data-table">
+              <thead><tr><th>גורם / נושא</th><th>כתובת מייל</th></tr></thead>
+              <tbody id="sect-c-tbody"></tbody>
+            </table>
+            <div class="no-results" id="sect-c-no-results" style="display:none;">
+              <div class="no-results-icon">🔎</div><div>לא נמצאו תוצאות</div>
+            </div>
           </div>
         </div>
       </div>
@@ -1917,6 +1951,21 @@ const EXTERNAL_CONTACTS_GROUPS = [
 // Flat list for search
 const EXTERNAL_CONTACTS = EXTERNAL_CONTACTS_GROUPS.flatMap(g => g.rows.map(r => ({ ...r, company: g.company })));
 
+// Section C — email-only operational mailboxes (no phone column)
+const OPERATIONAL_EMAILS = [
+  { subject: 'ארכיב שחם ביט',                    email: 'ShahamArchive@shaham.co.il',           notes: 'שליחת מסמכים דיגיטלית לארכיב' },
+  { subject: 'הסרת שיעבוד — מגדל',               email: '',                                      notes: '' },
+  { subject: 'הסרת שיעבוד — הראל',               email: '',                                      notes: '' },
+  { subject: 'הסרת שיעבוד — הפניקס',             email: '',                                      notes: '' },
+  { subject: 'הסרת שיעבוד — כלל',                email: '',                                      notes: '' },
+  { subject: 'הסרת שיעבוד — מנורה',              email: '',                                      notes: '' },
+  { subject: 'שינויים בפוליסות — מגדל',           email: '',                                      notes: '' },
+  { subject: 'שינויים בפוליסות — הראל',           email: '',                                      notes: '' },
+  { subject: 'שינויים בפוליסות — הפניקס',         email: '',                                      notes: '' },
+  { subject: 'שינויים בפוליסות — כלל',            email: '',                                      notes: '' },
+  { subject: 'שינויים בפוליסות — מנורה',          email: '',                                      notes: '' },
+];
+
 const AGENT_NUMBERS = [
   { company:'אלטשולר',               number:'4582',     notes:'' },
   { company:'אנליסט',                number:'3279',     notes:'' },
@@ -2315,28 +2364,43 @@ function contactRow(r) {
   </tr>`;
 }
 
-function renderAllContacts(q) {
-  const noRes = document.getElementById('contacts-no-results');
-  let html = '', total = 0;
+function emailOnlyRow(r) {
+  const emailHtml = r.email
+    ? `<a href="mailto:${esc(r.email)}" style="color:var(--text-secondary);text-decoration:none">${esc(r.email)}</a>
+       <span onclick="copyField(this,'${r.email.replace(/'/g,"\\'")}');event.stopPropagation()" title="העתק">${COPY_FIELD_SVG}</span>`
+    : `<span style="color:var(--text-muted);font-size:12px">— למילוי —</span>`;
+  const notesHtml = r.notes
+    ? `<span style="font-size:12px;color:var(--text-muted)">${esc(r.notes)}</span>`
+    : '';
+  return `<tr>
+    <td style="font-weight:600">${esc(r.subject)}${notesHtml ? `<br><span style="font-size:12px;color:var(--text-muted);font-weight:400">${esc(r.notes)}</span>` : ''}</td>
+    <td>${emailHtml}</td>
+  </tr>`;
+}
 
-  // Internal group
-  const intRows = q
+function renderAllContacts(q) {
+  // Section A — internal team
+  const aRows = q
     ? INTERNAL_CONTACTS.filter(r => [r.name,r.phone,r.ext,r.email,r.notes].some(v => (v||'').toLowerCase().includes(q)))
     : INTERNAL_CONTACTS;
-  if (intRows.length) {
-    total += intRows.length;
-    html += `<tr class="divider-row"><td colspan="4">🏢 אנשי צוות וסוכנות שחם</td></tr>`;
-    html += intRows.map(r => contactRow(r)).join('');
+  const aNoRes = document.getElementById('sect-a-no-results');
+  if (aRows.length) {
+    document.getElementById('sect-a-tbody').innerHTML = aRows.map(contactRow).join('');
+    aNoRes.style.display = 'none';
+  } else {
+    document.getElementById('sect-a-tbody').innerHTML = '';
+    aNoRes.style.display = 'block';
   }
 
-  // External groups
+  // Section B — external supervisors by company
+  let bHtml = '', bTotal = 0;
   EXTERNAL_CONTACTS_GROUPS.forEach(group => {
     const rows = q
       ? group.rows.filter(r => [r.name,r.phone,r.email,r.notes,group.company].some(v => (v||'').toLowerCase().includes(q)))
       : group.rows;
     if (!rows.length) return;
-    total += rows.length;
-    html += `<tr class="contact-group-header">
+    bTotal += rows.length;
+    bHtml += `<tr class="contact-group-header">
       <td colspan="4">
         <span class="group-label">
           <span class="group-dot" style="background:${group.color}"></span>
@@ -2344,16 +2408,24 @@ function renderAllContacts(q) {
         </span>
       </td>
     </tr>`;
-    // external contacts have no ext field — pass ext:'' so column renders dash
-    html += rows.map(r => contactRow({...r, ext: r.ext || ''}, 5)).join('');
+    bHtml += rows.map(r => contactRow({...r, ext: ''})).join('');
   });
+  const bNoRes = document.getElementById('sect-b-no-results');
+  document.getElementById('sect-b-tbody').innerHTML = bHtml;
+  bNoRes.style.display = bTotal ? 'none' : 'block';
 
-  if (!total) {
-    document.getElementById('master-contacts-tbody').innerHTML = '';
-    noRes.style.display = 'block'; return;
+  // Section C — operational emails only
+  const cRows = q
+    ? OPERATIONAL_EMAILS.filter(r => [r.subject,r.email,r.notes].some(v => (v||'').toLowerCase().includes(q)))
+    : OPERATIONAL_EMAILS;
+  const cNoRes = document.getElementById('sect-c-no-results');
+  if (cRows.length) {
+    document.getElementById('sect-c-tbody').innerHTML = cRows.map(emailOnlyRow).join('');
+    cNoRes.style.display = 'none';
+  } else {
+    document.getElementById('sect-c-tbody').innerHTML = '';
+    cNoRes.style.display = 'block';
   }
-  noRes.style.display = 'none';
-  document.getElementById('master-contacts-tbody').innerHTML = html;
 }
 
 function filterContacts() {
