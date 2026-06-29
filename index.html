@@ -2218,6 +2218,7 @@ async function launchApp(username) {
   initSupabase();
   await Promise.all([dbLoadTasks(), dbLoadContacts(), dbLoadCredentials(), dbLoadAgents(), dbLoadPricing()]);
   renderAllTaskViews();
+  renderDashboard(username);
   renderAllContacts('');
   renderCredentials(_credentials);
   renderAgents(_agents);
