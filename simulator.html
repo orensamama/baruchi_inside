@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>סימולטור דמי ניהול | ברוכי</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' rx='88' fill='%231a2d4f'/%3E%3Cpath d='M148 88 Q200 42 252 88' stroke='%23c9a84c' stroke-width='10' fill='none' stroke-linecap='round'/%3E%3Crect x='138' y='100' width='22' height='185' rx='4' fill='%23c9a84c'/%3E%3Cpath d='M160 100 Q238 108 238 148 Q238 186 160 195 L160 100Z' fill='%23c9a84c'/%3E%3Cpath d='M160 195 Q248 200 248 240 Q248 283 160 285 L160 195Z' fill='%23c9a84c'/%3E%3Cpath d='M168 110 Q218 115 218 148 Q218 180 168 185 Z' fill='%231a2d4f'/%3E%3Cpath d='M168 205 Q228 210 228 240 Q228 270 168 275 Z' fill='%231a2d4f'/%3E%3Crect x='138' y='158' width='22' height='4' rx='2' fill='%231a2d4f'/%3E%3Crect x='138' y='167' width='22' height='4' rx='2' fill='%231a2d4f'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy:     #0f1c33;
+      --navy-mid: #1a2d4f;
+      --gold:     #c9a84c;
+      --gold-light: #fef9ec;
+      --blue:     #2563eb;
+      --blue-light: #eff6ff;
+      --success:  #16a34a;
+      --warning:  #d97706;
+      --danger:   #dc2626;
+      --bg:       #f0f4f8;
+      --surface:  #ffffff;
+      --border:   #e2e8f0;
+      --text:     #1e293b;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --radius:   12px;
+      --shadow:   0 2px 12px rgba(0,0,0,.08);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Heebo', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* ── Header ── */
+    .app-header {
+      background: var(--navy-mid);
+      color: #fff;
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .header-title h1 { font-size: 21px; font-weight: 800; }
+    .header-title p  { font-size: 12px; color: rgba(255,255,255,.55); margin-top: 2px; }
+    .header-back {
+      margin-right: auto;
+      color: rgba(255,255,255,.65);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: color .15s;
+    }
+    .header-back:hover { color: var(--gold); }
+    .header-badge {
+      background: rgba(201,168,76,.18);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    /* ── Company tabs ── */
+    .company-tabs {
+      background: var(--surface);
+      border-bottom: 2px solid var(--border);
+      display: flex;
+      gap: 0;
+      padding: 0 32px;
+    }
+    .company-tab {
+      padding: 15px 26px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      color: var(--text-secondary);
+      transition: all .18s;
+      user-select: none;
+    }
+    .company-tab:hover  { color: var(--navy); }
+    .company-tab.active { color: var(--navy); border-bottom-color: var(--gold); }
+
+    /* ── Main ── */
+    .main { max-width: 860px; margin: 28px auto; padding: 0 24px; }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card-header h2 { font-size: 16px; font-weight: 800; }
+    .card-body { padding: 24px; }
+
+    /* ── Product tabs ── */
+    .product-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+    .product-tab {
+      padding: 8px 18px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      font-family: 'Heebo', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--bg);
+      color: var(--text-secondary);
+      transition: all .15s;
+    }
+    .product-tab:hover  { border-color: var(--navy); color: var(--navy); }
+    .product-tab.active { background: var(--navy); border-color: var(--navy); color: #fff; }
+
+    /* ── Inputs ── */
+    .input-section { margin-top: 22px; }
+    .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .input-grid.single { grid-template-columns: 1fr; max-width: 300px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
+    .form-group input[type=number] {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Heebo', sans-serif;
+      font-size: 15px;
+      color: var(--text);
+      transition: border-color .15s;
+      appearance: textfield;
+    }
+    .form-group input[type=number]:focus { outline: none; border-color: var(--navy); }
+    .form-group input[type=number]::-webkit-inner-spin-button { display: none; }
+    .input-hint { font-size: 11px; color: var(--text-muted); margin-top: 4px; line-height: 1.4; }
+
+    /* ── Checkbox row ── */
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      cursor: pointer;
+    }
+    .check-row input[type=checkbox] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--navy); }
+    .check-row span { font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+
+    /* ── Toggle (Mor pension) ── */
+    .toggle-label { font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; letter-spacing: .5px; }
+    .toggle-wrap { display: flex; border-radius: 8px; overflow: hidden; border: 2px solid var(--navy); width: fit-content; }
+    .toggle-btn {
+      padding: 9px 22px;
+      font-family: 'Heebo', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      background: #fff;
+      color: var(--navy);
+      border: none;
+      transition: all .15s;
+      user-select: none;
+    }
+    .toggle-btn.active { background: var(--navy); color: #fff; }
+
+    /* ── Result ── */
+    .result-area { margin-top: 22px; }
+    .result-empty { text-align: center; padding: 28px; color: var(--text-muted); font-size: 14px; }
+
+    .result-main {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+      border-radius: 12px;
+      padding: 22px 26px;
+      color: #fff;
+    }
+    .result-row { display: flex; gap: 36px; flex-wrap: wrap; margin-top: 12px; }
+    .result-label { font-size: 11px; font-weight: 700; color: rgba(255,255,255,.55); letter-spacing: .5px; text-transform: uppercase; margin-bottom: 4px; }
+    .result-value { font-size: 40px; font-weight: 900; color: var(--gold); line-height: 1; }
+    .result-unit  { font-size: 12px; color: rgba(255,255,255,.6); margin-top: 3px; }
+    .result-fixed-badge {
+      display: inline-block;
+      background: rgba(201,168,76,.18);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-top: 10px;
+    }
+
+    /* ── Dual alternatives (Harel > 15K) ── */
+    .dual-label { font-size: 13px; font-weight: 700; color: var(--text-secondary); margin-bottom: 10px; }
+    .alternatives { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .alt-card { border-radius: 10px; padding: 18px 20px; }
+    .alt-card.a { background: #eff6ff; border: 2px solid #3b82f6; }
+    .alt-card.b { background: #f0fdf4; border: 2px solid #22c55e; }
+    .alt-title { font-size: 13px; font-weight: 800; margin-bottom: 12px; }
+    .alt-card.a .alt-title { color: #1d4ed8; }
+    .alt-card.b .alt-title { color: #15803d; }
+    .alt-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+    .alt-key { font-size: 12px; color: var(--text-secondary); }
+    .alt-val { font-size: 24px; font-weight: 900; }
+    .alt-card.a .alt-val { color: #1d4ed8; }
+    .alt-card.b .alt-val { color: #15803d; }
+
+    /* ── Fixed rate card (Mor gemelInvest) ── */
+    .fixed-card {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+      border-radius: 12px;
+      padding: 22px 26px;
+      color: #fff;
+    }
+    .fixed-card-title { font-size: 12px; font-weight: 700; color: rgba(255,255,255,.55); margin-bottom: 8px; letter-spacing: .5px; }
+    .fixed-card-value { font-size: 48px; font-weight: 900; color: var(--gold); }
+    .fixed-card-sub   { font-size: 12px; color: rgba(255,255,255,.6); margin-top: 4px; }
+
+    /* ── Notes ── */
+    .notes-section { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+    .note-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 11px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .note-item.warning { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+    .note-item.info    { background: var(--blue-light); border: 1px solid #bfdbfe; color: #1e40af; }
+    .note-item.gold    { background: var(--gold-light); border: 1px solid #fde68a; color: #78350f; }
+    .note-item.danger  { background: #fef2f2; border: 1px solid #fca5a5; color: #991b1b; }
+    .note-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+    /* ── Manager approval ── */
+    .manager-card {
+      background: #fef2f2;
+      border: 2px solid #fca5a5;
+      border-radius: 12px;
+      padding: 20px 22px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .manager-card-icon { font-size: 28px; }
+    .manager-card h3 { font-size: 15px; font-weight: 800; color: #991b1b; margin-bottom: 5px; }
+    .manager-card p  { font-size: 13px; color: #b91c1c; line-height: 1.5; }
+
+    /* ── Contact ── */
+    .contact-card {
+      margin-top: 18px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .contact-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .contact-info { flex: 1; min-width: 120px; }
+    .contact-name { font-size: 14px; font-weight: 700; }
+    .contact-role { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+    .contact-actions { display: flex; gap: 7px; flex-wrap: wrap; }
+    .contact-btn {
+      padding: 6px 13px;
+      border-radius: 7px;
+      font-family: 'Heebo', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border: 1.5px solid;
+      transition: opacity .15s;
+    }
+    .contact-btn:hover { opacity: .8; }
+    .contact-btn.phone { color: var(--success); border-color: var(--success); background: #f0fdf4; }
+    .contact-btn.email { color: var(--blue);    border-color: var(--blue);    background: var(--blue-light); }
+
+    /* ── No match ── */
+    .no-match {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 14px 16px;
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      border-radius: 8px;
+      color: #991b1b;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .main { padding: 0 12px; margin: 14px auto; }
+      .company-tabs { padding: 0 12px; }
+      .company-tab  { padding: 13px 14px; font-size: 13px; }
+      .input-grid   { grid-template-columns: 1fr; }
+      .input-grid.single { max-width: 100%; }
+      .alternatives { grid-template-columns: 1fr; }
+      .result-row   { gap: 20px; }
+      .contact-card { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ HEADER ═══════════════════════════════ -->
+<header class="app-header">
+  <svg width="34" height="34" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
+    <rect width="400" height="400" rx="88" fill="#1a2d4f"/>
+    <path d="M148 88 Q200 42 252 88" stroke="#c9a84c" stroke-width="10" fill="none" stroke-linecap="round"/>
+    <rect x="138" y="100" width="22" height="185" rx="4" fill="#c9a84c"/>
+    <path d="M160 100 Q238 108 238 148 Q238 186 160 195 L160 100Z" fill="#c9a84c"/>
+    <path d="M160 195 Q248 200 248 240 Q248 283 160 285 L160 195Z" fill="#c9a84c"/>
+    <path d="M168 110 Q218 115 218 148 Q218 180 168 185 Z" fill="#1a2d4f"/>
+    <path d="M168 205 Q228 210 228 240 Q228 270 168 275 Z" fill="#1a2d4f"/>
+    <rect x="138" y="158" width="22" height="4" rx="2" fill="#1a2d4f"/>
+    <rect x="138" y="167" width="22" height="4" rx="2" fill="#1a2d4f"/>
+  </svg>
+  <div class="header-title">
+    <h1>סימולטור דמי ניהול</h1>
+    <p>ברוכי סוכנות לביטוח — כלי פנימי לסוכנים</p>
+  </div>
+  <a class="header-back" href="index.html">← חזרה למערכת</a>
+  <div class="header-badge">מתווה שחם</div>
+</header>
+
+<!-- ══════════════════════════ COMPANY TABS ══════════════════════════════ -->
+<nav>
+  <div class="company-tabs" id="company-tabs">
+    <div class="company-tab active" onclick="switchCompany('migdal',this)">🦁 מגדל</div>
+    <div class="company-tab"        onclick="switchCompany('harel', this)">🦅 הראל</div>
+    <div class="company-tab"        onclick="switchCompany('mor',   this)">🌿 מור (More)</div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════ MAIN ═════════════════════════════════ -->
+<main class="main">
+  <div class="card">
+    <div class="card-header">
+      <span id="co-icon">🦁</span>
+      <h2 id="co-title">מגדל — קרן פנסיה</h2>
+    </div>
+    <div class="card-body">
+      <div class="product-tabs" id="product-tabs"></div>
+      <div id="input-area"></div>
+      <div id="result-area" class="result-area">
+        <div class="result-empty">הזן נתונים לחישוב</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ═══════════════════════════════ SCRIPT ═══════════════════════════════ -->
+<script>
+// ─── COMPANY META ────────────────────────────────────────────────────────────
+const CO = {
+  migdal: {
+    name: 'מגדל', icon: '🦁',
+    contact: { name:'אפרת לוי', role:'מפקחת מגדל', phone:'054-798-1777', email:'levief@migdal.co.il' },
+    products: ['pension','gemel','gemelInvest','savings']
+  },
+  harel: {
+    name: 'הראל', icon: '🦅',
+    contact: { name:'עידן קלאוורה', role:'מפקח הראל', phone:'052-3452392', email:'idankal@harel-ins.co.il' },
+    products: ['pension','gemel','gemelInvest','savings']
+  },
+  mor: {
+    name: 'מור (More)', icon: '🌿',
+    contact: { name:'מיכל כרמי', role:'מפקחת מור', phone:'050-2526272', email:'Michal.Carmi@more.co.il' },
+    products: ['pension','gemel','gemelInvest']
+  }
+};
+
+const PRODUCT_LABEL = {
+  pension:     'קרן פנסיה',
+  gemel:       'גמל / השתלמות',
+  gemelInvest: 'גמל להשקעה',
+  savings:     'פוליסת חיסכון'
+};
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let co  = 'migdal';
+let prd = 'pension';
+let morMode     = 'salary';   // 'salary' | 'accum'
+let harelIdx    = false;
+let harelInvIdx = false;
+
+// ─── CALC — MIGDAL ───────────────────────────────────────────────────────────
+function calcMigdalPension(salary, transfer) {
+  if (!salary) return null;
+  if (salary >= 10000 && transfer === 0)  return { accum:0.13, deposit:1.5 };
+  if (salary >= 8000  && transfer >= 1e6)  return { accum:0.09, deposit:1.3 };
+  if (salary >= 8000  && transfer >= 5e5)  return { accum:0.09, deposit:1.4 };
+  if (salary >= 8000  && transfer >= 3e5)  return { accum:0.09, deposit:1.5 };
+  if (salary >= 8000  && transfer >= 25000) return { accum:0.10, deposit:1.7 };
+  return null;
+}
+
+function calcMigdalGemel(accum, isSP500) {
+  if (isSP500) return { accum:0.60, sp500:true };
+  if (accum >= 1e6)  return { accum:0.52 };
+  if (accum >= 8e5)  return { accum:0.55 };
+  if (accum >= 5e5)  return { accum:0.58 };
+  if (accum >= 15e4) return { accum:0.63 };
+  return { accum:0.70 };
+}
+
+function calcMigdalGemelInvest(accum) {
+  if (accum > 2e5)  return { accum:0.60 };
+  if (accum >= 1e5) return { accum:0.65 };
+  return { accum:0.70 };
+}
+
+function calcMigdalSavings(accum) {
+  if (accum >= 15e5) return { accum:0.70 };
+  if (accum >= 65e4) return { accum:0.75 };
+  if (accum >= 3e5)  return { accum:0.80 };
+  if (accum >= 15e4) return { accum:0.85 };
+  if (accum >= 1e5)  return { accum:0.90 };
+  if (accum >= 5e4)  return { accum:1.00 };
+  return { accum:1.20 };
+}
+
+// ─── CALC — HAREL ────────────────────────────────────────────────────────────
+function calcHarelPension(salary) {
+  if (!salary) return null;
+  if (salary > 15000) return { dual:true, optA:{accum:0.08,deposit:1.8}, optB:{accum:0.10,deposit:1.5} };
+  if (salary > 10000) return { accum:0.15, deposit:1.5 };
+  if (salary > 8000)  return { accum:0.17, deposit:1.7 };
+  if (salary > 6000)  return { accum:0.19, deposit:1.9 };
+  if (salary > 3000)  return { accum:0.25, deposit:3.0 };
+  return { accum:0.30, deposit:5.8 };
+}
+
+function calcHarelGemel(accum, isIdx) {
+  if (isIdx) return { accum: accum >= 5e5 ? 0.55 : 0.60, idx:true };
+  if (accum > 9e5) return { accum:0.55 };
+  if (accum > 3e5) return { accum:0.60 };
+  if (accum > 15e4) return { accum:0.65 };
+  return { accum:0.70 };
+}
+
+function calcHarelGemelInvest(accum, isIdx) {
+  if (isIdx) return { accum: accum >= 5e5 ? 0.55 : 0.60, idx:true };
+  if (accum > 65e4) return { accum:0.55 };
+  if (accum > 3e5)  return { accum:0.60 };
+  if (accum > 15e4) return { accum:0.65 };
+  return { accum:0.70 };
+}
+
+function calcHarelSavings(amount) {
+  if (amount >= 15e5) return { regular:0.75, fidelity:1.30 };
+  if (amount >= 65e4) return { regular:0.80, fidelity:1.35 };
+  if (amount >= 3e5)  return { regular:0.85, fidelity:1.40 };
+  if (amount >= 15e4) return { regular:0.90, fidelity:1.45 };
+  return { regular:1.00, fidelity:1.50 };
+}
+
+// ─── CALC — MOR ──────────────────────────────────────────────────────────────
+function calcMorPension(v, mode) {
+  let rate;
+  if (mode === 'salary') rate = v > 30000 ? 0.18 : v > 20000 ? 0.20 : 0.22;
+  else                   rate = v > 1e6   ? 0.18 : v > 7e5   ? 0.20 : 0.22;
+  return { accum:rate, deposit:1.0 };
+}
+
+function calcMorGemel(accum) {
+  if (accum > 25e5) return { managerApproval:true };
+  if (accum > 1e6)  return { accum:0.65 };
+  if (accum > 5e5)  return { accum:0.70 };
+  if (accum > 25e4) return { accum:0.75 };
+  if (accum > 1e5)  return { accum:0.80 };
+  return { accum:0.85 };
+}
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function $v(id) { const el = document.getElementById(id); return el ? (parseFloat(el.value)||0) : 0; }
+function $c(id) { const el = document.getElementById(id); return el ? el.checked : false; }
+function fmt(n) { return Number(n).toLocaleString('he-IL'); }
+
+function noteHTML(type, icon, text) {
+  return `<div class="note-item ${type}"><div class="note-icon">${icon}</div><div>${text}</div></div>`;
+}
+
+function resultMain({ accum, deposit }) {
+  const deps = deposit !== undefined ? `
+    <div class="result-item">
+      <div class="result-label">מהפקדה</div>
+      <div class="result-value">${deposit}%</div>
+      <div class="result-unit">דמי ניהול</div>
+    </div>` : '';
+  return `<div class="result-main">
+    <div class="result-row">
+      <div class="result-item">
+        <div class="result-label">מהצבירה</div>
+        <div class="result-value">${accum}%</div>
+        <div class="result-unit">דמי ניהול</div>
+      </div>${deps}
+    </div>
+  </div>`;
+}
+
+function resultDual(optA, optB) {
+  return `<div class="dual-label">שכר מעל 15,000 ₪ — שתי חלופות לבחירה:</div>
+  <div class="alternatives">
+    <div class="alt-card a">
+      <div class="alt-title">חלופה א'</div>
+      <div class="alt-row"><span class="alt-key">מהצבירה</span><span class="alt-val">${optA.accum}%</span></div>
+      <div class="alt-row"><span class="alt-key">מהפקדה</span><span class="alt-val">${optA.deposit}%</span></div>
+    </div>
+    <div class="alt-card b">
+      <div class="alt-title">חלופה ב'</div>
+      <div class="alt-row"><span class="alt-key">מהצבירה</span><span class="alt-val">${optB.accum}%</span></div>
+      <div class="alt-row"><span class="alt-key">מהפקדה</span><span class="alt-val">${optB.deposit}%</span></div>
+    </div>
+  </div>`;
+}
+
+function resultContact() {
+  const c = CO[co].contact;
+  return `<div class="contact-card">
+    <div class="contact-avatar">${c.name.charAt(0)}</div>
+    <div class="contact-info">
+      <div class="contact-name">${c.name}</div>
+      <div class="contact-role">חריגים והנחות — ${c.role}</div>
+    </div>
+    <div class="contact-actions">
+      <a class="contact-btn phone" href="tel:${c.phone}">📞 ${c.phone}</a>
+      <a class="contact-btn email" href="mailto:${c.email}">✉️ ${c.email}</a>
+    </div>
+  </div>`;
+}
+
+function setResultArea(html) {
+  document.getElementById('result-area').innerHTML = html;
+}
+function showEmpty() { setResultArea('<div class="result-empty">הזן נתונים לחישוב</div>'); }
+
+// ─── RENDER INPUTS ───────────────────────────────────────────────────────────
+function renderInputs() {
+  let h = '';
+
+  if (co === 'migdal' && prd === 'pension') {
+    h = `<div class="input-section">
+      <div class="input-grid">
+        <div class="form-group">
+          <label>שכר חודשי ברוטו (₪)</label>
+          <input type="number" id="in-salary" placeholder="10,000" oninput="calc()" />
+          <div class="input-hint">מינימום 8,000 ₪ עם ניוד | 10,000 ₪ ללא ניוד</div>
+        </div>
+        <div class="form-group">
+          <label>סכום ניוד (₪)</label>
+          <input type="number" id="in-transfer" placeholder="0 = ללא ניוד" oninput="calc()" />
+          <div class="input-hint">השאר ריק / 0 אם אין ניוד</div>
+        </div>
+      </div>
+    </div>`;
+
+  } else if (co === 'migdal' && prd === 'gemel') {
+    h = `<div class="input-section">
+      <div class="input-grid single">
+        <div class="form-group">
+          <label>צבירה בתיק (₪)</label>
+          <input type="number" id="in-accum" placeholder="200,000" oninput="calc()" />
+        </div>
+      </div>
+      <label class="check-row">
+        <input type="checkbox" id="in-sp500" onchange="calc()" />
+        <span>מסלול עוקב S&P 500 (פיקס 0.60% ללא קשר לצבירה)</span>
+      </label>
+    </div>`;
+
+  } else if (co === 'migdal' && (prd === 'gemelInvest' || prd === 'savings')) {
+    const lbl = prd === 'savings' ? 'צבירה / סכום הפקדה (₪)' : 'צבירה בתיק (₪)';
+    h = `<div class="input-section"><div class="input-grid single">
+      <div class="form-group">
+        <label>${lbl}</label>
+        <input type="number" id="in-accum" placeholder="300,000" oninput="calc()" />
+      </div>
+    </div></div>`;
+
+  } else if (co === 'harel' && prd === 'pension') {
+    h = `<div class="input-section"><div class="input-grid single">
+      <div class="form-group">
+        <label>שכר חודשי ברוטו (₪)</label>
+        <input type="number" id="in-salary" placeholder="12,000" oninput="calc()" />
+        <div class="input-hint">עצמאי? שכר לחישוב = סכום הפקדה חודשי ÷ 0.2</div>
+      </div>
+    </div></div>`;
+
+  } else if (co === 'harel' && prd === 'gemel') {
+    h = `<div class="input-section">
+      <div class="input-grid single">
+        <div class="form-group">
+          <label>צבירה בתיק (₪)</label>
+          <input type="number" id="in-accum" placeholder="400,000" oninput="calc()" />
+          <div class="input-hint">כולל צבירות ב"מגוון" הראל (גמל/השתלמות) לצורך קביעת מדרגה</div>
+        </div>
+      </div>
+      <label class="check-row">
+        <input type="checkbox" id="in-idx" onchange="harelIdx=this.checked;calc()" />
+        <span>מסלול עוקב מדד (Index) — מחיר מיוחד</span>
+      </label>
+    </div>`;
+
+  } else if (co === 'harel' && prd === 'gemelInvest') {
+    h = `<div class="input-section">
+      <div class="input-grid single">
+        <div class="form-group">
+          <label>צבירה בתיק (₪)</label>
+          <input type="number" id="in-accum" placeholder="400,000" oninput="calc()" />
+          <div class="input-hint">מצרפים צבירות תא משפחתי מקירבה ראשונה (גמל להשקעה בלבד)</div>
+        </div>
+      </div>
+      <label class="check-row">
+        <input type="checkbox" id="in-idx-inv" onchange="harelInvIdx=this.checked;calc()" />
+        <span>מסלול עוקב מדד (Index) — מחיר מיוחד</span>
+      </label>
+    </div>`;
+
+  } else if (co === 'harel' && prd === 'savings') {
+    h = `<div class="input-section">
+      <div class="input-grid single">
+        <div class="form-group">
+          <label>סכום הפקדה / ניוד בהצטרפות (₪)</label>
+          <input type="number" id="in-amount" placeholder="500,000" oninput="calc()" />
+          <div class="input-hint">מצרפים צבירת בן/בת הזוג לקביעת שיעור דמי הניהול</div>
+        </div>
+      </div>
+      <label class="check-row">
+        <input type="checkbox" id="in-fidelity" onchange="calc()" />
+        <span>מסלול אירוח Fidelity</span>
+      </label>
+    </div>`;
+
+  } else if (co === 'mor' && prd === 'pension') {
+    h = `<div class="input-section">
+      <div class="toggle-label">בחר אופן חישוב:</div>
+      <div class="toggle-wrap">
+        <button class="toggle-btn active" id="tog-salary" onclick="setMorMode('salary')">לפי שכר</button>
+        <button class="toggle-btn"        id="tog-accum"  onclick="setMorMode('accum')">לפי צבירה</button>
+      </div>
+      <div class="input-grid single" style="margin-top:16px">
+        <div class="form-group">
+          <label id="mor-lbl">שכר חודשי ברוטו (₪)</label>
+          <input type="number" id="in-mor" placeholder="15,000" oninput="calc()" />
+          <div class="input-hint">דמי ניהול מהפקדה: 1.0% קבוע בכל המסלולים</div>
+        </div>
+      </div>
+    </div>`;
+
+  } else if (co === 'mor' && prd === 'gemel') {
+    h = `<div class="input-section"><div class="input-grid single">
+      <div class="form-group">
+        <label>צבירה בתיק (₪)</label>
+        <input type="number" id="in-accum" placeholder="300,000" oninput="calc()" />
+        <div class="input-hint">מעל 2,500,000 ₪ — נדרש אישור מנהל</div>
+      </div>
+    </div></div>`;
+
+  } else if (co === 'mor' && prd === 'gemelInvest') {
+    // Fixed rate — show result immediately, no input needed
+    document.getElementById('input-area').innerHTML = '';
+    setResultArea(`
+      <div class="fixed-card">
+        <div class="fixed-card-title">גמל להשקעה — מחיר קבוע (פיקס)</div>
+        <div class="fixed-card-value">0.80%</div>
+        <div class="fixed-card-sub">דמי ניהול מהצבירה — לכל סכום</div>
+        <div class="result-fixed-badge">✦ פיקס — ללא מדרגות</div>
+      </div>
+      ${resultContact()}`);
+    return;
+  }
+
+  document.getElementById('input-area').innerHTML = h;
+  showEmpty();
+}
+
+// ─── MOR TOGGLE ──────────────────────────────────────────────────────────────
+function setMorMode(mode) {
+  morMode = mode;
+  document.getElementById('tog-salary').classList.toggle('active', mode === 'salary');
+  document.getElementById('tog-accum' ).classList.toggle('active', mode === 'accum');
+  document.getElementById('mor-lbl').textContent = mode === 'salary' ? 'שכר חודשי ברוטו (₪)' : 'צבירה קיימת (₪)';
+  document.getElementById('in-mor').placeholder  = mode === 'salary' ? '15,000' : '500,000';
+  document.getElementById('in-mor').value = '';
+  showEmpty();
+}
+
+// ─── MAIN CALC & RENDER ──────────────────────────────────────────────────────
+function calc() {
+  let out = '';
+  let notes = [];
+
+  // ── MIGDAL PENSION ──
+  if (co === 'migdal' && prd === 'pension') {
+    const salary = $v('in-salary'), transfer = $v('in-transfer');
+    if (!salary) { showEmpty(); return; }
+    const r = calcMigdalPension(salary, transfer);
+    if (!r) {
+      out = `<div class="no-match">⚠️ אין מתווה תואם — שכר מינימלי 8,000 ₪ עם ניוד מ-25,000 ₪, או 10,000 ₪ ללא ניוד</div>`;
+    } else {
+      out = resultMain(r);
+    }
+
+  // ── MIGDAL GEMEL ──
+  } else if (co === 'migdal' && prd === 'gemel') {
+    const accum = $v('in-accum'), isSP = $c('in-sp500');
+    if (!accum && !isSP) { showEmpty(); return; }
+    const r = calcMigdalGemel(accum, isSP);
+    out = resultMain(r);
+    if (r.sp500) {
+      notes.push(noteHTML('gold','✦','מסלול S&P 500 — דמי ניהול פיקס 0.60% ללא קשר לגובה הצבירה'));
+    }
+
+  // ── MIGDAL GEMEL INVEST ──
+  } else if (co === 'migdal' && prd === 'gemelInvest') {
+    const accum = $v('in-accum');
+    if (!accum) { showEmpty(); return; }
+    out = resultMain(calcMigdalGemelInvest(accum));
+
+  // ── MIGDAL SAVINGS ──
+  } else if (co === 'migdal' && prd === 'savings') {
+    const accum = $v('in-accum');
+    if (!accum) { showEmpty(); return; }
+    out = resultMain(calcMigdalSavings(accum));
+
+  // ── HAREL PENSION ──
+  } else if (co === 'harel' && prd === 'pension') {
+    const salary = $v('in-salary');
+    if (!salary) { showEmpty(); return; }
+    const r = calcHarelPension(salary);
+    if (r.dual) {
+      out = resultDual(r.optA, r.optB);
+      notes.push(noteHTML('info','ℹ️','שתי החלופות תקפות — הסוכן בוחר לפי הרכב תיק הלקוח'));
+    } else {
+      out = resultMain(r);
+    }
+    notes.push(noteHTML('warning','👤','עצמאי? שכר לחישוב = סכום הפקדה חודשי ÷ 0.2'));
+
+  // ── HAREL GEMEL ──
+  } else if (co === 'harel' && prd === 'gemel') {
+    const accum = $v('in-accum');
+    if (!accum) { showEmpty(); return; }
+    const r = calcHarelGemel(accum, harelIdx);
+    out = resultMain(r);
+    if (r.idx) {
+      notes.push(noteHTML('gold','✦',`מסלול עוקב מדד — ${r.accum}% | מעל 500,000 ₪ יורד ל-0.55%`));
+    }
+    notes.push(noteHTML('info','📊','הצבירה מצטברת ממוצרי "מגוון" בהראל (גמל + השתלמות) לצורך קביעת המדרגה'));
+
+  // ── HAREL GEMEL INVEST ──
+  } else if (co === 'harel' && prd === 'gemelInvest') {
+    const accum = $v('in-accum');
+    if (!accum) { showEmpty(); return; }
+    const r = calcHarelGemelInvest(accum, harelInvIdx);
+    out = resultMain(r);
+    if (r.idx) {
+      notes.push(noteHTML('gold','✦',`מסלול עוקב מדד — ${r.accum}% | מעל 500,000 ₪ יורד ל-0.55%`));
+    }
+    notes.push(noteHTML('info','👨‍👩‍👧','לחישוב הרף — מצרפים צבירות תא משפחתי מקירבה ראשונה (גמל להשקעה בלבד)'));
+
+  // ── HAREL SAVINGS ──
+  } else if (co === 'harel' && prd === 'savings') {
+    const amount = $v('in-amount');
+    if (!amount) { showEmpty(); return; }
+    const isFid = $c('in-fidelity');
+    const r = calcHarelSavings(amount);
+    const chosen = isFid ? r.fidelity : r.regular;
+    out = resultMain({ accum: chosen });
+    if (isFid) {
+      notes.push(noteHTML('warning','🏦',`מסלול Fidelity — ${r.fidelity}% | מסלול רגיל: ${r.regular}%`));
+    } else {
+      notes.push(noteHTML('info','🏦',`מסלול רגיל — ${r.regular}% | מסלול Fidelity זמין: ${r.fidelity}%`));
+    }
+    notes.push(noteHTML('gold','📊','צבירות נוספות ב"מגוון" הראל (גמל/השתלמות) משוקללות יחד לקביעת המדרגה'));
+    notes.push(noteHTML('gold','👨‍👩‍👧','לקביעת שיעור ד"נ — מצרפים את צבירת בן/בת הזוג'));
+
+  // ── MOR PENSION ──
+  } else if (co === 'mor' && prd === 'pension') {
+    const v = $v('in-mor');
+    if (!v) { showEmpty(); return; }
+    const r = calcMorPension(v, morMode);
+    out = resultMain(r);
+    notes.push(noteHTML('gold','✦','דמי ניהול מהפקדה: 1.0% קבוע בכל המסלולים'));
+    notes.push(noteHTML('info','ℹ️',`מחושב ${morMode === 'salary' ? 'לפי שכר' : 'לפי צבירה'} — ניתן להחליף עם ה-Toggle למעלה`));
+
+  // ── MOR GEMEL ──
+  } else if (co === 'mor' && prd === 'gemel') {
+    const accum = $v('in-accum');
+    if (!accum) { showEmpty(); return; }
+    const r = calcMorGemel(accum);
+    if (r.managerApproval) {
+      out = `<div class="manager-card">
+        <div class="manager-card-icon">🔴</div>
+        <div>
+          <h3>נדרש אישור מנהל</h3>
+          <p>צבירה מעל 2,500,000 ₪ — דמי הניהול נקבעים לפי החלטת מנהל בלבד. יש לפנות לאיש הקשר.</p>
+        </div>
+      </div>`;
+    } else {
+      out = resultMain(r);
+      notes.push(noteHTML('warning','⚠️','המדרג אחיד לכלל ערוצי ההפצה — לא ניתן לחרוג ללא אישור מנהל'));
+    }
+  }
+
+  const notesBlock = notes.length
+    ? `<div class="notes-section">${notes.join('')}</div>`
+    : '';
+
+  setResultArea(out + notesBlock + resultContact());
+}
+
+// ─── NAVIGATION ──────────────────────────────────────────────────────────────
+function switchCompany(key, el) {
+  co = key; prd = CO[key].products[0];
+  morMode = 'salary'; harelIdx = false; harelInvIdx = false;
+  document.querySelectorAll('.company-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('co-icon').textContent = CO[key].icon;
+  document.getElementById('co-title').textContent = CO[key].name + ' — ' + PRODUCT_LABEL[prd];
+  renderProductTabs();
+  renderInputs();
+}
+
+function switchProduct(key, el) {
+  prd = key;
+  morMode = 'salary'; harelIdx = false; harelInvIdx = false;
+  document.querySelectorAll('.product-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('co-title').textContent = CO[co].name + ' — ' + PRODUCT_LABEL[key];
+  renderInputs();
+}
+
+function renderProductTabs() {
+  document.getElementById('product-tabs').innerHTML = CO[co].products.map((p, i) =>
+    `<button class="product-tab ${i===0?'active':''}" onclick="switchProduct('${p}',this)">${PRODUCT_LABEL[p]}</button>`
+  ).join('');
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+renderProductTabs();
+renderInputs();
+</script>
+</body>
+</html>
