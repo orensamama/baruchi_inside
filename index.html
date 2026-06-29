@@ -1416,32 +1416,13 @@
         </div>
 
         <div class="tabs-wrap">
-          <button class="tab-btn active" onclick="switchTab('fees','pricing',this)">📊 מחירונים ודמי ניהול</button>
+          <button class="tab-btn active" onclick="switchTab('fees','simulator',this)">🧮 סימולטור השוואת דמי ניהול</button>
           <button class="tab-btn" onclick="switchTab('fees','bank',this)">🏦 פרטי חשבון בנק וקודי מוסד</button>
-          <a href="simulator.html" target="_blank" class="tab-btn" style="text-decoration:none;background:var(--gold);color:#fff;border-color:var(--gold);font-weight:800">🧮 סימולטור השוואה</a>
         </div>
 
-        <!-- Tab 1: Pricing -->
-        <div class="tab-panel active" id="fees-tab-pricing">
-          <div class="page-action-bar" style="margin-bottom:14px">
-            <div></div>
-            <button class="btn-add-contact" id="btn-add-pricing" onclick="openPricingModal(null)" style="display:none">＋ הוספת מוצר</button>
-          </div>
-          <div class="table-card">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>חברה</th>
-                  <th>מוצר</th>
-                  <th>דמי ניהול מהפקדה</th>
-                  <th>דמי ניהול מצבירה</th>
-                  <th>הערות</th>
-                  <th id="pricing-action-th" style="display:none;width:70px"></th>
-                </tr>
-              </thead>
-              <tbody id="pricing-tbody"></tbody>
-            </table>
-          </div>
+        <!-- Tab 1: Simulator iframe -->
+        <div class="tab-panel active" id="fees-tab-simulator" style="padding:0">
+          <iframe src="simulator.html" style="width:100%;height:82vh;border:none;border-radius:0 0 12px 12px;display:block"></iframe>
         </div>
 
         <!-- Tab 2: Bank Accordion -->
@@ -1960,19 +1941,19 @@ const EXTERNAL_CONTACTS_GROUPS = [
     ]
   },
   {
-    company: 'הפניקס', color: '#e65100',
-    rows: [
-      { name:'משה — מפקח פניקס', phone:'054-4448841', email:'', notes:'' },
-      { name:'מוקד הפניקס',       phone:'*2724',       email:'', notes:'' },
-    ]
-  },
-  {
     company: 'מור', color: '#00695c',
     rows: [
       { name:'מיכל כרמי — מפקחת מור',  phone:'050-2526272', email:'Michal.Carmi@more.co.il', notes:'' },
       { name:'מור לוי',            phone:'076-8865924', email:'', notes:'' },
       { name:'מור לוי — אישי',    phone:'052-8008621', email:'', notes:'' },
       { name:'מור סוכנים',         phone:'074-7811201', email:'', notes:'' },
+    ]
+  },
+  {
+    company: 'הפניקס', color: '#e65100',
+    rows: [
+      { name:'משה — מפקח פניקס', phone:'054-4448841', email:'', notes:'' },
+      { name:'מוקד הפניקס',       phone:'*2724',       email:'', notes:'' },
     ]
   },
   {
@@ -2101,7 +2082,7 @@ const PORTALS = [
   { name:'מור',             short:'MR', color:'#00695c', desc:'פורטל סוכנים',                   url:'https://join.more.co.il/agentsportal/agents/login'                                              },
   { name:'מנורה נט',        short:'MN', color:'#6a1b9a', desc:'פורטל סוכנים',                   url:'https://menoranet.menora.co.il/'                                                                },
   { name:'הפניקס',          short:'PH', color:'#e65100', desc:'פורטל סוכנים',                   url:'https://agentportal.fnx.co.il/digital-services/'                                               },
-  { name:'כלל נט',          short:'CL', color:'#2e7d32', desc:'פורטל סוכנים',                   url:'https://agents.as-invest.co.il/Login'                                                          },
+  { name:'אלטשולר שחם',     short:'AS', color:'#1b5e20', desc:'פורטל סוכנים',                   url:'https://agents.as-invest.co.il/Login'                                                          },
   { name:'אנליסט',          short:'AN', color:'#37474f', desc:'פורטל סוכנים',                   url:'https://agent.analyst.co.il/auth/login'                                                        },
   { name:'איילון',          short:'AY', color:'#00838f', desc:'פורטל סוכנים',                   url:'https://portal.ayalon-ins.co.il/'                                                              },
   { name:'הכשרה',           short:'HK', color:'#558b2f', desc:'פורטל סוכנים',                   url:'https://agents-login.hcsra.co.il/'                                                             },
