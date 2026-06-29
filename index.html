@@ -2180,7 +2180,9 @@ function checkAutoLogin() {
 }
 
 function logout() {
-  sessionStorage.removeItem(SESSION_KEY); localStorage.removeItem(REMEMBER_KEY);
+  sessionStorage.removeItem(SESSION_KEY);
+  sessionStorage.removeItem('bq_page');
+  localStorage.removeItem(REMEMBER_KEY);
   document.getElementById('app').style.display = 'none';
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('username').value = '';
@@ -2188,9 +2190,9 @@ function logout() {
 }
 
 async function launchApp(username) {
-  // Read intended destination BEFORE any showPage call overwrites the hash
-  const hashKey = location.hash.replace('#', '');
-  const intendedPage = (hashKey && PAGE_MAP[hashKey]) ? hashKey : 'dashboard';
+  // Read saved page BEFORE anything touches sessionStorage
+  const savedPage = sessionStorage.getItem('bq_page');
+  const intendedPage = (savedPage && PAGE_MAP[savedPage]) ? savedPage : 'dashboard';
 
   currentUser = username;
   document.getElementById('login-screen').style.display = 'none';
@@ -2198,7 +2200,12 @@ async function launchApp(username) {
   document.getElementById('user-name-display').textContent = username;
   document.getElementById('user-avatar').textContent = username.charAt(0).toUpperCase();
 
-  // Render static scaffolding immediately so UI is not blank
+  // Render static scaffolding immediately — show dashboard content directly
+  // (avoid calling showPage here so sessionStorage is not overwritten yet)
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-dashboard').classList.add('active');
+  document.getElementById('nav-dashboard').classList.add('active');
+
   renderPricing(PRICING);
   renderFundsAccordion(FUNDS);
   renderPortals();
@@ -2207,22 +2214,18 @@ async function launchApp(username) {
   applyTaskRoles();
   if (isMobile()) { sidebarOpen = false; }
 
-  // Show cached tasks from localStorage immediately (instant, no flicker)
+  // Show cached tasks from localStorage immediately (zero flicker)
   try { _tasks = JSON.parse(localStorage.getItem(TASKS_KEY)) || []; } catch(e) { _tasks = []; }
   if (_tasks.length) {
     renderAllTaskViews();
   } else {
-    // Show spinner while we wait for Supabase
     ['mine','all','given'].forEach(v => {
       const el = document.getElementById('tasks-' + v + '-list');
       if (el) el.innerHTML = '<div class="tasks-loading"><div class="tasks-spinner"></div>טוען משימות...</div>';
     });
   }
 
-  // Navigate to the intended page (dashboard while loading, then restore)
-  showPage('dashboard', document.getElementById('nav-dashboard'));
-
-  // Connect to Supabase, load all live data in parallel, then re-render
+  // Load all live data from Supabase in parallel
   initSupabase();
   await Promise.all([dbLoadTasks(), dbLoadContacts(), dbLoadCredentials(), dbLoadAgents(), dbLoadPricing()]);
   renderAllTaskViews();
@@ -2231,11 +2234,11 @@ async function launchApp(username) {
   renderAgents(_agents);
   renderPricing(_pricing);
 
-  // Restore the page the user was on before refresh
-  if (intendedPage !== 'dashboard') {
-    const navEl = document.querySelector(`.nav-item[onclick*="'${intendedPage}'"]`);
-    showPage(intendedPage, navEl);
-  }
+  // Navigate to the page the user was on before refresh
+  // showPage() writes intendedPage back to sessionStorage, completing the cycle
+  const navEl = document.querySelector(`.nav-item[onclick*="'${intendedPage}'"]`)
+             || document.getElementById('nav-' + intendedPage);
+  showPage(intendedPage, navEl);
 }
 
 function renderDashboard(username) {
@@ -2323,8 +2326,8 @@ function showPage(key, el) {
   document.getElementById(PAGE_MAP[key]).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   if (el) el.classList.add('active');
-  // Persist current page in URL hash so refresh restores position
-  if (location.hash !== '#' + key) history.replaceState(null, '', '#' + key);
+  // Persist in sessionStorage (survives refresh, cleared on logout)
+  sessionStorage.setItem('bq_page', key);
   // Close sidebar on mobile after navigation
   if (isMobile() && sidebarOpen) {
     sidebarOpen = false;
