@@ -722,12 +722,34 @@
       padding: 2px 8px; white-space: nowrap; flex-shrink: 0;
     }
 
+    /* Main content group (insured → title → last-update) */
+    .task-row-main {
+      display: flex; align-items: center; gap: 6px;
+      flex: 1; min-width: 0; overflow: hidden;
+    }
+    .task-arrow-sep { color: #94a3b8; font-size: 12px; flex-shrink: 0; }
+
     /* Title in row */
     .task-row-title {
-      flex: 1; font-size: 13px; font-weight: 600;
+      font-size: 13px; font-weight: 600;
       color: var(--text-primary); line-height: 1.35;
-      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      white-space: nowrap; flex-shrink: 0;
     }
+
+    /* Inline last-update chip / edit trigger */
+    .task-lu {
+      display: inline-flex; align-items: center; gap: 3px;
+      font-size: 11px; font-weight: 500; color: #64748b;
+      background: #f1f5f9; border: 1px solid #e2e8f0;
+      border-radius: 6px; padding: 2px 8px;
+      cursor: text; white-space: nowrap;
+      max-width: 280px; overflow: hidden; text-overflow: ellipsis;
+      transition: border-color .15s, background .15s;
+      flex-shrink: 1;
+    }
+    .task-lu:hover { border-color: var(--blue); background: var(--blue-light); }
+    .task-lu.empty { background: transparent; border-color: transparent; color: #94a3b8; }
+    .task-lu.empty:hover { border-color: #e2e8f0; background: #f8fafc; }
 
     /* Inline select dropdowns — priority & status */
     .task-select {
@@ -3639,6 +3661,45 @@ async function saveEditTask() {
   renderDashboard(currentUser);
 }
 
+function startInlineLastUpdate(id) {
+  const el = document.getElementById('lu-' + id);
+  if (!el || el.querySelector('input')) return; // already editing
+  const t = _tasks.find(t => t.id === id);
+  if (!t) return;
+  const current = t.lastUpdate || '';
+  el.innerHTML = `<input type="text" value="${esc(current)}"
+    placeholder="הוסף עדכון אחרון..."
+    onclick="event.stopPropagation()"
+    style="font-size:12px;padding:1px 6px;border:none;outline:none;background:transparent;color:var(--text-primary);width:220px;font-family:inherit"
+    onkeydown="if(event.key==='Enter'){_luSave('${id}',this.value);event.preventDefault()}"
+    onblur="_luSave('${id}',this.value)" />`;
+  el.style.borderColor = 'var(--blue)';
+  el.style.background  = 'var(--blue-light)';
+  el.querySelector('input').select();
+}
+
+let _luSaving = {};
+function _luSave(id, raw) {
+  if (_luSaving[id]) return;
+  _luSaving[id] = true;
+  setTimeout(() => { delete _luSaving[id]; }, 200);
+
+  const el = document.getElementById('lu-' + id);
+  const t  = _tasks.find(t => t.id === id);
+  if (!t) return;
+  const val = (raw || '').trim();
+  t.lastUpdate = val;
+  dbUpdateField(id, 'lastUpdate', val || '');
+
+  if (el) {
+    el.className = val ? 'task-lu' : 'task-lu empty';
+    el.title     = val || 'לחץ להוספת עדכון אחרון';
+    el.innerHTML = val ? `🔄 ${esc(val)}` : '+ עדכון אחרון';
+    el.style.borderColor = '';
+    el.style.background  = '';
+  }
+}
+
 function cycleStatus(id) {
   const t = _tasks.find(t => t.id === id);
   if (!t) return;
@@ -3723,17 +3784,21 @@ function taskCard(t) {
     `<span>${dateStr}</span>`,
   ].filter(Boolean).join('<span style="color:#e2e8f0">·</span>');
 
-  const lastUpdateHtml = t.lastUpdate
-    ? `<span style="display:inline-flex;align-items:center;gap:4px;background:#f1f5f9;color:#475569;font-size:11px;font-weight:600;border-radius:6px;padding:2px 8px;border:1px solid #e2e8f0;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(t.lastUpdate)}">🔄 ${esc(t.lastUpdate)}</span>`
-    : '';
+  const luContent = t.lastUpdate
+    ? `🔄 ${esc(t.lastUpdate)}`
+    : `+ עדכון אחרון`;
+  const luClass = t.lastUpdate ? 'task-lu' : 'task-lu empty';
 
   return `<div class="task-row priority-${t.priority}" id="task-row-${t.id}" onclick="toggleTaskRow('${t.id}',this)">
     <span class="task-row-chevron">▼</span>
-    ${insuredName ? `<span class="task-insured-sm">${esc(insuredName)}</span>` : ''}
-    ${t.category ? catBadge(t.category) : ''}
+    <div class="task-row-main">
+      ${insuredName ? `<span class="task-insured-sm">${esc(insuredName)}</span><span class="task-arrow-sep">›</span>` : ''}
+      <span class="task-row-title">${esc(t.title)}</span>
+      <span class="${luClass}" id="lu-${t.id}"
+        onclick="startInlineLastUpdate('${t.id}');event.stopPropagation()"
+        title="${t.lastUpdate ? esc(t.lastUpdate) : 'לחץ להוספת עדכון אחרון'}">${luContent}</span>
+    </div>
     ${deadlineHtml}
-    ${lastUpdateHtml}
-    <span class="task-row-title">${esc(t.title)}</span>
     <div class="task-actions" onclick="event.stopPropagation()">
       ${prioritySelectHtml(t)}
       ${statusSelectHtml(t)}
