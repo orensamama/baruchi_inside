@@ -3465,10 +3465,10 @@ async function dbLoadTasks() {
 
 /* Upsert one task to Supabase — returns true on success */
 async function dbSaveTask(task) {
-  if (!_dbReady) { console.error('[Baruchi HQ] Supabase not ready'); return false; }
+  if (!_dbReady) { console.error('[Baruchi HQ] Supabase not ready'); return { ok: false, msg: 'Supabase not initialized' }; }
   const { error } = await _sb.from('tasks').upsert(taskToRow(task), { onConflict: 'id' });
-  if (error) { console.error('[Baruchi HQ] dbSaveTask error', error); return false; }
-  return true;
+  if (error) { console.error('[Baruchi HQ] dbSaveTask error', error); return { ok: false, msg: error.message || JSON.stringify(error) }; }
+  return { ok: true };
 }
 
 /* Delete one task from Supabase */
@@ -3555,9 +3555,9 @@ function createTask() {
   };
 
   async function finalize(task) {
-    const ok = await dbSaveTask(task);
+    const { ok, msg } = await dbSaveTask(task);
     if (!ok) {
-      alert('שגיאה: המשימה לא נשמרה ב-Supabase. בדוק חיבור לרשת.');
+      alert('שגיאה: המשימה לא נשמרה.\n' + (msg || 'בדוק חיבור לרשת.'));
       return;
     }
     _tasks.unshift(task);
