@@ -2907,6 +2907,7 @@ async function dbDeletePricing(id) {
    PRICING TABLE
 ══════════════════════════ */
 function renderPricing(data) {
+  if (!document.getElementById('pricing-tbody')) return;
   const rows = Array.isArray(data) ? data : _pricing;
   const admin = isAdmin();
   const th  = document.getElementById('pricing-action-th');
