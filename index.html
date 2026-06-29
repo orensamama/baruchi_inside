@@ -3463,11 +3463,12 @@ async function dbLoadTasks() {
   else { _tasks = (data || []).map(rowToTask); }
 }
 
-/* Upsert one task to Supabase */
+/* Upsert one task to Supabase — returns true on success */
 async function dbSaveTask(task) {
-  if (!_dbReady) return;
+  if (!_dbReady) { console.error('[Baruchi HQ] Supabase not ready'); return false; }
   const { error } = await _sb.from('tasks').upsert(taskToRow(task), { onConflict: 'id' });
-  if (error) console.warn('[Baruchi HQ] dbSaveTask error', error);
+  if (error) { console.error('[Baruchi HQ] dbSaveTask error', error); return false; }
+  return true;
 }
 
 /* Delete one task from Supabase */
@@ -3553,9 +3554,13 @@ function createTask() {
     createdAt: Date.now(),
   };
 
-  function finalize(task) {
-    _tasks.push(task);
-    dbSaveTask(task);
+  async function finalize(task) {
+    const ok = await dbSaveTask(task);
+    if (!ok) {
+      alert('שגיאה: המשימה לא נשמרה ב-Supabase. בדוק חיבור לרשת.');
+      return;
+    }
+    _tasks.unshift(task);
     document.getElementById('task-insured').value    = '';
     document.getElementById('task-title').value      = '';
     document.getElementById('task-desc-input').value = '';
