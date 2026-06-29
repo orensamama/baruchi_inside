@@ -3555,6 +3555,76 @@ function createTask() {
   }
 }
 
+function openEditTask(id) {
+  const t = _tasks.find(t => t.id === id);
+  if (!t) return;
+
+  document.getElementById('etask-id').value          = id;
+  document.getElementById('etask-insured').value     = t.insured  || '';
+  document.getElementById('etask-title').value       = t.title    || '';
+  document.getElementById('etask-desc').value        = t.desc     || '';
+  document.getElementById('etask-priority').value    = t.priority || 'normal';
+  document.getElementById('etask-assignee').value    = t.assignee || 'oren';
+  document.getElementById('etask-deadline').value    = t.deadline || '';
+
+  const catSel = document.getElementById('etask-category');
+  const knownCats = ['סיכונים','פנסיוני','פיננסי','אלמנטרי','תביעות','גבייה','משכנתאות','אחר'];
+  if (knownCats.includes(t.category || '')) {
+    catSel.value = t.category;
+    document.getElementById('etask-cat-other').value = '';
+    document.getElementById('etask-cat-other-wrap').style.display = 'none';
+  } else if (t.category) {
+    catSel.value = 'אחר';
+    document.getElementById('etask-cat-other').value = t.category;
+    document.getElementById('etask-cat-other-wrap').style.display = '';
+  } else {
+    catSel.value = '';
+    document.getElementById('etask-cat-other-wrap').style.display = 'none';
+  }
+
+  document.getElementById('etask-modal-overlay').style.display = 'flex';
+}
+
+function closeEditTask() {
+  document.getElementById('etask-modal-overlay').style.display = 'none';
+}
+
+async function saveEditTask() {
+  const id       = document.getElementById('etask-id').value;
+  const insured  = document.getElementById('etask-insured').value.trim();
+  const title    = document.getElementById('etask-title').value.trim();
+  const desc     = document.getElementById('etask-desc').value.trim();
+  const priority = document.getElementById('etask-priority').value;
+  const assignee = document.getElementById('etask-assignee').value;
+  const deadline = document.getElementById('etask-deadline').value;
+
+  if (!insured) { document.getElementById('etask-insured').focus(); return; }
+  if (!title)   { document.getElementById('etask-title').focus();   return; }
+
+  const catSel = document.getElementById('etask-category');
+  let category = catSel.value;
+  if (category === 'אחר') {
+    const other = document.getElementById('etask-cat-other').value.trim();
+    if (other) category = other;
+  }
+
+  const t = _tasks.find(t => t.id === id);
+  if (!t) return;
+
+  Object.assign(t, { insured, title, desc, priority, assignee, category, deadline });
+
+  if (_dbReady) {
+    await _sb.from('tasks').update({
+      insured, title, desc: desc || null, priority, assignee,
+      category: category || null, deadline: deadline || null
+    }).eq('id', id);
+  }
+
+  closeEditTask();
+  renderAllTaskViews();
+  renderDashboard(currentUser);
+}
+
 function cycleStatus(id) {
   const t = _tasks.find(t => t.id === id);
   if (!t) return;
@@ -3649,6 +3719,7 @@ function taskCard(t) {
       ${prioritySelectHtml(t)}
       ${statusSelectHtml(t)}
       <button class="btn-copy" onclick="copyVal(this,'${escapedCopy}')" title="העתק לוואטסאפ">${COPY_SVG}</button>
+      <button class="btn-task-edit" onclick="openEditTask('${t.id}')" title="עריכת משימה" style="background:none;border:none;cursor:pointer;padding:4px 6px;border-radius:6px;font-size:15px;color:var(--blue);transition:background .15s" onmouseover="this.style.background='var(--blue-light)'" onmouseout="this.style.background='none'">✏️</button>
       <button class="btn-task-delete" onclick="deleteTask('${t.id}')" title="מחק">${DEL_SVG}</button>
     </div>
   </div>
@@ -3784,6 +3855,76 @@ document.addEventListener('DOMContentLoaded', () => {
 
 checkAutoLogin();
 </script>
+
+<!-- ══ TASK EDIT MODAL ══ -->
+<div id="etask-modal-overlay" class="modal-overlay" style="display:none;align-items:flex-start;padding-top:40px" onclick="if(event.target===this)closeEditTask()">
+  <div class="modal-box" style="max-width:620px;width:95%">
+    <div class="modal-header">
+      <h3>✏️ עריכת משימה</h3>
+      <button class="modal-close" onclick="closeEditTask()">✕</button>
+    </div>
+    <input type="hidden" id="etask-id" />
+    <div class="task-form-grid" style="padding:20px 24px;gap:16px">
+      <div class="task-field">
+        <label>שם המבוטח *</label>
+        <input type="text" id="etask-insured" placeholder="שם הלקוח / המבוטח..." />
+      </div>
+      <div class="task-field">
+        <label>כותרת המשימה *</label>
+        <input type="text" id="etask-title" placeholder="לדוגמה: לעדכן פרטי לקוח בכלל..." />
+      </div>
+      <div class="task-field full">
+        <label>תיאור והערות</label>
+        <textarea id="etask-desc" placeholder="פרטים נוספים, הוראות, קישורים..." style="min-height:80px"></textarea>
+      </div>
+      <div class="task-field">
+        <label>סיווג משימה</label>
+        <select id="etask-category" onchange="document.getElementById('etask-cat-other-wrap').style.display=this.value==='אחר'?'':'none'">
+          <option value="">— בחר סיווג —</option>
+          <option value="סיכונים">סיכונים</option>
+          <option value="פנסיוני">פנסיוני</option>
+          <option value="פיננסי">פיננסי</option>
+          <option value="אלמנטרי">אלמנטרי</option>
+          <option value="תביעות">תביעות</option>
+          <option value="גבייה">גבייה</option>
+          <option value="משכנתאות">משכנתאות</option>
+          <option value="אחר">אחר</option>
+        </select>
+      </div>
+      <div class="task-field" id="etask-cat-other-wrap" style="display:none">
+        <label>פרט סיווג אחר</label>
+        <input type="text" id="etask-cat-other" placeholder="לדוגמה: ביטוח בריאות..." />
+      </div>
+      <div class="task-field">
+        <label>עדיפות</label>
+        <select id="etask-priority">
+          <option value="urgent">⚡ דחוף ביותר</option>
+          <option value="normal">🔥 חשוב / רגיל</option>
+          <option value="free">⏳ בזמנך החופשי</option>
+        </select>
+      </div>
+      <div class="task-field">
+        <label>שיוך לחבר צוות</label>
+        <select id="etask-assignee">
+          <option value="oren">אורן</option>
+          <option value="asher">אשר</option>
+          <option value="yehonatan">יהונתן</option>
+          <option value="riki">ריקי</option>
+          <option value="heidi">היידי</option>
+          <option value="chaya">חיה</option>
+        </select>
+      </div>
+      <div class="task-field">
+        <label>📅 תאריך יעד (אופציונלי)</label>
+        <input type="date" id="etask-deadline" style="padding:8px 12px;border:1.5px solid var(--blue-border);border-radius:8px;font-family:inherit;font-size:14px;background:var(--card-bg);color:var(--text-primary);width:100%" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn-save" onclick="saveEditTask()">💾 שמור שינויים</button>
+      <button class="modal-btn-cancel" onclick="closeEditTask()">ביטול</button>
+    </div>
+  </div>
+</div>
 
 <!-- ══ CREDENTIAL EDIT MODAL ══ -->
 <div id="cred-modal-overlay" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeCredModal()">
