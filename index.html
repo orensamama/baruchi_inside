@@ -804,6 +804,11 @@
     .btn-task-delete:hover { color: var(--danger); border-color: var(--danger); background: #fee2e2; }
     .btn-task-delete svg { width: 13px; height: 13px; }
 
+    /* Loading spinner */
+    .tasks-loading { display:flex; align-items:center; justify-content:center; gap:12px; padding:40px 24px; color:var(--text-muted); font-size:14px; font-weight:600; }
+    .tasks-spinner { width:22px; height:22px; border:2.5px solid var(--card-border); border-top-color:var(--blue); border-radius:50%; animation:bq-spin .7s linear infinite; flex-shrink:0; }
+    @keyframes bq-spin { to { transform:rotate(360deg); } }
+
     /* Empty state */
     .tasks-empty {
       text-align: center; padding: 48px 24px;
@@ -2183,11 +2188,16 @@ function logout() {
 }
 
 async function launchApp(username) {
+  // Read intended destination BEFORE any showPage call overwrites the hash
+  const hashKey = location.hash.replace('#', '');
+  const intendedPage = (hashKey && PAGE_MAP[hashKey]) ? hashKey : 'dashboard';
+
   currentUser = username;
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   document.getElementById('user-name-display').textContent = username;
   document.getElementById('user-avatar').textContent = username.charAt(0).toUpperCase();
+
   // Render static scaffolding immediately so UI is not blank
   renderPricing(PRICING);
   renderFundsAccordion(FUNDS);
@@ -2195,9 +2205,23 @@ async function launchApp(username) {
   renderForms();
   renderDashboard(username);
   applyTaskRoles();
-  // Boot to dashboard first so user sees something
-  showPage('dashboard', document.getElementById('nav-dashboard'));
   if (isMobile()) { sidebarOpen = false; }
+
+  // Show cached tasks from localStorage immediately (instant, no flicker)
+  try { _tasks = JSON.parse(localStorage.getItem(TASKS_KEY)) || []; } catch(e) { _tasks = []; }
+  if (_tasks.length) {
+    renderAllTaskViews();
+  } else {
+    // Show spinner while we wait for Supabase
+    ['mine','all','given'].forEach(v => {
+      const el = document.getElementById('tasks-' + v + '-list');
+      if (el) el.innerHTML = '<div class="tasks-loading"><div class="tasks-spinner"></div>טוען משימות...</div>';
+    });
+  }
+
+  // Navigate to the intended page (dashboard while loading, then restore)
+  showPage('dashboard', document.getElementById('nav-dashboard'));
+
   // Connect to Supabase, load all live data in parallel, then re-render
   initSupabase();
   await Promise.all([dbLoadTasks(), dbLoadContacts(), dbLoadCredentials(), dbLoadAgents(), dbLoadPricing()]);
@@ -2206,6 +2230,12 @@ async function launchApp(username) {
   renderCredentials(_credentials);
   renderAgents(_agents);
   renderPricing(_pricing);
+
+  // Restore the page the user was on before refresh
+  if (intendedPage !== 'dashboard') {
+    const navEl = document.querySelector(`.nav-item[onclick*="'${intendedPage}'"]`);
+    showPage(intendedPage, navEl);
+  }
 }
 
 function renderDashboard(username) {
@@ -2288,10 +2318,13 @@ const PAGE_MAP = {
 };
 
 function showPage(key, el) {
+  if (!PAGE_MAP[key]) return;
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById(PAGE_MAP[key]).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   if (el) el.classList.add('active');
+  // Persist current page in URL hash so refresh restores position
+  if (location.hash !== '#' + key) history.replaceState(null, '', '#' + key);
   // Close sidebar on mobile after navigation
   if (isMobile() && sidebarOpen) {
     sidebarOpen = false;
