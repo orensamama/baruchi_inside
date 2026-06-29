@@ -2207,16 +2207,12 @@ async function launchApp(username) {
   applyTaskRoles();
   if (isMobile()) { sidebarOpen = false; }
 
-  // Show cached tasks from localStorage immediately (zero flicker)
-  try { _tasks = JSON.parse(localStorage.getItem(TASKS_KEY)) || []; } catch(e) { _tasks = []; }
-  if (_tasks.length) {
-    renderAllTaskViews();
-  } else {
-    ['mine','all','given'].forEach(v => {
-      const el = document.getElementById('tasks-' + v + '-list');
-      if (el) el.innerHTML = '<div class="tasks-loading"><div class="tasks-spinner"></div>טוען משימות...</div>';
-    });
-  }
+  // Show spinner while Supabase loads
+  _tasks = [];
+  ['mine','all','given'].forEach(v => {
+    const el = document.getElementById('tasks-' + v + '-list');
+    if (el) el.innerHTML = '<div class="tasks-loading"><div class="tasks-spinner"></div>טוען משימות...</div>';
+  });
 
   // Load all live data from Supabase in parallel
   initSupabase();
