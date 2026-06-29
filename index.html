@@ -1845,6 +1845,10 @@
                 <input type="date" id="task-deadline" style="padding:8px 12px;border:1.5px solid var(--blue-border);border-radius:8px;font-family:inherit;font-size:14px;background:var(--card-bg);color:var(--text-primary);width:100%" />
               </div>
               <div class="task-field full">
+                <label for="task-last-update">🔄 עדכון אחרון (אופציונלי)</label>
+                <input type="text" id="task-last-update" placeholder='לדוגמה: "הגשתי בקשה להוזלה, ממתין לתשובה"' />
+              </div>
+              <div class="task-field full">
                 <label>הוספת קובץ מצורף (תמונה / PDF)</label>
                 <label class="file-upload-label" for="task-file">
                   <span>📎</span>
@@ -3366,38 +3370,40 @@ function initSupabase() {
 /* camelCase JS task ↔ snake_case Supabase row */
 function taskToRow(t) {
   return {
-    id:          t.id,
-    insured:     t.insured    || '',
-    title:       t.title      || '',
-    description: t.desc       || '',
-    priority:    t.priority   || 'normal',
-    assignee:    t.assignee   || '',
-    category:    t.category   || '',
-    deadline:    t.deadline   || '',
-    status:      t.status     || 'todo',
-    created_by:  t.createdBy  || '',
-    created_at:  t.createdAt  || Date.now(),
-    file_name:   t.fileName   || '',
-    file_data:   t.fileData   || '',
-    file_type:   t.fileType   || '',
+    id:           t.id,
+    insured:      t.insured     || '',
+    title:        t.title       || '',
+    description:  t.desc        || '',
+    priority:     t.priority    || 'normal',
+    assignee:     t.assignee    || '',
+    category:     t.category    || '',
+    deadline:     t.deadline    || '',
+    status:       t.status      || 'todo',
+    created_by:   t.createdBy   || '',
+    created_at:   t.createdAt   || Date.now(),
+    file_name:    t.fileName    || '',
+    file_data:    t.fileData    || '',
+    file_type:    t.fileType    || '',
+    last_update:  t.lastUpdate  || '',
   };
 }
 function rowToTask(r) {
   return {
-    id:        r.id,
-    insured:   r.insured,
-    title:     r.title,
-    desc:      r.description,
-    priority:  r.priority,
-    assignee:  r.assignee,
-    category:  r.category,
-    deadline:  r.deadline,
-    status:    r.status,
-    createdBy: r.created_by,
-    createdAt: r.created_at,
-    fileName:  r.file_name,
-    fileData:  r.file_data,
-    fileType:  r.file_type,
+    id:         r.id,
+    insured:    r.insured,
+    title:      r.title,
+    desc:       r.description,
+    priority:   r.priority,
+    assignee:   r.assignee,
+    category:   r.category,
+    deadline:   r.deadline,
+    status:     r.status,
+    createdBy:  r.created_by,
+    createdAt:  r.created_at,
+    fileName:   r.file_name,
+    fileData:   r.file_data,
+    fileType:   r.file_type,
+    lastUpdate: r.last_update || '',
   };
 }
 
@@ -3405,6 +3411,7 @@ function rowToTask(r) {
 const FIELD_COL = {
   desc:'description', createdBy:'created_by', createdAt:'created_at',
   fileName:'file_name', fileData:'file_data', fileType:'file_type',
+  lastUpdate:'last_update',
 };
 function toCol(field) { return FIELD_COL[field] || field; }
 
@@ -3507,12 +3514,14 @@ function createTask() {
   const fileInput = document.getElementById('task-file');
   const file      = fileInput && fileInput.files[0];
 
-  const deadlineEl = document.getElementById('task-deadline');
-  const deadline   = deadlineEl ? deadlineEl.value : '';
+  const deadlineEl   = document.getElementById('task-deadline');
+  const deadline     = deadlineEl ? deadlineEl.value : '';
+  const lastUpdateEl = document.getElementById('task-last-update');
+  const lastUpdate   = lastUpdateEl ? lastUpdateEl.value.trim() : '';
 
   const newTask = {
-    id:        Date.now().toString(36) + Math.random().toString(36).slice(2,6),
-    insured, title, desc, priority, assignee, category, deadline,
+    id:         Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+    insured, title, desc, priority, assignee, category, deadline, lastUpdate,
     status:    'todo',
     createdBy: currentUser || '',
     createdAt: Date.now(),
@@ -3529,8 +3538,10 @@ function createTask() {
     if (catOther) { catOther.value = ''; }
     const catWrap = document.getElementById('task-cat-other-wrap');
     if (catWrap) catWrap.style.display = 'none';
-    const deadlineInput = document.getElementById('task-deadline');
+    const deadlineInput    = document.getElementById('task-deadline');
     if (deadlineInput) deadlineInput.value = '';
+    const lastUpdateInput  = document.getElementById('task-last-update');
+    if (lastUpdateInput) lastUpdateInput.value = '';
     if (fileInput) { fileInput.value = ''; }
     const nameEl = document.getElementById('task-file-name');
     if (nameEl) nameEl.style.display = 'none';
@@ -3559,13 +3570,14 @@ function openEditTask(id) {
   const t = _tasks.find(t => t.id === id);
   if (!t) return;
 
-  document.getElementById('etask-id').value          = id;
-  document.getElementById('etask-insured').value     = t.insured  || '';
-  document.getElementById('etask-title').value       = t.title    || '';
-  document.getElementById('etask-desc').value        = t.desc     || '';
-  document.getElementById('etask-priority').value    = t.priority || 'normal';
-  document.getElementById('etask-assignee').value    = t.assignee || 'oren';
-  document.getElementById('etask-deadline').value    = t.deadline || '';
+  document.getElementById('etask-id').value           = id;
+  document.getElementById('etask-insured').value      = t.insured     || '';
+  document.getElementById('etask-title').value        = t.title       || '';
+  document.getElementById('etask-desc').value         = t.desc        || '';
+  document.getElementById('etask-priority').value     = t.priority    || 'normal';
+  document.getElementById('etask-assignee').value     = t.assignee    || 'oren';
+  document.getElementById('etask-deadline').value     = t.deadline    || '';
+  document.getElementById('etask-last-update').value  = t.lastUpdate  || '';
 
   const catSel = document.getElementById('etask-category');
   const knownCats = ['סיכונים','פנסיוני','פיננסי','אלמנטרי','תביעות','גבייה','משכנתאות','אחר'];
@@ -3596,7 +3608,8 @@ async function saveEditTask() {
   const desc     = document.getElementById('etask-desc').value.trim();
   const priority = document.getElementById('etask-priority').value;
   const assignee = document.getElementById('etask-assignee').value;
-  const deadline = document.getElementById('etask-deadline').value;
+  const deadline    = document.getElementById('etask-deadline').value;
+  const lastUpdate  = document.getElementById('etask-last-update').value.trim();
 
   if (!insured) { document.getElementById('etask-insured').focus(); return; }
   if (!title)   { document.getElementById('etask-title').focus();   return; }
@@ -3611,12 +3624,13 @@ async function saveEditTask() {
   const t = _tasks.find(t => t.id === id);
   if (!t) return;
 
-  Object.assign(t, { insured, title, desc, priority, assignee, category, deadline });
+  Object.assign(t, { insured, title, desc, priority, assignee, category, deadline, lastUpdate });
 
   if (_dbReady) {
     await _sb.from('tasks').update({
       insured, title, desc: desc || null, priority, assignee,
-      category: category || null, deadline: deadline || null
+      category: category || null, deadline: deadline || null,
+      last_update: lastUpdate || null
     }).eq('id', id);
   }
 
@@ -3709,11 +3723,16 @@ function taskCard(t) {
     `<span>${dateStr}</span>`,
   ].filter(Boolean).join('<span style="color:#e2e8f0">·</span>');
 
+  const lastUpdateHtml = t.lastUpdate
+    ? `<span style="display:inline-flex;align-items:center;gap:4px;background:#f1f5f9;color:#475569;font-size:11px;font-weight:600;border-radius:6px;padding:2px 8px;border:1px solid #e2e8f0;max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(t.lastUpdate)}">🔄 ${esc(t.lastUpdate)}</span>`
+    : '';
+
   return `<div class="task-row priority-${t.priority}" id="task-row-${t.id}" onclick="toggleTaskRow('${t.id}',this)">
     <span class="task-row-chevron">▼</span>
     ${insuredName ? `<span class="task-insured-sm">${esc(insuredName)}</span>` : ''}
     ${t.category ? catBadge(t.category) : ''}
     ${deadlineHtml}
+    ${lastUpdateHtml}
     <span class="task-row-title">${esc(t.title)}</span>
     <div class="task-actions" onclick="event.stopPropagation()">
       ${prioritySelectHtml(t)}
@@ -3917,6 +3936,10 @@ checkAutoLogin();
       <div class="task-field">
         <label>📅 תאריך יעד (אופציונלי)</label>
         <input type="date" id="etask-deadline" style="padding:8px 12px;border:1.5px solid var(--blue-border);border-radius:8px;font-family:inherit;font-size:14px;background:var(--card-bg);color:var(--text-primary);width:100%" />
+      </div>
+      <div class="task-field full">
+        <label>🔄 עדכון אחרון</label>
+        <input type="text" id="etask-last-update" placeholder='לדוגמה: "הגשתי בקשה להוזלה, ממתין לתשובה"' />
       </div>
     </div>
     <div class="modal-footer">
