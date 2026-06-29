@@ -3457,50 +3457,36 @@ function toCol(field) { return FIELD_COL[field] || field; }
 
 /* Load all tasks from Supabase → populate _tasks cache */
 async function dbLoadTasks() {
-  if (!_dbReady) {
-    try { _tasks = JSON.parse(localStorage.getItem(TASKS_KEY)) || []; } catch(e) { _tasks = []; }
-    return;
-  }
+  if (!_dbReady) { _tasks = []; return; }
   const { data, error } = await _sb.from('tasks').select('*').order('created_at', { ascending: false });
-  if (error) {
-    console.warn('[Baruchi HQ] Supabase load failed — localStorage fallback', error);
-    try { _tasks = JSON.parse(localStorage.getItem(TASKS_KEY)) || []; } catch(e) { _tasks = []; }
-  } else {
-    _tasks = (data || []).map(rowToTask);
-    localStorage.setItem(TASKS_KEY, JSON.stringify(_tasks)); // offline mirror
-  }
+  if (error) { console.warn('[Baruchi HQ] dbLoadTasks error', error); _tasks = []; }
+  else { _tasks = (data || []).map(rowToTask); }
 }
 
-/* Upsert one task to Supabase + mirror to localStorage */
+/* Upsert one task to Supabase */
 async function dbSaveTask(task) {
-  if (_dbReady) {
-    const { error } = await _sb.from('tasks').upsert(taskToRow(task), { onConflict: 'id' });
-    if (error) console.warn('[Baruchi HQ] Supabase upsert failed', error);
-  }
-  localStorage.setItem(TASKS_KEY, JSON.stringify(_tasks));
+  if (!_dbReady) return;
+  const { error } = await _sb.from('tasks').upsert(taskToRow(task), { onConflict: 'id' });
+  if (error) console.warn('[Baruchi HQ] dbSaveTask error', error);
 }
 
 /* Delete one task from Supabase */
 async function dbDeleteTask(id) {
-  if (_dbReady) {
-    const { error } = await _sb.from('tasks').delete().eq('id', id);
-    if (error) console.warn('[Baruchi HQ] Supabase delete failed', error);
-  }
-  localStorage.setItem(TASKS_KEY, JSON.stringify(_tasks));
+  if (!_dbReady) return;
+  const { error } = await _sb.from('tasks').delete().eq('id', id);
+  if (error) console.warn('[Baruchi HQ] dbDeleteTask error', error);
 }
 
 /* Update a single field on one task in Supabase */
 async function dbUpdateField(id, field, value) {
-  if (_dbReady) {
-    const { error } = await _sb.from('tasks').update({ [toCol(field)]: value }).eq('id', id);
-    if (error) console.warn('[Baruchi HQ] Supabase update failed', error);
-  }
-  localStorage.setItem(TASKS_KEY, JSON.stringify(_tasks));
+  if (!_dbReady) return;
+  const { error } = await _sb.from('tasks').update({ [toCol(field)]: value }).eq('id', id);
+  if (error) console.warn('[Baruchi HQ] dbUpdateField error', error);
 }
 
-/* Synchronous helpers — read/write the in-memory cache only */
+/* In-memory cache helper */
 function loadTasks() { return _tasks; }
-function saveTasks(arr) { _tasks = arr; localStorage.setItem(TASKS_KEY, JSON.stringify(arr)); }
+function saveTasks(arr) { _tasks = arr; }
 
 const CATEGORIES = ['סיכונים','פנסיוני','פיננסי','אלמנטרי','תביעות','גבייה','משכנתאות','אחר'];
 
