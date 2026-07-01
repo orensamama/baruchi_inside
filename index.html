@@ -257,6 +257,8 @@
     .elem-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 22px; border-bottom: 1px solid var(--card-border); font-size: 16px; font-weight: 700; color: var(--text-primary); }
     .elem-modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted); line-height: 1; }
     .elem-modal-close:hover { color: var(--text-primary); }
+    .elem-modal-open-btn { display: inline-flex; align-items: center; gap: 6px; background: var(--gold); color: var(--navy); border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 700; text-decoration: none; white-space: nowrap; transition: background .15s; }
+    .elem-modal-open-btn:hover { background: var(--navy); color: #fff; }
     .elem-modal-iframe { flex: 1; width: 100%; border: none; }
 
     /* ══ TABS ══ */
@@ -2022,7 +2024,10 @@
           <div class="elem-modal" onclick="event.stopPropagation()">
             <div class="elem-modal-header">
               <span id="elem-modal-title">תגובות</span>
-              <button class="elem-modal-close" onclick="elemCloseSheet()">✕</button>
+              <div style="display:flex;align-items:center;gap:14px">
+                <a id="elem-modal-open-link" href="#" target="_blank" rel="noopener noreferrer" class="elem-modal-open-btn">↗ פתח קובץ מקור ב-Sheets</a>
+                <button class="elem-modal-close" onclick="elemCloseSheet()">✕</button>
+              </div>
             </div>
             <iframe id="elem-sheet-iframe" src="" frameborder="0" class="elem-modal-iframe"></iframe>
           </div>
@@ -2481,6 +2486,7 @@ function elemOpenSheet(key) {
     return;
   }
   titleEl.textContent = d.sheetTitle;
+  document.getElementById('elem-modal-open-link').href = d.sheetUrl;
   // Convert sharing URL to embedded URL
   const embedUrl = d.sheetUrl.replace('/edit', '/preview').replace('/edit?', '/preview?').replace('#gid=', '&single=true&gid=');
   iframe.src = embedUrl;
