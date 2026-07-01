@@ -237,6 +237,28 @@
     .placeholder-card h3 { font-size: 18px; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
     .placeholder-card p { font-size: 14px; color: var(--text-muted); }
 
+    /* ── Elementary insurance ── */
+    .elem-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(280px,1fr)); gap: 18px; margin-top: 24px; }
+    .elem-card { background: var(--card-bg); border: 1.5px solid var(--card-border); border-radius: var(--radius-lg); padding: 22px 20px 18px; display: flex; flex-direction: column; gap: 14px; transition: box-shadow .18s, border-color .18s; }
+    .elem-card:hover { box-shadow: var(--card-shadow); border-color: var(--gold); }
+    .elem-card-icon { font-size: 36px; line-height: 1; }
+    .elem-card-body { flex: 1; }
+    .elem-card-title { font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+    .elem-card-desc { font-size: 12px; color: var(--text-muted); }
+    .btn-copy-link { align-self: flex-start; background: var(--navy); color: #fff; border: none; border-radius: 8px; padding: 9px 16px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; transition: background .15s; }
+    .btn-copy-link:hover { background: var(--gold); color: var(--navy); }
+    .btn-copy-link.copied { background: #16a34a; }
+    .elem-view-btn { align-self: flex-start; background: var(--blue-light,#eff6ff); color: var(--blue,#2563eb); border-radius: 8px; padding: 9px 16px; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .elem-card[onclick] { cursor: pointer; }
+    .elem-card[onclick]:hover .elem-view-btn { background: var(--blue,#2563eb); color: #fff; }
+    /* Modal */
+    .elem-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 1100; display: flex; align-items: center; justify-content: center; }
+    .elem-modal { background: var(--card-bg); border-radius: var(--radius-lg); width: min(92vw,1100px); height: 82vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 24px 64px rgba(0,0,0,.3); }
+    .elem-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 22px; border-bottom: 1px solid var(--card-border); font-size: 16px; font-weight: 700; color: var(--text-primary); }
+    .elem-modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted); line-height: 1; }
+    .elem-modal-close:hover { color: var(--text-primary); }
+    .elem-modal-iframe { flex: 1; width: 100%; border: none; }
+
     /* ══ TABS ══ */
     .tabs-wrap { display: flex; gap: 4px; margin-bottom: 24px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-lg); padding: 5px; box-shadow: var(--card-shadow); width: fit-content; }
     .tab-btn {
@@ -1178,14 +1200,14 @@
         <div class="nav-item" onclick="showPage('workflows',this)">
           <span class="nav-icon">📋</span> מדריכי עבודה ותהליכים
         </div>
-        <div class="nav-item" onclick="showPage('forms',this)">
-          <span class="nav-icon">📄</span> טפסים שימושיים
-        </div>
         <div class="nav-item" onclick="showPage('mortgage',this)">
           <span class="nav-icon">🏡</span> עולם המשכנתאות
         </div>
         <div class="nav-item" onclick="showPage('elementary',this)">
           <span class="nav-icon">🛡️</span> ביטוח אלמנטרי
+        </div>
+        <div class="nav-item" onclick="showPage('forms',this)">
+          <span class="nav-icon">📄</span> טפסים שימושיים
         </div>
         <div class="nav-section-label">צוות</div>
         <div class="nav-item" onclick="showPage('tasks',this)">
@@ -1895,12 +1917,115 @@
         <div class="page-header">
           <div class="breadcrumb">ברוכי HQ ← <span>ביטוח אלמנטרי</span></div>
           <h1>🛡️ ביטוח אלמנטרי</h1>
-          <p>ביטוח רכב, דירה, עסק ועוד — כלי עבודה וטפסים</p>
+          <p>מרכז שאלונים לקליטת לקוחות — שליחה וקבלת תשובות</p>
         </div>
-        <div class="placeholder-card">
-          <div class="ph-icon">🚧</div>
-          <h3>עמוד זה בפיתוח</h3>
-          <p>תוכן תחום ביטוח אלמנטרי יתווסף כאן בשלב הבא</p>
+
+        <div class="tabs-wrap">
+          <button class="tab-btn active" onclick="switchTab('elem','send',this)">📤 שליחת שאלונים ללקוחות</button>
+          <button class="tab-btn" onclick="switchTab('elem','responses',this)">📊 מרכז תגובות ותשובות</button>
+        </div>
+
+        <!-- TAB: שליחה -->
+        <div class="tab-panel active" id="elem-tab-send">
+          <div class="elem-grid">
+            <div class="elem-card" id="elem-card-home">
+              <div class="elem-card-icon">🏠</div>
+              <div class="elem-card-body">
+                <div class="elem-card-title">הצעה לביטוח דירה</div>
+                <div class="elem-card-desc">שאלון לקליטת פרטי הלקוח לביטוח הדירה</div>
+              </div>
+              <button class="btn-copy-link" onclick="elemCopyLink('home',event)">📋 העתק קישור לוואטסאפ</button>
+            </div>
+            <div class="elem-card" id="elem-card-product">
+              <div class="elem-card-icon">📦</div>
+              <div class="elem-card-body">
+                <div class="elem-card-title">ביטוח אחריות מוצר</div>
+                <div class="elem-card-desc">שאלון לקליטת פרטי הלקוח לאחריות מוצר</div>
+              </div>
+              <button class="btn-copy-link" onclick="elemCopyLink('product',event)">📋 העתק קישור לוואטסאפ</button>
+            </div>
+            <div class="elem-card" id="elem-card-professional">
+              <div class="elem-card-icon">🎖️</div>
+              <div class="elem-card-body">
+                <div class="elem-card-title">הצעה לביטוח אחריות מקצועית</div>
+                <div class="elem-card-desc">שאלון לקליטת פרטי הלקוח לאחריות מקצועית</div>
+              </div>
+              <button class="btn-copy-link" onclick="elemCopyLink('professional',event)">📋 העתק קישור לוואטסאפ</button>
+            </div>
+            <div class="elem-card" id="elem-card-business">
+              <div class="elem-card-icon">🏢</div>
+              <div class="elem-card-body">
+                <div class="elem-card-title">הצעה לביטוח עסקים</div>
+                <div class="elem-card-desc">שאלון לקליטת פרטי הלקוח לביטוח עסק</div>
+              </div>
+              <button class="btn-copy-link" onclick="elemCopyLink('business',event)">📋 העתק קישור לוואטסאפ</button>
+            </div>
+            <div class="elem-card" id="elem-card-construction">
+              <div class="elem-card-icon">👷</div>
+              <div class="elem-card-body">
+                <div class="elem-card-title">הצעה לעבודות קבלניות</div>
+                <div class="elem-card-desc">שאלון לקליטת פרטי הלקוח לעבודות קבלניות</div>
+              </div>
+              <button class="btn-copy-link" onclick="elemCopyLink('construction',event)">📋 העתק קישור לוואטסאפ</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: תגובות -->
+        <div class="tab-panel" id="elem-tab-responses">
+          <div class="elem-grid">
+            <div class="elem-card" onclick="elemOpenSheet('home')">
+              <div class="elem-card-icon">🏠</div>
+              <div class="elem-card-body">
+                <div class="elem-card-title">תגובות ביטוח דירה</div>
+                <div class="elem-card-desc">לחץ לצפייה בתגובות הלקוחות</div>
+              </div>
+              <span class="elem-view-btn">📊 פתח תגובות</span>
+            </div>
+            <div class="elem-card" onclick="elemOpenSheet('product')">
+              <div class="elem-card-icon">📦</div>
+              <div class="elem-card-body">
+                <div class="elem-card-title">תגובות אחריות מוצר</div>
+                <div class="elem-card-desc">לחץ לצפייה בתגובות הלקוחות</div>
+              </div>
+              <span class="elem-view-btn">📊 פתח תגובות</span>
+            </div>
+            <div class="elem-card" onclick="elemOpenSheet('professional')">
+              <div class="elem-card-icon">🎖️</div>
+              <div class="elem-card-body">
+                <div class="elem-card-title">תגובות אחריות מקצועית</div>
+                <div class="elem-card-desc">לחץ לצפייה בתגובות הלקוחות</div>
+              </div>
+              <span class="elem-view-btn">📊 פתח תגובות</span>
+            </div>
+            <div class="elem-card" onclick="elemOpenSheet('business')">
+              <div class="elem-card-icon">🏢</div>
+              <div class="elem-card-body">
+                <div class="elem-card-title">תגובות ביטוח עסקים</div>
+                <div class="elem-card-desc">לחץ לצפייה בתגובות הלקוחות</div>
+              </div>
+              <span class="elem-view-btn">📊 פתח תגובות</span>
+            </div>
+            <div class="elem-card" onclick="elemOpenSheet('construction')">
+              <div class="elem-card-icon">👷</div>
+              <div class="elem-card-body">
+                <div class="elem-card-title">תגובות עבודות קבלניות</div>
+                <div class="elem-card-desc">לחץ לצפייה בתגובות הלקוחות</div>
+              </div>
+              <span class="elem-view-btn">📊 פתח תגובות</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal: Google Sheets viewer -->
+        <div id="elem-sheet-modal" class="elem-modal-overlay" onclick="elemCloseSheet(event)" style="display:none">
+          <div class="elem-modal" onclick="event.stopPropagation()">
+            <div class="elem-modal-header">
+              <span id="elem-modal-title">תגובות</span>
+              <button class="elem-modal-close" onclick="elemCloseSheet()">✕</button>
+            </div>
+            <iframe id="elem-sheet-iframe" src="" frameborder="0" class="elem-modal-iframe"></iframe>
+          </div>
         </div>
       </div>
 
@@ -2317,6 +2442,58 @@ function showPage(key, el) {
     document.querySelector('.sidebar').classList.remove('mobile-open');
     document.getElementById('sidebar-overlay').classList.remove('active');
   }
+}
+
+/* ══════════════════════════════
+   ELEMENTARY INSURANCE
+══════════════════════════════ */
+const ELEM_DATA = {
+  home:         { title: 'הצעה לביטוח דירה',             formUrl: 'https://forms.gle/dM59Vh1f4vyZB42W9',                                                                                                                                               sheetUrl: 'https://docs.google.com/spreadsheets/d/1v4JVqZW-EHaVtTIwZx3bd6DTfqn1ITVFFpz_fSaSoRw/edit?usp=sharing',                                                        sheetTitle: 'תגובות ביטוח דירה' },
+  product:      { title: 'ביטוח אחריות מוצר',            formUrl: 'https://docs.google.com/forms/d/e/1FAIpQLScwKAJ3xqSWGEGVma7118Js8DqcrsNOMUkAcK0EAfVfgfa8kg/viewform?usp=header',                                                               sheetUrl: 'https://docs.google.com/spreadsheets/d/11pmwPpbWwMBeRM0MceL_PFN2LrAjNHMYMWG_V9NXojE/edit?resourcekey=&gid=256249990#gid=256249990', sheetTitle: 'תגובות אחריות מוצר' },
+  professional: { title: 'הצעה לביטוח אחריות מקצועית',  formUrl: '',  sheetUrl: '', sheetTitle: 'תגובות אחריות מקצועית' },
+  business:     { title: 'הצעה לביטוח עסקים',            formUrl: '',  sheetUrl: '', sheetTitle: 'תגובות ביטוח עסקים' },
+  construction: { title: 'הצעה לעבודות קבלניות',         formUrl: '',  sheetUrl: '', sheetTitle: 'תגובות עבודות קבלניות' },
+};
+
+function elemCopyLink(key, e) {
+  if (e) e.stopPropagation();
+  const d = ELEM_DATA[key];
+  if (!d) return;
+  if (!d.formUrl) { alert('קישור לשאלון טרם הוגדר עבור: ' + d.title); return; }
+  navigator.clipboard.writeText(d.formUrl).then(() => {
+    const btn = document.querySelector('#elem-card-' + key + ' .btn-copy-link');
+    if (!btn) return;
+    const orig = btn.textContent;
+    btn.textContent = '✅ הועתק!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1800);
+  });
+}
+
+function elemOpenSheet(key) {
+  const d = ELEM_DATA[key];
+  if (!d) return;
+  const modal = document.getElementById('elem-sheet-modal');
+  const iframe = document.getElementById('elem-sheet-iframe');
+  const titleEl = document.getElementById('elem-modal-title');
+  if (!d.sheetUrl) {
+    alert('טרם הוגדר קישור לתגובות עבור: ' + d.title);
+    return;
+  }
+  titleEl.textContent = d.sheetTitle;
+  // Convert sharing URL to embedded URL
+  const embedUrl = d.sheetUrl.replace('/edit', '/preview').replace('/edit?', '/preview?').replace('#gid=', '&single=true&gid=');
+  iframe.src = embedUrl;
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function elemCloseSheet(e) {
+  if (e && e.target !== document.getElementById('elem-sheet-modal')) return;
+  const modal = document.getElementById('elem-sheet-modal');
+  document.getElementById('elem-sheet-iframe').src = '';
+  modal.style.display = 'none';
+  document.body.style.overflow = '';
 }
 
 function navTo(key) {
